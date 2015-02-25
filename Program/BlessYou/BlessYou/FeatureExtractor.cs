@@ -16,8 +16,7 @@ namespace BlessYou
     class FeatureExtractor
     {
 
-        void _extractWavFileFeatures(string i_WavFile_FullPathAndFileNameStr)
-        { }
+
         
         void _loadFeatureList(string i_WavFileListFile_FullPathAndFileNameStr)
         { }
