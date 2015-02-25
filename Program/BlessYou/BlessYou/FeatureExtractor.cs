@@ -16,10 +16,20 @@ namespace BlessYou
     class FeatureExtractor
     {
 
+        List<CaseClass> FListOfCases;
 
-        
+        // ====================================================================
+
         void _loadFeatureList(string i_WavFileListFile_FullPathAndFileNameStr)
-        { }
+        { 
+            // 1. Läs filenamns-listan
+            // 2. För varje rad i listan:
+            //      Skapa ett case med: Case.cs
+            //      placera i FListOfCases
 
+            throw new System.NotImplementedException();
+        } // _loadFeatureList
+
+        // ====================================================================
     }
 }

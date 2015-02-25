@@ -13,13 +13,29 @@ using System.Text;
 
 namespace BlessYou
 {
-    class Case
+
+
+    public class CaseClass
     {
+        public static List<double> FFeatureWeights;
+
         WaveFileClass _WaveFileWorkArea;
 
         string _WavFile_FullPathAndFileNameStr;
-        bool _IsASneeze;
+        CaseStatusEnum _SneezeStatus;
+
         List<List<double>> _featureVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
+
+        // ====================================================================
+
+        void Case()
+        {
+            // Create FFeatureWeights and make sure sum = 1
+            // Tips: anv. const declr i egen fil som ingångs data
+            throw new System.NotImplementedException();
+        } // Case
+
+        // ====================================================================
 
         void _extractWavFileFeatures(string i_WavFile_FullPathAndFileNameStr)
         {
@@ -27,8 +43,10 @@ namespace BlessYou
             //      utvärdera om fel
             // 2. Analysera filen
             // 3. Beräkna FV -> i _featureVector
+            throw new System.NotImplementedException();
+        } // _extractWavFileFeatures
 
-        }
+        // ====================================================================
 
     }
 }

@@ -16,9 +16,54 @@ namespace BlessYou
     class CBRSystem
     {
 
+        // ====================================================================
 
+        /// <summary>
+        /// Retrieve most similar match for a specifiled case vs. the case library
+        /// </summary>
+        /// 
 
-        public CBRSystem()
-        { }
+        public void Retrieve(CaseClass i_NewProblem, List<CaseClass> i_CaseLibrary, out int o_TopListCount, out List<RetrievedCaseClass> o_RetrievedMatches)
+        {
+            // 1. För varje case i case library:
+            //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
+            // 2. Sort the list descending order to get top max in Similarity
+            // 3. Transfer the o_TopListCount cases to the output 
+            throw new System.NotImplementedException();
+        } // Retrieve
+
+        // ====================================================================
+
+        /// <summary>
+        /// Reuse most similar match for a specifiled case vs. the case library
+        /// </summary>
+        /// 
+
+        public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out CaseStatusEnum o_CaseStatus)
+        {
+            // Evaluate data in i_RetrievedMatches to find out suitable status (proposed sneeze or not)
+            throw new System.NotImplementedException();
+        } // Reuse
+
+        // ====================================================================
+
+        // ====================================================================
+
+        public void Revise()
+        {
+            // TBA
+            throw new System.NotImplementedException();
+        } // Revise
+
+        // ====================================================================
+
+        public void Retain()
+        {
+            // TBA
+            throw new System.NotImplementedException();
+        } // Retain
+
+        // ====================================================================
+
     }
 }

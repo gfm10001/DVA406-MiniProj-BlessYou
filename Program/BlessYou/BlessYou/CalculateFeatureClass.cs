@@ -5,14 +5,14 @@ using System.Text;
 
 namespace BlessYou
 {
-    public class FeatureClass
+    public static class CalculateFeatureClass
     {
         // ====================================================================
 
         /// <summary>
         /// Calculate the absolute peak  value among the input data
         /// </summary>
-        public void CalculatePeakColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
+        public static void CalculatePeakColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
         {
             throw new System.NotImplementedException();
         } // CalculatePeakColumn
@@ -22,7 +22,7 @@ namespace BlessYou
         /// <summary>
         /// Calculate the Mean = average value among the input data
         /// </summary>
-        public void CalculateMeanColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
+        public static void CalculateMeanColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
         {
             throw new System.NotImplementedException();
         } // CalculateMeanColumn

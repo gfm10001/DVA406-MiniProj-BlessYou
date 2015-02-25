@@ -22,8 +22,20 @@ namespace BlessYou
 {
     class BlessYouMain
     {
+        // ====================================================================
+
         static void Main(string[] args)
         {
-        }
+            // 1. Avkoda params
+            // 2. Skapa CASE-library med: 
+            //      FeatureExtractor
+            // 3. Skapa CBR System
+            // 4. Skriv ut rapport
+
+            throw new System.NotImplementedException();
+        } // Main
+
+        // ====================================================================
+
     }
 }

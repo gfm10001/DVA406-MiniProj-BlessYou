@@ -7,40 +7,61 @@
       <FileName>BlessYouMain.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BlessYou.Case">
+  <Class Name="BlessYou.CaseClass">
     <Position X="2.5" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAAAAAACAAAABAAAAAAAAACAAAAAEAAAA=</HashCode>
-      <FileName>Case.cs</FileName>
+      <HashCode>AACAAAQAAAAAAAABACAAAABAAAAAAAAAAAAAAAEAEAA=</HashCode>
+      <FileName>CaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.CBRSystem">
     <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>CBRSystem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.FeatureExtractor">
     <Position X="5.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
       <FileName>FeatureExtractor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.WaveFileClass">
-    <Position X="4" Y="3.75" Width="1.5" />
+    <Position X="4" Y="3.75" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAABIAAAAgAEAAAAAAAAAAAAAAAAAAAIgAAAAQIAAA=</HashCode>
       <FileName>WaveFileClass.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BlessYou.FeatureClass">
+  <Class Name="BlessYou.CalculateFeatureClass">
     <Position X="8" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>FeatureClass.cs</FileName>
+      <FileName>CalculateFeatureClass.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="BlessYou.CalculateSimilarityClass">
+    <Position X="2.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>CalculateSimilarityClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BlessYou.RetrievedCaseClass">
+    <Position X="11" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RetrievedCaseClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="BlessYou.CaseStatusEnum">
+    <Position X="9.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAABAAAAAAAAAAAABAAAQgAAgAAAAA=</HashCode>
+      <FileName>CaseStatusEnum.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
