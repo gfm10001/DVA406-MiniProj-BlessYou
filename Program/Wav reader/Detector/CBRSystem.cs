@@ -20,8 +20,8 @@ namespace Detector
 
         public bool Evaluate(string filepath)
         {
-            WavReader wr = new WavReader();
-            wr.ReadFile(filepath);
+            WavFile wr = new WavFile(filepath);
+            //wr.ReadFile(filepath);
             throw new NotImplementedException();
         }
 
