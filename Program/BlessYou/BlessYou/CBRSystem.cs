@@ -13,7 +13,7 @@ using System.Text;
 
 namespace BlessYou
 {
-    class CBRSystem
+    public class CBRSystem
     {
 
         // ====================================================================
@@ -39,13 +39,11 @@ namespace BlessYou
         /// </summary>
         /// 
 
-        public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out CaseStatusEnum o_CaseStatus)
+        public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
         {
             // Evaluate data in i_RetrievedMatches to find out suitable status (proposed sneeze or not)
             throw new System.NotImplementedException();
         } // Reuse
-
-        // ====================================================================
 
         // ====================================================================
 
@@ -65,5 +63,5 @@ namespace BlessYou
 
         // ====================================================================
 
-    }
+    } // CBRSystem
 }

@@ -4,7 +4,7 @@
 // Group 1:
 //      Simon P.
 //      Niclas S.
-//      Göran F.
+//      Göran FMarker.
 //
 // Mini project "Bless You" - a CASE-Based Sneeze Detector
 //
@@ -26,9 +26,17 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            // 1. Avkoda params
-            // 2. Skapa CASE-library med: 
-            //      FeatureExtractor
+
+            CBRSystem cbrSystem = new CBRSystem();
+            List<SoundFileClass> fileNameList;
+            
+            // 1. Decode Params
+            DecodeParamClass.DecodeParam(args, out fileNameList);
+
+            // 2. Create CASE-library
+            FeatureExtractorClass._loadFeatureList(fileNameList);
+ 
+            // 2. Create CASE-library
             // 3. Skapa CBR System
             // 4. Skriv ut rapport
 
@@ -37,5 +45,5 @@ namespace BlessYou
 
         // ====================================================================
 
-    }
+    } // BlessYouMain
 }

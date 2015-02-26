@@ -45,13 +45,21 @@
   <ItemGroup>
     <Compile Include="CalculateSimilarityClass.cs" />
     <Compile Include="CaseClass.cs" />
-    <Compile Include="CaseStatusEnum.cs" />
+    <Compile Include="ConfigurationClass.cs" />
+    <Compile Include="EnumCaseStatus.cs" />
+    <Compile Include="CaseLibraryClass.cs" />
     <Compile Include="CBRSystem.cs" />
     <Compile Include="BlessYouMain.cs" />
     <Compile Include="CalculateFeatureClass.cs" />
-    <Compile Include="FeatureExtractor.cs" />
+    <Compile Include="DecodeParamClass.cs" />
+    <Compile Include="FeatureAverageClass.cs" />
+    <Compile Include="FeatureBaseClass.cs" />
+    <Compile Include="FeatureExtractorClass.cs" />
+    <Compile Include="FeaturePeakClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RetrievedCaseClass.cs" />
+    <Compile Include="EnumSneezeMarker.cs" />
+    <Compile Include="SoundFileClass.cs" />
     <Compile Include="WaveFileClass.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -16,5 +16,5 @@ namespace BlessYou
     public class RetrievedCaseClass : CaseClass
     {
         double FSimilarityValue;
-    }
+    } // RetrievedCaseClass
 }
