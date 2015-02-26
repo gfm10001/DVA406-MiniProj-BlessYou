@@ -10,4 +10,8 @@ där
 feat = ngt ny feature
 bug  = felrättning
 junk = experiment
-wip  = flupflupflup
+<<<<<<< HEAD
+wip  = conflict
+=======
+wip  = gtergerger
+>>>>>>> origin/master
