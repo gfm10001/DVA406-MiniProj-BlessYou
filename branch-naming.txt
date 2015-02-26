@@ -1,0 +1,13 @@
+Layout of branch names (master = "master")
+
+
+<type>"-"<User>"-"Notes"
+
+
+där
+<type> = "feat" | "bug" | "junk" | "wip"
+
+feat = ngt ny feature
+bug  = felrättning
+junk = experiment
+wip  = ???
