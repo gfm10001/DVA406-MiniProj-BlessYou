@@ -17,20 +17,16 @@ namespace BlessYou
 
     public class CaseClass
     {
-        public static List<double> FFeatureWeights;
+        protected string _WavFile_FullPathAndFileNameStr;
+        protected EnumCaseStatus _SneezeStatus;
 
-        WaveFileClass _WaveFileWorkArea;
-
-        string _WavFile_FullPathAndFileNameStr;
-        EnumCaseStatus _SneezeStatus;
-
-        List<FeatureBaseClass> _featureVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
+        List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
 
         // ====================================================================
 
         public void Case()
         {
-            _featureVector = new List<FeatureBaseClass>();
+            FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
             // Tips: anv. const declr i egen fil som ingångs data
             throw new System.NotImplementedException();
@@ -38,7 +34,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        void _extractWavFileFeatures(string i_WavFile_FullPathAndFileNameStr)
+        public void ExtractWavFileFeatures(string i_WavFile_FullPathAndFileNameStr)
         {
             WaveFileClass waveFileObj = new WaveFileClass();
 
@@ -48,16 +44,43 @@ namespace BlessYou
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass(); 
             waveFileObj.CalculateFeatureVector(featurePeakObj);
-            _featureVector.Add(featurePeakObj);
+            FFeatureTypeVector.Add(featurePeakObj);
 
             FeatureAverageClass featureAverageObj = new FeatureAverageClass(); 
             waveFileObj.CalculateFeatureVector(featureAverageObj);
-            _featureVector.Add(featureAverageObj);
+            FFeatureTypeVector.Add(featureAverageObj);
             
             // Todo för övriga features
 
+
+            // At last normalize feature weights
+            double sum = 0;
+            foreach (FeatureBaseClass fbc in FFeatureTypeVector)
+            {
+                sum = sum + fbc.FeatureWeight;
+            }
+            foreach (FeatureBaseClass fbc in FFeatureTypeVector)
+            {
+                fbc.FeatureWeight = fbc.FeatureWeight / sum;
+            }
+
             throw new System.NotImplementedException();
-        } // _extractWavFileFeatures
+        } // ExtractWavFileFeatures
+
+        // ====================================================================
+
+        public double calculateSimilarityFunction(CaseClass i_NewCase)
+        {
+            double sum = 0;
+            for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
+            {
+                for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                {
+                    sum = sum + FFeatureTypeVector[jx].SimilarityFunctionForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                } // for ix
+            } // for jx
+            return sum;
+        } // calculateSimilarityFunction
 
         // ====================================================================
 

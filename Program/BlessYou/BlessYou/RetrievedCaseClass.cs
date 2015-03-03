@@ -16,5 +16,39 @@ namespace BlessYou
     public class RetrievedCaseClass : CaseClass
     {
         double FSimilarityValue;
+        EnumCaseStatus FProposedStatus;
+
+        //=====================================================================
+
+        public double SimilarityValue
+        {
+            get
+            {
+                return FSimilarityValue;
+            }
+            set
+            {
+                FSimilarityValue = value;
+            }
+        } // FeatureName
+
+        public RetrievedCaseClass()
+        {
+
+        }
+
+        //=====================================================================
+    
+        public string GetCurrentMatchingString()
+        {
+            return "Filename: " + base._WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
+                                + " Actual: " + base._SneezeStatus.ToString();
+        }
+
+        void CalculateSimilarityValue(CaseClass i_NewCase)
+        {
+
+        } // CalculateSimilarityValue
     } // RetrievedCaseClass
+
 }

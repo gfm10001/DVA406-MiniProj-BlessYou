@@ -43,12 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalculateSimilarityClass.cs" />
+    <Compile Include="CalculateSimilarityStatClass.cs" />
     <Compile Include="CaseClass.cs" />
-    <Compile Include="ConfigurationClass.cs" />
+    <Compile Include="ConfigurationStatClass.cs" />
     <Compile Include="EnumCaseStatus.cs" />
     <Compile Include="CaseLibraryClass.cs" />
-    <Compile Include="CBRSystem.cs" />
+    <Compile Include="CBRSystemClass.cs" />
     <Compile Include="BlessYouMain.cs" />
     <Compile Include="CalculateFeatureClass.cs" />
     <Compile Include="DecodeParamClass.cs" />

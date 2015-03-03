@@ -13,12 +13,12 @@ namespace BlessYou
         public FeaturePeakClass() : 
                base("Peak")
         {
-
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================
 
-        public override void calculateFeatureValues(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
+        public override void calculateFeatureValuesFromSamples(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
         {
             int startIx = i_FirstListIx;
             double peak = -1.0;
@@ -31,7 +31,7 @@ namespace BlessYou
                 }
             }
             FFeatureValueVector.Add(peak);
-        } // calculateFeatureValues
+        } // calculateFeatureValuesFromSamples
 
         //=====================================================================
 

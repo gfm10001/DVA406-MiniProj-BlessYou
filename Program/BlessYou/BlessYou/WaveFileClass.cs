@@ -30,7 +30,7 @@ namespace BlessYou
 
         public WaveFileClass()
         {
-            FNrOfIntevals = ConfigurationClass.NrOfIntervals;
+            FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
         } // WaveFileClass
 
         public void ReadWaveFile(string i_WaveFileName)
@@ -69,7 +69,7 @@ namespace BlessYou
 
         public void AnalyseWaveFileContents()
         {
-            double triggerLevel = ( ConfigurationClass.triggerLevelInPercent / 100.0 ) * C_MAX_POSSIBLE_VALUE;
+            double triggerLevel = ( ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0 ) * C_MAX_POSSIBLE_VALUE;
 
             // 1. Analyze sample data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
@@ -94,7 +94,7 @@ namespace BlessYou
             soundSampleIx = FStartOfFirstIntervalIx;
             for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
             {
-                i_FeatureObj.calculateFeatureValues(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount);
+                i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount);
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;
             } // for intervalIx
 

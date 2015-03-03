@@ -9,6 +9,7 @@ namespace BlessYou
     {
         protected string FFeatureName;
         protected List<double> FFeatureValueVector;
+        protected double FFeatureWeight;
 
         //=====================================================================
 
@@ -30,6 +31,21 @@ namespace BlessYou
             }
         } // FeatureValueVector
 
+
+        //=====================================================================
+
+        public double FeatureWeight
+        {
+            get
+            {
+                return FFeatureWeight;
+            }
+            set
+            {
+                FFeatureWeight = value;
+            }
+        } // FeatureName
+
         //=====================================================================
 
         public FeatureBaseClass(string i_FeatureName)
@@ -40,9 +56,14 @@ namespace BlessYou
 
         //=====================================================================
 
-        public abstract void calculateFeatureValues(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count);
+        public abstract void calculateFeatureValuesFromSamples(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count);
 
         //=====================================================================
+
+        public double SimilarityFunctionForAttribute(double i_NewValue, double i_RetrievedValue)
+        {
+            return FFeatureWeight * Math.Abs(i_NewValue - i_RetrievedValue);
+        }
 
     } // FeatureBaseClass
 }

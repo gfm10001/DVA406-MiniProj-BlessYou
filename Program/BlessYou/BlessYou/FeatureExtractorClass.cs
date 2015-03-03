@@ -18,17 +18,14 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void _loadFeatureList(List<SoundFileClass> fileNameList)
+        public static void _loadFeatureList(CaseLibraryClass i_CaseLibraryObj, List<SoundFileClass> i_FileNameList)
         {
-            for (int i = 0; i < fileNameList.Count; ++i)
+            for (int i = 0; i < i_FileNameList.Count; ++i)
             {
                 CaseClass caseClassObj = new CaseClass();
+                caseClassObj.ExtractWavFileFeatures(i_FileNameList[i].FileName);
 
-                //caseClassObj.
-                // 1. Läs filenamns-listan
-                // 2. För varje rad i listan:
-                //      Skapa ett case med: CaseClass.cs
-                //      placera i FListOfCases
+                i_CaseLibraryObj.AddCase(caseClassObj);
             } // for i
 
             throw new System.NotImplementedException();

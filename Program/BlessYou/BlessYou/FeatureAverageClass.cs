@@ -13,12 +13,12 @@ namespace BlessYou
         public FeatureAverageClass() :
                base("Average")
         {
-
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
         } // FeatureAverageClass
 
         //=====================================================================
 
-        public override void calculateFeatureValues(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
+        public override void calculateFeatureValuesFromSamples(List<double> i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
         {
             int startIx = i_FirstListIx;
             double average = 0.0;
