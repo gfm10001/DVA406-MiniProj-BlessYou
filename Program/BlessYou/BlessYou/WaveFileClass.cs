@@ -19,7 +19,7 @@ namespace BlessYou
     public class WaveFileClass
     {
         string FWaveFileName;
-        List<double> FWaveFileContents44p1KHz16bitSamples;
+        double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
         int FNrOfIntevals;
         int FIntervalSampleCount;
@@ -36,6 +36,9 @@ namespace BlessYou
         public void ReadWaveFile(string i_WaveFileName)
         {
             FWaveFileName = i_WaveFileName;
+            BlessYou.WavFile wf = new WavFile(i_WaveFileName);
+            FWaveFileContents44p1KHz16bitSamples = wf.Data;
+
 
             // 1. Öppna i_WaveFileName
             // 2. Analyser antal kanaler (1/2)
@@ -45,7 +48,7 @@ namespace BlessYou
             //      Stereo: läs 2 (L, R)  integer 16 bit, konvertera till double och medelvärdesbilda, placera som double i FWaveFileContents44p1KHz16bitSamples 
             // 4. Utvärdera ev. fel kasta exception om fel
          
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         } // ReadWaveFile
 
         // ====================================================================
