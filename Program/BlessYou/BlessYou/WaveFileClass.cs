@@ -64,7 +64,7 @@ namespace BlessYou
             //      i = [0, FWaveFileContents44p1KHz16bitSamples.Count - 1]
             //      FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor
 
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         } // AnalyseWaveFileContents
 
 

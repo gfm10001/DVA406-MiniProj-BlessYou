@@ -48,7 +48,11 @@ namespace BlessYou
             string paramStr = System.IO.File.ReadAllText(samplesFileName);
             char[] lineFeedSep = { '\n' };
             tempStrArr = paramStr.Split(lineFeedSep);
-            
+
+            string tempS1 = Path.GetFullPath(samplesFileName);
+            string tempS2 = Path.GetDirectoryName(tempS1);
+            tempS2 = tempS2 + "\\";
+
             // Decode each sampleFile
             // line = <marker for type of sound> TAB [<path>]<filename of .wav­file>
             char[] tabSep = { '\t' };
@@ -68,7 +72,8 @@ namespace BlessYou
                     soundFileObj.Marker = EnumSneezeMarker.smSneeze;
                 }
 
-                soundFileObj.FileName = Path.GetFullPath(str[1]);
+                string s = tempS2 + str[1];
+                soundFileObj.FileName = Path.GetFullPath(s);
 
                 o_FileNameList.Add(soundFileObj);
             } // for i

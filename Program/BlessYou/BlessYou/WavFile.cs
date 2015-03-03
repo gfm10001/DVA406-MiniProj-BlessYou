@@ -244,7 +244,7 @@ namespace BlessYou
                 }
 
                 _rawdata = WavFile.GetSingleChannelData(this);
-                double[] truedata = WavFile.Normalize(_rawdata,10000);
+                 _truedata = WavFile.Normalize(_rawdata,10000);
         }
     }
 }
