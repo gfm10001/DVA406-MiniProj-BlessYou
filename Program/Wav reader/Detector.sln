@@ -1,16 +1,43 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Detector", "Detector\Detector.csproj", "{F30878B6-1A9C-45ED-9594-207A727BCEC4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F91DCE20-90A9-49A8-8773-CACECE651F37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{FA54AC1B-F7DB-41A3-9292-C4CEB5B0BA2F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\NAudioExperiment\NAudio-Source\Build.proj = ..\..\NAudioExperiment\NAudio-Source\Build.proj
+		..\..\NAudioExperiment\NAudio-Source\.build\MSBuild.Community.Tasks.dll = ..\..\NAudioExperiment\NAudio-Source\.build\MSBuild.Community.Tasks.dll
+		..\..\NAudioExperiment\NAudio-Source\.build\MSBuild.Community.Tasks.targets = ..\..\NAudioExperiment\NAudio-Source\.build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|ARM.ActiveCfg = Debug|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|x64.ActiveCfg = Debug|x86
 		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|x86.ActiveCfg = Debug|x86
 		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Debug|x86.Build.0 = Debug|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|Any CPU.ActiveCfg = Release|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|ARM.ActiveCfg = Release|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|x64.ActiveCfg = Release|x86
 		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|x86.ActiveCfg = Release|x86
 		{F30878B6-1A9C-45ED-9594-207A727BCEC4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection

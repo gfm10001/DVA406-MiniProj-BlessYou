@@ -13,7 +13,7 @@ namespace Detector
     public partial class Form1 : Form
     {
 
-        CBRSystem cbr = new CBRSystem();
+        //CBRSystem cbr = new CBRSystem();
         public Form1()
         {
             InitializeComponent();
@@ -35,8 +35,9 @@ namespace Detector
                 return;            
             }
             label1.Text = f;
-            bool results = cbr.Evaluate(f);
-            label1.Text = "Results: " + results.ToString();
+            WavFile fi = new WavFile(f);
+            
+            //label1.Text = "Results: " + results.ToString();
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.InteropServices;
 using System.Media;
+using NAudio;
 
 namespace Detector
 {
@@ -45,13 +46,14 @@ namespace Detector
         fmtchunk _fmt;
         datachunk _dataheader;
         int[] _rawdata;
+        double[] _truedata;
 
         #region Properties
-        public int[] Data
+        public double[] Data
         {
             get
             {
-                return _rawdata;
+                return _truedata;
             }
         
         }
@@ -84,63 +86,105 @@ namespace Detector
         {
             return new WavFile(path);
         }
-        static int[] GetSingleChannelData(WavFile File)
-        {
-            if (File.FMTHeader.wChannels == 2) //If we got 2 channels, normalize to one
-            {
-                int[] _rawdata = File.Data;
-                int[] avg = new int[File.Data.Length / 2];
-                for (int i = 0; i < avg.Length; i += 2)
-                {
-                    avg[i] = (_rawdata[i * 2] + _rawdata[i * 2 + 2]) / 2;
-                    avg[i + 1] = (_rawdata[i * 2 + 1] + _rawdata[i * 2 + 3]) / 2;
-                }
-                return avg;
 
+        static double[] Normalize(int[] data, int limit)
+        {
+            int hightest = 0;
+            int maxat = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (hightest < Math.Abs(data[i]))
+                {
+                    hightest = Math.Abs(data[i]);
+                    maxat = i;
+                }
             }
-            return File.Data;
+            double mod = Math.Abs((double)limit / (double)hightest);
+            double[] retval = new double[data.Length];
+            for (int i = 0; i < retval.Length; i++)
+            {
+                retval[i] = data[i] * mod;
+            }
+
+            
+
+
+            return retval;
         
         }
 
-        unsafe byte[] _GenerateFileHeader(fileheader h, fmtchunk fmt, datachunk d)
+        static int[] GetSingleChannelData(WavFile file)
+        {
+
+            NAudio.Wave.WaveFormat format = new NAudio.Wave.WaveFormat(44100, 16, 1);
+            NAudio.Wave.WaveStream stream = new NAudio.Wave.WaveFileReader(new MemoryStream(file.filedata));
+            NAudio.Wave.WaveFormatConversionStream str = new NAudio.Wave.WaveFormatConversionStream(format, stream);
+            //NAudio.Wave.WaveFileWriter.CreateWaveFile("TEST.wav", str);
+
+            BinaryReader br = new BinaryReader(str);
+            byte[] temp = br.ReadBytes((int)str.Length);
+
+
+            int[] retval = new int[str.Length];
+
+            for (int i = 0, z = 0; i < temp.Length; i += 2, z++)
+            {
+                retval[z] = BitConverter.ToInt16(temp, i);
+            }
+
+            return retval;
+        }
+
+        static unsafe byte[] _GenerateFileHeader(fileheader h, fmtchunk fmt, datachunk d)
         {
            // fmt.wChannels = 1;
+            fileheader nh = h;
+            fmtchunk nfmt = fmt;
+            datachunk nd = d;
 
-            int size = Marshal.SizeOf(h); //12
-            
-            //size = sizeof(char);
+            int size = Marshal.SizeOf(nh); //12
+
+            fmt.wChannels = 1;
 
             byte[] harr = new byte[size];
             IntPtr ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(h, ptr, true);
+            Marshal.StructureToPtr(nh, ptr, true);
             Marshal.Copy(ptr, harr, 0, size);
             Marshal.FreeHGlobal(ptr);
 
-            size = Marshal.SizeOf(fmt); //28
+            size = Marshal.SizeOf(nfmt); //28
             byte[] farr = new byte[size];
             ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(nfmt, ptr, true);
             Marshal.Copy(ptr, farr, 0, size);
             Marshal.FreeHGlobal(ptr);
 
-            size = Marshal.SizeOf(d);
+            size = Marshal.SizeOf(nd);
             byte[] darr = new byte[size];
             ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(nd, ptr, true);
             Marshal.Copy(ptr, darr, 0, size);
             Marshal.FreeHGlobal(ptr);
 
+            string test = Encoding.Default.GetString(farr, 0, 4);
+
             byte[] retval = new byte[harr.Length + farr.Length + darr.Length];
+
             harr.CopyTo(retval, 0);
             farr.CopyTo(retval, harr.Length);
             darr.CopyTo(retval, harr.Length + farr.Length);
 
-            int errors = 0;
+
+            //If data needs to be evaluated, use this code
+            //int errors = 0;
+            /*
             for (int i = 0; i < 44; i++)
             {
                 if (retval[i] != filedata[i])
-                    errors++;
+                    throw new InvalidDataException("Error detected when copying header!");
 
             }
-            
+             * */
 
             return retval;
         }
@@ -154,22 +198,16 @@ namespace Detector
             fixed (fileheader* pheader = &_header) //Extract file header
             {
 
-                //byte[] temp = new byte[4];
-                //temp = Encoding.Default.GetString(filedata, 0, 4).ToCharArray();
                 for(int i=0; i<4;i++)
                     pheader->sGroupID[i] = filedata[i];
                 
                 _header.dwFileLength = BitConverter.ToUInt32(filedata, 4);
                
-                //temp = Encoding.Default.GetString(filedata, 8, 4).ToCharArray();
                 for (int i = 0; i < 4; i++)
                     pheader->sRiffType[i] = filedata[i+8];
             }
             fixed (fmtchunk* pfmt = &_fmt) //extract fmt header
             {
-                //char[] temp = Encoding.Default.GetString(filedata, 12, 4).ToCharArray();
-
-
                 for (int i = 0; i < 4; i++)
                     pfmt->sChunkID[i] = filedata[12 + i];
 
@@ -183,7 +221,6 @@ namespace Detector
             }
             fixed (datachunk* d = &_dataheader)
             {
-                //char[] temp = Encoding.Default.GetString(filedata, 36, 4).ToCharArray();
                 
                 for (int i = 0; i < 4; i++)
                     d->sChunkID[i] = filedata[i+36];
@@ -195,7 +232,7 @@ namespace Detector
 
                 int pointer = 44;
                 int limit = filedata.Length;
-                _rawdata = new int[filedata.Length - 44 / 4];
+                _rawdata = new int[filedata.Length - 44];
 
                  int index =0;
 
@@ -206,21 +243,8 @@ namespace Detector
                     index++;       
                 }
 
-                byte[] test = _GenerateFileHeader(_header, _fmt, _dataheader);
-
-
-
-
                 _rawdata = WavFile.GetSingleChannelData(this);
-     
-                
-                //formatter.Deserialize(ms);
-
-                //MemoryStream mstream = new MemoryStream();
-                //BinaryFormatter formatter = new BinaryFormatter();
-                //mstream.Write(data, 0, data.Length);
-                //mstream.Seek(16, SeekOrigin.Begin);
-                //fmt = (fmtchunk)formatter.Deserialize(mstream);
+                double[] truedata = WavFile.Normalize(_rawdata,10000);
         }
     }
 }
