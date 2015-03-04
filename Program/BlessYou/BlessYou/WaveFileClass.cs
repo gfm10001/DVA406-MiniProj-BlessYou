@@ -24,7 +24,7 @@ namespace BlessYou
         int FNrOfIntevals;
         int FIntervalSampleCount;
 
-        const double C_MAX_POSSIBLE_VALUE = 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
+        const double C_MAX_POSSIBLE_VALUE = 1000000; // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
         // ====================================================================
 
