@@ -60,16 +60,86 @@ namespace BlessYou
 
         public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
         {
+            //Verify list
+            if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
+            {
+                o_CaseStatus = EnumCaseStatus.csNone;
+                return;
+            }
+
+            Dictionary<EnumCaseStatus, int> countResults = new Dictionary<EnumCaseStatus, int>();
+            Dictionary<EnumCaseStatus, double> distanceResults = new Dictionary<EnumCaseStatus, double>();
+            RetrievedCaseClass BestSimCase = i_RetrievedMatches[0];
             
-            // Evaluate data in i_RetrievedMatches to find out suitable status (proposed sneeze or not)
+            for (int i = 0; i < i_RetrievedMatches.Count; i++)
+            {
+                countResults[i_RetrievedMatches[i].CaseStatus]++;
+                distanceResults[i_RetrievedMatches[i].CaseStatus] += i_RetrievedMatches[i].SimilarityValue;
+                if (i_RetrievedMatches[i].SimilarityValue > BestSimCase.SimilarityValue)
+                    BestSimCase = i_RetrievedMatches[i];
+            }
 
-            //i_RetrievedMatches[0].
+            //Calculate best match based on number of matches
+            EnumCaseStatus topCountCase = EnumCaseStatus.csUnknown;
+            int topCountValue = 0;
+            EnumCaseStatus bestDistanceCase = EnumCaseStatus.csUnknown;
+            double bestDistanceValue = double.MaxValue;
+            foreach (EnumCaseStatus c in countResults.Keys)
+            {
+                if (countResults[c] > topCountValue)
+                {
+                    topCountValue = countResults[c];
+                    topCountCase = c;
+                }
+                if (bestDistanceValue < distanceResults[c])
+                {
+                    bestDistanceValue = distanceResults[c];
+                    bestDistanceCase = c;
+                }
+            }
 
+            Console.WriteLine("\nCount:" + topCountCase + " got most matches with " + topCountValue + "/" + i_RetrievedMatches.Count);
+            Console.WriteLine("\nDistance:" + bestDistanceCase + " was closest with a value of " + bestDistanceValue);
 
-            throw new System.NotImplementedException();
+            if (topCountCase == bestDistanceCase) //If both cases evaluate to the same, propose as solution
+            {
+                o_CaseStatus = ConfirmedToPropused(topCountCase);
+                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                return;
+            }
+            //If count and similarity does not evaluate to same, determine witch is most reliable
+
+            double countProbability = (double)i_RetrievedMatches.Count / (double)topCountValue;
+            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.SimilarityValue);
+
+            if (countProbability > bestDistanceValue)
+            {
+                o_CaseStatus = ConfirmedToPropused(topCountCase);
+                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                return;
+            }
+            else if (countProbability < bestDistanceValue)
+            {
+                o_CaseStatus = ConfirmedToPropused(bestDistanceCase);
+                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                return;
+            }
+            Console.WriteLine("\nFailed to determine case, all hope is lost!");
+            o_CaseStatus = EnumCaseStatus.csUnknown;
+            return;
+
         } // Reuse
 
         // ====================================================================
+
+        public static EnumCaseStatus ConfirmedToPropused(EnumCaseStatus state)
+        {
+            if (state == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                return EnumCaseStatus.csIsProposedNoneSneeze;
+            if (state == EnumCaseStatus.csIsConfirmedSneeze)
+                return EnumCaseStatus.csIsProposedSneeze;
+            return EnumCaseStatus.csNone;
+        }
 
         public void Revise()
         {

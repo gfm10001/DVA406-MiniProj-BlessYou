@@ -7,11 +7,11 @@ namespace BlessYou
 {
     public enum EnumCaseStatus
     {
-        csNone,
-        csUnknown,
-        csIsConfirmedSneeze,
-        csIsConfirmedNoneSneeze,
-        csIsProposedSneeze,
-        csIsProposedNoneSneeze
+        csNone =0,
+        csUnknown=-1,
+        csIsConfirmedSneeze=10,
+        csIsConfirmedNoneSneeze=-10,
+        csIsProposedSneeze=5,
+        csIsProposedNoneSneeze=-5
     } // EnumCaseStatus
 }
