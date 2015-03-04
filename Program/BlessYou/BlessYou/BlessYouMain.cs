@@ -41,6 +41,7 @@ namespace BlessYou
             List<RetrievedCaseClass> retrievedMatchesList;
             
             // 1. Decode Params
+            // Typical: ..\..\..\samplesFileNames.txt all
             DecodeParamClass.DecodeParam(args, out fileNameList, out newProblemFileName, out ftrFilePath);
 
             // 2. Create CASE-library

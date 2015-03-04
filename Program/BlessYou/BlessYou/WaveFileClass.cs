@@ -25,7 +25,7 @@ namespace BlessYou
         int FIntervalSampleCount;
         WavFile _wavFile;
 
-        const double C_MAX_POSSIBLE_VALUE = 1000000; // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
+        const double C_MAX_POSSIBLE_VALUE = 100000; // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
         // ====================================================================
 
@@ -82,7 +82,13 @@ namespace BlessYou
 
         public void AnalyseWaveFileContents()
         {
-            double triggerLevel = ( ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0 ) * C_MAX_POSSIBLE_VALUE;
+            double triggerOnLevel = (ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0) * C_MAX_POSSIBLE_VALUE;
+            double triggerOffLevel = (ConfigurationStatClass.C_TRIGGER_OFF_LEVEL_IN_PERCENT / 100.0) * C_MAX_POSSIBLE_VALUE;
+            int sampleCountOfTriggerOffDuration = (int)Math.Round(ConfigurationStatClass.C_TRIGGER_OFF_DURATION_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
+            int triggerOffIx;
+            int nrOfSamplesBelowTriggerOff;
+          
+            
 
             // 1. Analyze sample data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
@@ -90,7 +96,41 @@ namespace BlessYou
             // 3. FNrOfIntevals; DONE
             // 4. FIntervalSampleCount = (FWaveFileContents44p1KHz16bitSamples.Count - FStartOfFirstIntervalIx) / FNrOfIntevals
 
-            throw new System.NotImplementedException();
+            FStartOfFirstIntervalIx = 0 ;
+            triggerOffIx = 0;
+            for (int ix = 0; ix < FWaveFileContents44p1KHz16bitSamples.Length ; ++ix)
+            {
+                // ToDo filter with more samples?
+                if (Math.Abs(FWaveFileContents44p1KHz16bitSamples[ix]) > triggerOnLevel)
+                {
+                    FStartOfFirstIntervalIx = ix;
+                    break;
+                } // if
+            } // for ix;
+
+
+            nrOfSamplesBelowTriggerOff = 0;
+            triggerOffIx = FStartOfFirstIntervalIx + 1;
+            for (int ix = FStartOfFirstIntervalIx + 1; ix < FWaveFileContents44p1KHz16bitSamples.Length; ++ix)
+            {
+                nrOfSamplesBelowTriggerOff++;
+                if (Math.Abs(FWaveFileContents44p1KHz16bitSamples[ix]) > triggerOffLevel)
+                {
+                    nrOfSamplesBelowTriggerOff = 0;
+                    triggerOffIx = ix;
+                    continue;
+                } // if
+
+                if (nrOfSamplesBelowTriggerOff > sampleCountOfTriggerOffDuration)
+                {
+                    break;
+                }
+            } // for ix;
+
+            // Calculate intevall length
+            FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
+
+            Console.WriteLine("FStartOfFirstIntervalIx={0}, triggerOffIx={1}, FIntervalSampleCount={2}", FStartOfFirstIntervalIx, triggerOffIx, FIntervalSampleCount);
         } // AnalyseWaveFileContents
 
         // ====================================================================
@@ -111,7 +151,7 @@ namespace BlessYou
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;
             } // for intervalIx
 
-            throw new System.NotImplementedException();
+
         } // CalculateFeatureVector
 
         // ====================================================================

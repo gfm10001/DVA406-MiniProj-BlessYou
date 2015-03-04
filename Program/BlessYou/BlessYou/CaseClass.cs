@@ -24,12 +24,12 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void Case()
+        public CaseClass()
         {
             FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
             // Tips: anv. const declr i egen fil som ingångs data
-            throw new System.NotImplementedException();
+           // ToDo throw new System.NotImplementedException();
         } // Case
 
         // ====================================================================
