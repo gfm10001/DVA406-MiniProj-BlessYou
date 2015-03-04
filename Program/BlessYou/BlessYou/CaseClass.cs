@@ -39,7 +39,7 @@ namespace BlessYou
             WaveFileClass waveFileObj = new WaveFileClass();
 
             waveFileObj.ReadWaveFile(i_WavFile_FullPathAndFileNameStr);
-            waveFileObj.NormalizeWaveFileContents();  // NOT USED
+            waveFileObj.NormalizeWaveFileContents(); 
             waveFileObj.AnalyseWaveFileContents();
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass(); 

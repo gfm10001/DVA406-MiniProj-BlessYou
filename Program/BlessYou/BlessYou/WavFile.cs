@@ -47,16 +47,28 @@ namespace BlessYou
         datachunk _dataheader;
         int[] _rawdata;
         double[] _truedata;
+        static int _DefaultNormalizer = 100000;
 
         #region Properties
         public double[] Data
         {
             get
             {
+                if (_truedata == null)
+                {
+                    PrepareFile(_filepath, _DefaultNormalizer);
+                }
                 return _truedata;
             }
         
         }
+        public int[] RawData
+        {
+            get { return _rawdata; }
+        
+        }
+
+
         public string FilePath
         {
             get { return _filepath; }
@@ -75,28 +87,49 @@ namespace BlessYou
         {
             get { return _dataheader; }
         }
-
-        public WavFile(string path)
-        {
-            _filepath = path;
-            _readFile(path);
-        }
         #endregion
-        public static WavFile LoadFile(string path)
+        //public static WavFile LoadFile(string path)
+        //{
+        //    return new WavFile(path);
+        //}
+
+       /// <summary>
+       /// Creates a wav object without modifying the data
+       /// </summary>
+       /// <param name="filepath"></param>
+        public WavFile(string filepath)
         {
-            return new WavFile(path);
+            //_filepath = filepath;
+            LoadFile(filepath);
         }
 
-        static double[] Normalize(int[] data, int limit)
+       /// <summary>
+       /// Creates a wav object and modify it for easier analysys
+       /// </summary>
+       /// <param name="filepath"></param>
+       /// <param name="normal"></param>
+        public WavFile(string filepath, int normal)
+        {
+            //_filepath = filepath;
+            PrepareFile(filepath, normal);
+        }
+
+       /// <summary>
+       /// Normalize all values in the given data to the specifed limit
+       /// </summary>
+       /// <param name="data"></param>
+       /// <param name="limit"></param>
+       /// <returns></returns>
+        public static double[] Normalize(int[] data, double limit)
         {
             int hightest = 0;
-            int maxat = 0;
+            //int maxat = 0;
             for (int i = 0; i < data.Length; i++)
             {
                 if (hightest < Math.Abs(data[i]))
                 {
                     hightest = Math.Abs(data[i]);
-                    maxat = i;
+                    //maxat = i;
                 }
             }
             double mod = Math.Abs((double)limit / (double)hightest);
@@ -105,15 +138,20 @@ namespace BlessYou
             {
                 retval[i] = data[i] * mod;
             }
-
-            
-
-
             return retval;
         
         }
+        public void Normalize(double limit)
+        {
+            _truedata = Normalize(_rawdata, limit);
+        }
 
-        static int[] GetSingleChannelData(WavFile file)
+       /// <summary>
+       /// Return the specified Wavfile´s data as single channel.
+       /// </summary>
+       /// <param name="file"></param>
+       /// <returns></returns>
+        public static int[] GetSingleChannelData(WavFile file)
         {
 
             NAudio.Wave.WaveFormat format = new NAudio.Wave.WaveFormat(44100, 16, 1);
@@ -190,22 +228,26 @@ namespace BlessYou
         }
 
 
-        unsafe private void _readFile(string filepath)
+        public unsafe void LoadFile(string filepath)
         {
+            _filepath = filepath;
+
             if (File.Exists(filepath) == false)
                 throw new InvalidDataException("File can not be found!");
             filedata = File.ReadAllBytes(filepath); //Load file into memory
+            
             fixed (fileheader* pheader = &_header) //Extract file header
             {
 
-                for(int i=0; i<4;i++)
-                    pheader->sGroupID[i] = filedata[i];
-                
-                _header.dwFileLength = BitConverter.ToUInt32(filedata, 4);
-               
                 for (int i = 0; i < 4; i++)
-                    pheader->sRiffType[i] = filedata[i+8];
+                    pheader->sGroupID[i] = filedata[i];
+
+                _header.dwFileLength = BitConverter.ToUInt32(filedata, 4);
+
+                for (int i = 0; i < 4; i++)
+                    pheader->sRiffType[i] = filedata[i + 8];
             }
+
             fixed (fmtchunk* pfmt = &_fmt) //extract fmt header
             {
                 for (int i = 0; i < 4; i++)
@@ -219,32 +261,44 @@ namespace BlessYou
                 _fmt.wBlockAlign = BitConverter.ToUInt16(filedata, 32);
                 _fmt.dwBitsPerSample = BitConverter.ToUInt16(filedata, 34);
             }
+            
             fixed (datachunk* d = &_dataheader)
             {
-                
+
                 for (int i = 0; i < 4; i++)
-                    d->sChunkID[i] = filedata[i+36];
+                    d->sChunkID[i] = filedata[i + 36];
                 d->dwChunkSize = BitConverter.ToUInt32(filedata, 40);
             }
 
-            if (_header.dwFileLength > Int32.MaxValue) 
+            if (_header.dwFileLength > Int32.MaxValue)
                 throw new InvalidDataException("File too big to be analyzed!");
 
-                int pointer = 44;
-                int limit = filedata.Length;
-                _rawdata = new int[filedata.Length - 44];
+            int pointer = 44;
+            int limit = filedata.Length;
+            _rawdata = new int[filedata.Length - 44];
 
-                 int index =0;
+            int index = 0;
 
-                while (pointer < limit) //extract data
-                {
-                    _rawdata[index]=BitConverter.ToInt16(filedata,pointer);
-                    pointer += 4;
-                    index++;       
-                }
+            while (pointer < limit) //extract data
+            {
+                _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
+                pointer += 4;
+                index++;
+            }
+        }
 
-                _rawdata = WavFile.GetSingleChannelData(this);
-                 _truedata = WavFile.Normalize(_rawdata,10000);
+       
+
+       /// <summary>
+       /// Load the specified file and prepare it for use.
+       /// </summary>
+       /// <param name="filepath"></param>
+       public unsafe void PrepareFile(string filepath,int NormalizationLimit)
+        {
+
+            LoadFile(filepath);
+            _rawdata = WavFile.GetSingleChannelData(this);
+            _truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
         }
     }
 }

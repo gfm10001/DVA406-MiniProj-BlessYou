@@ -60,7 +60,12 @@ namespace BlessYou
 
         public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
         {
+            
             // Evaluate data in i_RetrievedMatches to find out suitable status (proposed sneeze or not)
+
+            //i_RetrievedMatches[0].
+
+
             throw new System.NotImplementedException();
         } // Reuse
 

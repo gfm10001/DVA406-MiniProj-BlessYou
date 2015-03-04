@@ -23,6 +23,7 @@ namespace BlessYou
         int FStartOfFirstIntervalIx;
         int FNrOfIntevals;
         int FIntervalSampleCount;
+        WavFile _wavFile;
 
         const double C_MAX_POSSIBLE_VALUE = 1000000; // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
@@ -33,11 +34,17 @@ namespace BlessYou
             FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
         } // WaveFileClass
 
+        public WaveFileClass(string filepath, int limit)
+        {
+            _wavFile = new WavFile(filepath, limit);
+            //FWaveFileContents44p1KHz16bitSamples = _wavFile.Data;
+        }
+
         public void ReadWaveFile(string i_WaveFileName)
         {
             FWaveFileName = i_WaveFileName;
-            BlessYou.WavFile wf = new WavFile(i_WaveFileName);
-            FWaveFileContents44p1KHz16bitSamples = wf.Data;
+            _wavFile = new WavFile(i_WaveFileName);
+            //FWaveFileContents44p1KHz16bitSamples = wf.Data;
 
 
             // 1. Öppna i_WaveFileName
@@ -55,8 +62,11 @@ namespace BlessYou
 
         public void NormalizeWaveFileContents()
         {
-            double scaleFactor;
-            double maxValue;
+            //double scaleFactor;
+            //double maxValue;
+             //_wavFile.Normalize(C_MAX_POSSIBLE_VALUE);
+             FWaveFileContents44p1KHz16bitSamples = _wavFile.Data;
+
 
             // 1. Leta upp absoluta max värdet (maxValue)
             // 2: Calculate: scalefactor = C_MAX_POSSIBLE_VALUE / maxValue;

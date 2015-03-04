@@ -20,6 +20,19 @@ namespace BlessYou
 
         //=====================================================================
 
+
+
+
+        #region Properties
+        public EnumCaseStatus CaseStatus
+        {
+            get { return FProposedStatus; }
+
+            set { FProposedStatus = value; }
+        
+        }
+
+
         public double SimilarityValue
         {
             get
@@ -31,6 +44,7 @@ namespace BlessYou
                 FSimilarityValue = value;
             }
         } // FeatureName
+        #endregion
 
         public RetrievedCaseClass()
         {
