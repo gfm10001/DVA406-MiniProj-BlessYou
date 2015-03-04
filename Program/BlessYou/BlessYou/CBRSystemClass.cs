@@ -36,7 +36,7 @@ namespace BlessYou
             {
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
-                RetrievedCaseClass theCase = (RetrievedCaseClass) currentCase;
+                RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
                 theCase.SimilarityValue = currentCase.calculateSimilarityFunction(i_NewCase);
                 similarityCaseList.Add(theCase);
             } // for ix

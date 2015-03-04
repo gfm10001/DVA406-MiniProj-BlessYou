@@ -30,14 +30,14 @@ namespace BlessYou
         
         public void AddCase(CaseClass i_NewCase)
         {
-            throw new System.NotImplementedException();
+            FListOfCases.Add(i_NewCase);
         } // AddCase
 
         // ====================================================================
         
-        public void RemoveCase(CaseClass i_NewCase)
+        public void RemoveCase(CaseClass i_Case)
         {
-            throw new System.NotImplementedException();
+            FListOfCases.Remove(i_Case);
         } // RemoveCase
 
         // ====================================================================

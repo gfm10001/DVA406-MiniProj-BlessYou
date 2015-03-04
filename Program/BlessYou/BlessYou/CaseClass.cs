@@ -17,10 +17,47 @@ namespace BlessYou
 
     public class CaseClass
     {
-        protected string _WavFile_FullPathAndFileNameStr;
-        protected EnumCaseStatus _SneezeStatus;
-
+        string _WavFile_FullPathAndFileNameStr;
+        EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
+        
+        //=====================================================================
+
+        public string WavFile_FullPathAndFileNameStr
+        {
+            get { return _WavFile_FullPathAndFileNameStr; }
+
+            set { _WavFile_FullPathAndFileNameStr = value; }
+
+        }
+
+        //=====================================================================
+
+        public EnumCaseStatus SneezeStatus
+        {
+            get
+            {
+                return _SneezeStatus;
+            }
+            set
+            {
+                _SneezeStatus = value;
+            }
+        } // SneezeStatus
+
+        //=====================================================================
+
+        public List<FeatureBaseClass> FeatureTypeVector
+        {
+            get
+            {
+                return FFeatureTypeVector;
+            }
+            set
+            {
+                FFeatureTypeVector = value;
+            }
+        } // FeatureTypeVector
 
         // ====================================================================
 
@@ -49,8 +86,18 @@ namespace BlessYou
             FeatureAverageClass featureAverageObj = new FeatureAverageClass(); 
             waveFileObj.CalculateFeatureVector(featureAverageObj);
             FFeatureTypeVector.Add(featureAverageObj);
-            
-            // Todo för övriga features
+
+            FeatureRMSClass featureRMSObj = new FeatureRMSClass();
+            waveFileObj.CalculateFeatureVector(featureRMSObj);
+            FFeatureTypeVector.Add(featureRMSObj);
+
+            FeaturePeak2PeakClass featurePeak2PeakObj = new FeaturePeak2PeakClass();
+            waveFileObj.CalculateFeatureVector(featurePeak2PeakObj);
+            FFeatureTypeVector.Add(featurePeak2PeakObj);
+
+            FeatureCrestFactorClass featureCrestFactorObj = new FeatureCrestFactorClass();
+            waveFileObj.CalculateFeatureVector(featureCrestFactorObj);
+            FFeatureTypeVector.Add(featureCrestFactorObj);
 
 
             // At last normalize feature weights
@@ -64,7 +111,7 @@ namespace BlessYou
                 fbc.FeatureWeight = fbc.FeatureWeight / sum;
             }
 
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         } // ExtractWavFileFeatures
 
         // ====================================================================

@@ -59,8 +59,11 @@
     <Compile Include="DecodeParamClass.cs" />
     <Compile Include="FeatureAverageClass.cs" />
     <Compile Include="FeatureBaseClass.cs" />
+    <Compile Include="FeatureCrestFactorClass.cs" />
     <Compile Include="FeatureExtractorClass.cs" />
+    <Compile Include="FeaturePeak2PeakClass.cs" />
     <Compile Include="FeaturePeakClass.cs" />
+    <Compile Include="FeatureRMSClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RetrievedCaseClass.cs" />
     <Compile Include="EnumSneezeMarker.cs" />
@@ -70,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

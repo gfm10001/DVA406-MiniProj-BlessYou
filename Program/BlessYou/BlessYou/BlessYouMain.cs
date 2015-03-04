@@ -35,7 +35,7 @@ namespace BlessYou
 
             CBRSystemClass cbrSystemObj = new CBRSystemClass();
             List<SoundFileClass> fileNameList;
-            CaseLibraryClass caseLibraryObj = new CaseLibraryClass();
+            CaseLibraryClass caseLibraryObj;
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList;
@@ -45,7 +45,7 @@ namespace BlessYou
             DecodeParamClass.DecodeParam(args, out fileNameList, out newProblemFileName, out ftrFilePath);
 
             // 2. Create CASE-library
-            FeatureExtractorClass._loadFeatureList(caseLibraryObj, fileNameList);
+            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, fileNameList);
  
             // 2. Create CASE-library
             // Done caseLibraryObj
@@ -60,7 +60,7 @@ namespace BlessYou
             } // if
             else
             {
-                CaseClass selectedProblemObj = new CaseClass();
+                CaseClass selectedProblemObj;
                 for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                 {
                     selectedProblemObj = caseLibraryObj.ListOfCases[ix];

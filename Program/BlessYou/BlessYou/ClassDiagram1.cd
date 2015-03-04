@@ -10,15 +10,15 @@
   <Class Name="BlessYou.CaseClass">
     <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AACAAAQAAAAAAAABACAAAABAAAAAAAAAAAAAAAEAEAA=</HashCode>
+      <HashCode>AAAAAAQAAAAAAAAAACAAAAAAAAAAAAAAAAAABAAAEIA=</HashCode>
       <FileName>CaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BlessYou.CBRSystem">
+  <Class Name="BlessYou.CBRSystemClass">
     <Position X="3.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAAAAAAAAAgAAAAAAAAACAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>CBRSystem.cs</FileName>
+      <FileName>CBRSystemClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.FeatureExtractorClass">
@@ -31,7 +31,7 @@
   <Class Name="BlessYou.WaveFileClass">
     <Position X="7.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABIAAAAgAEAAAAAAAAAAAAAAAAAAAMgAAAgQIAAA=</HashCode>
+      <HashCode>AAAABIAAAAgAEAAAAAAAAAAIAAAAAAAAMgAAAgQIAAA=</HashCode>
       <FileName>WaveFileClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -42,17 +42,17 @@
       <FileName>CalculateFeatureClass.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BlessYou.CalculateSimilarityClass">
+  <Class Name="BlessYou.CalculateSimilarityStatClass">
     <Position X="7.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>CalculateSimilarityClass.cs</FileName>
+      <FileName>CalculateSimilarityStatClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.RetrievedCaseClass">
     <Position X="0.75" Y="3.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AACAAAAAAAAACAAAAQAAAAAAAAAIQAAAAAQAAAAAAAA=</HashCode>
       <FileName>RetrievedCaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -80,14 +80,14 @@
   <Class Name="BlessYou.FeatureBaseClass">
     <Position X="4" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAABABAAAAAAAAAAACAAQAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAACEAAAgAABABAAAAAAAAAAACAAAAAAAAABAAA=</HashCode>
       <FileName>FeatureBaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.FeaturePeakClass">
     <Position X="6" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FeaturePeakClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -101,8 +101,22 @@
   <Class Name="BlessYou.FeatureAverageClass">
     <Position X="12.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FeatureAverageClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BlessYou.FeatureRMSClass">
+    <Position X="9.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FeatureRMSClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BlessYou.FeaturePeak2PeakClass">
+    <Position X="9.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FeaturePeak2PeakClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="BlessYou.EnumCaseStatus">

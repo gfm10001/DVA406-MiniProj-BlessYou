@@ -20,9 +20,6 @@ namespace BlessYou
 
         //=====================================================================
 
-
-
-
         #region Properties
         public EnumCaseStatus CaseStatus
         {
@@ -32,6 +29,7 @@ namespace BlessYou
         
         }
 
+        //=====================================================================
 
         public double SimilarityValue
         {
@@ -46,17 +44,28 @@ namespace BlessYou
         } // FeatureName
         #endregion
 
+        //=====================================================================
+
         public RetrievedCaseClass()
         {
 
         }
 
         //=====================================================================
+
+        public RetrievedCaseClass(CaseClass i_CaseClassObj)
+        {
+            this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
+            this.SneezeStatus = i_CaseClassObj.SneezeStatus;
+            this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
+        }
+
+        //=====================================================================
     
         public string GetCurrentMatchingString()
         {
-            return "Filename: " + base._WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
-                                + " Actual: " + base._SneezeStatus.ToString();
+            return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
+                                + " Actual: " + base.SneezeStatus.ToString();
         }
 
         void CalculateSimilarityValue(CaseClass i_NewCase)

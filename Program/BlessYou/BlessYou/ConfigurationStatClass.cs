@@ -16,5 +16,7 @@ namespace BlessYou
         public static int C_NR_OF_RETRIEVED_CASES = 10;
         public static double C_DEFAULT_AVERAGE_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_PEAK_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_RMS_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
     } // ConfigurationClass
 }

@@ -5,15 +5,15 @@ using System.Text;
 
 namespace BlessYou
 {
-    public class FeaturePeakClass : FeatureBaseClass
+    public class FeatureRMSClass : FeatureBaseClass
     {
 
         //=====================================================================
 
-        public FeaturePeakClass() : 
-               base("Peak")
+        public FeatureRMSClass() : 
+               base("RMS")
         {
-            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================
@@ -21,19 +21,20 @@ namespace BlessYou
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
         {
             int startIx = i_FirstListIx;
-            double peak = -1.0;
+            double rms = 0;
+
+            //RMS Formula: sqrt{ (x1^2 + x2^2 + ... + xn^2) / n }. 
 
             for (int ix = i_FirstListIx; ix < i_FirstListIx + i_Count; ++ix)
             {
-                if (Math.Abs(i_WaveFileContents44p1KHz16bitSamples[ix]) > peak)
-                {
-                    peak = Math.Abs(i_WaveFileContents44p1KHz16bitSamples[ix]);
-                }
+                rms = rms + i_WaveFileContents44p1KHz16bitSamples[ix] * i_WaveFileContents44p1KHz16bitSamples[ix];
             } // for ix
-            FFeatureValueVector.Add(peak);
+            rms = Math.Sqrt(rms / i_Count);
+
+            FFeatureValueVector.Add(rms);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
 
-    } // FeaturePeakClass
+    } // FeatureRMSClass
 }
