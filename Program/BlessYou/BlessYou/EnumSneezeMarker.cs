@@ -5,7 +5,8 @@ using System.Text;
 
 namespace BlessYou
 {
-    public enum EnumSneezeMarker
+    // ToDo replace!
+public enum EnumSneezeMarker
     {
         smNone,
         smUnKnown,

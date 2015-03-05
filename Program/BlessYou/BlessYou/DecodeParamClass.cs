@@ -1,4 +1,13 @@
-﻿using System;
+﻿// DecodeParamClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+// 2015-03-04/GF    DecodeParam: Fixed handling of too short lines.
+//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +44,7 @@ namespace BlessYou
                                  "P1 = name of text file with names of all .wav­files to be examined\n" +
                                  "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" + 
                                  "P3 = path to directory for created .ftr­files (optional)\n";
-                throw new System.Exception(tempStr);
+                throw new System.Exception(tempStr);              // Typically: ..\..\..\samplesFileNames.txt all OR ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
             }
 
             if ("all" == o_NewProblemFileName.ToLower())
@@ -63,17 +72,23 @@ namespace BlessYou
 
                 str = tempStrArr[i].Split(tabSep);
 
+                // Skip too short lines.
+                if (str.Length < 2)
+                {
+                    continue;
+                }
+
                 if ("0" == str[0])
                 {
-                    soundFileObj.Marker = EnumSneezeMarker.smNoSneeze;
+                    soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smNoSneeze;
                 }
                 else if ("1" == str[0])
                 {
-                    soundFileObj.Marker = EnumSneezeMarker.smSneeze;
+                    soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smSneeze;
                 }
 
                 string s = tempS2 + str[1];
-                soundFileObj.FileName = Path.GetFullPath(s);
+                soundFileObj.SoundFileName = Path.GetFullPath(s);
 
                 o_FileNameList.Add(soundFileObj);
             } // for i

@@ -66,24 +66,44 @@ namespace BlessYou
             FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
             // Tips: anv. const declr i egen fil som ingångs data
-           // ToDo throw new System.NotImplementedException();
+            // ToDo throw new System.NotImplementedException();
         } // Case
 
         // ====================================================================
 
-        public void ExtractWavFileFeatures(string i_WavFile_FullPathAndFileNameStr)
+        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj)
         {
+           
             WaveFileClass waveFileObj = new WaveFileClass();
+            switch (i_SoundFileObj.SoundFileSneezeMarker)
+            {
+                case EnumSneezeMarker.smNone:
+                    _SneezeStatus = EnumCaseStatus.csNone;
+                    break;
+                case EnumSneezeMarker.smUnKnown:
+                    _SneezeStatus = EnumCaseStatus.csUnknown;
+                    break;
+                case EnumSneezeMarker.smNoSneeze:
+                    _SneezeStatus = EnumCaseStatus.csIsConfirmedNoneSneeze;
+                    break;
+                case EnumSneezeMarker.smSneeze:
+                    _SneezeStatus = EnumCaseStatus.csIsProposedSneeze;
+                    break;
+                default:
+                    _SneezeStatus = EnumCaseStatus.csNone;
+                    break;
+            } // switch
 
-            waveFileObj.ReadWaveFile(i_WavFile_FullPathAndFileNameStr);
-            waveFileObj.NormalizeWaveFileContents(); 
+
+            waveFileObj.ReadWaveFile(i_SoundFileObj.SoundFileName);
+            waveFileObj.NormalizeWaveFileContents();
             waveFileObj.AnalyseWaveFileContents();
 
-            FeaturePeakClass featurePeakObj = new FeaturePeakClass(); 
+            FeaturePeakClass featurePeakObj = new FeaturePeakClass();
             waveFileObj.CalculateFeatureVector(featurePeakObj);
             FFeatureTypeVector.Add(featurePeakObj);
 
-            FeatureAverageClass featureAverageObj = new FeatureAverageClass(); 
+            FeatureAverageClass featureAverageObj = new FeatureAverageClass();
             waveFileObj.CalculateFeatureVector(featureAverageObj);
             FFeatureTypeVector.Add(featureAverageObj);
 
@@ -111,7 +131,7 @@ namespace BlessYou
                 fbc.FeatureWeight = fbc.FeatureWeight / sum;
             }
 
-            //throw new System.NotImplementedException();
+            // ToDo    throw new System.NotImplementedException();
         } // ExtractWavFileFeatures
 
         // ====================================================================
@@ -131,5 +151,39 @@ namespace BlessYou
 
         // ====================================================================
 
+        public override string ToString()
+        {
+            string resStr = "CaseClass - dump:\n";
+            foreach (FeatureBaseClass fbc in FFeatureTypeVector)
+            {
+                resStr = resStr + "Feature Type = " + fbc.FeatureName + "\n";
+                for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+                {
+                    resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueVector[ix]);
+                } // for
+                resStr = resStr + "\n";
+            }
+            return resStr;
+        } // ToString
+
+        // ====================================================================
+
+        public string FeatureTypeToString(int i_FeatureTypeIx)
+        {
+            string resStr = "";
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+            resStr = resStr + "Feature Type = " + fbc.FeatureName + " _SneezeStatus=" + _SneezeStatus.ToString() + "\n";
+            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            {
+                resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueVector[ix]);
+            } // for
+            resStr = resStr + "\n";
+
+            return resStr;
+        } // FeatureTypeToString
+
+        // ====================================================================
     } // CaseClass
 }
