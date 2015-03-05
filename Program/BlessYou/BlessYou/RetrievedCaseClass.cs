@@ -17,6 +17,7 @@ namespace BlessYou
     {
         double FSimilarityValue;
         EnumCaseStatus FProposedStatus;
+        double _ScaledSimilarity;
 
         //=====================================================================
 
@@ -31,7 +32,7 @@ namespace BlessYou
 
         //=====================================================================
 
-        public double SimilarityValue
+        public double RawSimilarityValue
         {
             get
             {
@@ -42,6 +43,15 @@ namespace BlessYou
                 FSimilarityValue = value;
             }
         } // FeatureName
+
+
+        public double ScaledSimilarityValue
+        {
+            get { return _ScaledSimilarity; }
+            set { _ScaledSimilarity = value; }
+        
+        
+        }
         #endregion
 
         //=====================================================================

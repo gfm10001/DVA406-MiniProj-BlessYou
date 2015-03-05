@@ -37,11 +37,11 @@ namespace BlessYou
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
-                theCase.SimilarityValue = currentCase.calculateSimilarityFunction(i_NewCase);
+                theCase.RawSimilarityValue = currentCase.CalculateRawSimilarityValue(i_NewCase);
                 similarityCaseList.Add(theCase);
             } // for ix
 
-            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
+            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.RawSimilarityValue).ToList();
 
             for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
             {
@@ -74,8 +74,8 @@ namespace BlessYou
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
                 countResults[i_RetrievedMatches[i].CaseStatus]++;
-                distanceResults[i_RetrievedMatches[i].CaseStatus] += i_RetrievedMatches[i].SimilarityValue;
-                if (i_RetrievedMatches[i].SimilarityValue > BestSimCase.SimilarityValue)
+                distanceResults[i_RetrievedMatches[i].CaseStatus] += i_RetrievedMatches[i].RawSimilarityValue;
+                if (i_RetrievedMatches[i].RawSimilarityValue > BestSimCase.RawSimilarityValue)
                     BestSimCase = i_RetrievedMatches[i];
             }
 
@@ -110,7 +110,7 @@ namespace BlessYou
             //If count and similarity does not evaluate to same, determine witch is most reliable
 
             double countProbability = (double)i_RetrievedMatches.Count / (double)topCountValue;
-            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.SimilarityValue);
+            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.RawSimilarityValue);
 
             if (countProbability > bestDistanceValue)
             {

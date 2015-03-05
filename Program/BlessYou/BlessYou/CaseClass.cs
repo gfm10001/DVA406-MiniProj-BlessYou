@@ -141,7 +141,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public double calculateSimilarityFunction(CaseClass i_NewCase)
+        public double CalculateRawSimilarityValue(CaseClass i_NewCase)
         {
             double sum = 0;
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
@@ -155,6 +155,27 @@ namespace BlessYou
         } // calculateSimilarityFunction
 
         // ====================================================================
+
+
+        public void CalculateScaledSimilarityValue(CaseClass i_NewCase, List<RetrievedCaseClass> nearby)
+        {
+            double highest = nearby[0].RawSimilarityValue;
+            for (int i = 0; i < nearby.Count; i++)
+            {
+                if (nearby[i].RawSimilarityValue > highest)
+                {
+                    highest = nearby[i].RawSimilarityValue;
+                }
+            }
+            
+            double mod = 1.0 / highest;
+            for (int i = 0; i< nearby.Count; i++)
+            {
+                nearby[i].ScaledSimilarityValue = nearby[i].RawSimilarityValue * mod;
+            }
+        
+        
+        }
 
         public override string ToString()
         {
