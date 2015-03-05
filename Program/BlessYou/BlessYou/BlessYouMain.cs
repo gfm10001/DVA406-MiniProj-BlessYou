@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.1 of 2015-03-04";
+            const string C_THIS_VERSION = "Bless You v.0.2 of 2015-03-05";
 
             //Usage:
             //BlessYou P1 P2 [P3] where
