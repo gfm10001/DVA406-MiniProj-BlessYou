@@ -233,7 +233,6 @@ namespace BlessYou
         public unsafe void LoadFile(string filepath)
         {
             _filepath = filepath;
-            Console.WriteLine("filepath='" + filepath + "´");
             if (File.Exists(filepath) == false)
                 throw new InvalidDataException("File can not be found!");
             filedata = File.ReadAllBytes(filepath); //Load file into memory

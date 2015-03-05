@@ -51,7 +51,7 @@
     <Compile Include="CalculateSimilarityStatClass.cs" />
     <Compile Include="CaseClass.cs" />
     <Compile Include="ConfigurationStatClass.cs" />
-    <Compile Include="PassingZero.cs" />
+    <Compile Include="FeaturePassingZeroClass.cs" />
     <Compile Include="EnumCaseStatus.cs" />
     <Compile Include="CaseLibraryClass.cs" />
     <Compile Include="CBRSystemClass.cs" />

@@ -35,7 +35,7 @@ namespace BlessYou
             //P3 = path to directory for created .ftr­files (optional)
 
             Console.WriteLine(C_THIS_VERSION);
-
+            Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
 
             CBRSystemClass cbrSystemObj = new CBRSystemClass();
             List<SoundFileClass> soundfileObjList;
@@ -44,22 +44,30 @@ namespace BlessYou
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList;
 
+
             // 1. Decode Params
             DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
 
+            
             // 2. Create CASE-library
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList);
 
+
             // Display calculated features
-            for (int featureTypeIx = 0; featureTypeIx < 2; ++featureTypeIx)
+            CaseClass dummyCaseObj = caseLibraryObj.ListOfCases[0];
+
+            int featureTypeIx = 0;
+            foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
             {
+                Console.WriteLine("\nfeatureTypeIx = {0} = '{1}'\n", featureTypeIx, fbc.FeatureName);
                 foreach (CaseClass caseObj in caseLibraryObj.ListOfCases)
                 {
                     string s = caseObj.FeatureTypeToString(featureTypeIx);
                     Console.WriteLine(s);
-                } // foreach
-                Console.WriteLine();
-            } // for featureTypeIx
+                } // foreach CaseClass
+                featureTypeIx++;
+            } // foreach FeatureBaseClass
+            Console.WriteLine();
 
 
             // 3. Evaluate cases
