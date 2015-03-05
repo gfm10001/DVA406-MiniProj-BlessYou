@@ -24,6 +24,7 @@ namespace BlessYou
             for (int i = 0; i < i_FileNameList.Count; ++i)
             {
                 CaseClass caseClassObj = new CaseClass();
+                caseClassObj.WavFile_FullPathAndFileNameStr = i_FileNameList[i].FileName;
                 caseClassObj.ExtractWavFileFeatures(i_FileNameList[i].FileName);
 
                 o_CaseLibraryObj.AddCase(caseClassObj);

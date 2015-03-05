@@ -43,12 +43,12 @@ namespace BlessYou
 
             List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
 
-            for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 || ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
+            for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
             {
                 o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
 
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         } // Retrieve
 
         // ====================================================================
