@@ -119,6 +119,11 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featureCrestFactorObj);
             FFeatureTypeVector.Add(featureCrestFactorObj);
 
+            FeaturePassingZero featurePassingZeroObj = new FeaturePassingZero();
+            waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
+            FFeatureTypeVector.Add(featurePassingZeroObj);
+
+
 
             // At last normalize feature weights
             double sum = 0;
