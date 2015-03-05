@@ -169,6 +169,8 @@ namespace BlessYou
             {
                 retval[z] = BitConverter.ToInt16(temp, i);
             }
+            stream.Close();
+            br.Close();
 
             return retval;
         }
