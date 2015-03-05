@@ -130,7 +130,12 @@ namespace BlessYou
             // Calculate intevall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
-            Console.WriteLine("{0,-40} - FStartOfFirstIntervalIx={1, 6} triggerOffIx={2, 6} FIntervalSampleCount={3, 6}", System.IO.Path.GetFileName(FWaveFileName), FStartOfFirstIntervalIx, triggerOffIx, FIntervalSampleCount);
+            Console.WriteLine("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
+                              System.IO.Path.GetFileName(FWaveFileName), FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              FStartOfFirstIntervalIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              100.00 * FIntervalSampleCount * ConfigurationStatClass.C_NR_OF_INTERVALS / FWaveFileContents44p1KHz16bitSamples.Length);
         } // AnalyseWaveFileContents
 
         // ====================================================================

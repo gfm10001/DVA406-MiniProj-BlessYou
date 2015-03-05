@@ -1,4 +1,4 @@
-﻿// Case.cs
+﻿// CaseClass.cs
 //
 // DVA406 Intelligent Systems, Mdh, vt15
 //

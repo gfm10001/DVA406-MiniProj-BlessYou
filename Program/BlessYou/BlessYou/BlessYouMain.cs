@@ -85,19 +85,19 @@ namespace BlessYou
             } // if
             else
             {
-                CaseClass selectedProblemObj;
+                CaseClass selectedProblemObj = new CaseClass();
                 for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                 {
                     selectedProblemObj = caseLibraryObj.ListOfCases[ix];
-                    List<CaseClass> caseList = new List<CaseClass>();
+                    List<CaseClass> caseMinusOneList = new List<CaseClass>();
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
                         if (jx != ix)
                         {
-                            caseList.Add(caseLibraryObj.ListOfCases[jx]);
+                            caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
                         }
                     } // for jx
-                    cbrSystemObj.Retrieve(selectedProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    cbrSystemObj.Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
 
                 } // for ix
                 // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
