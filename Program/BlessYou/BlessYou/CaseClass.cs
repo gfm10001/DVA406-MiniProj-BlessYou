@@ -87,7 +87,7 @@ namespace BlessYou
                     _SneezeStatus = EnumCaseStatus.csIsConfirmedNoneSneeze;
                     break;
                 case EnumSneezeMarker.smSneeze:
-                    _SneezeStatus = EnumCaseStatus.csIsProposedSneeze;
+                    _SneezeStatus = EnumCaseStatus.csIsConfirmedSneeze;
                     break;
                 default:
                     _SneezeStatus = EnumCaseStatus.csNone;
@@ -148,34 +148,15 @@ namespace BlessYou
             {
                 for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
                 {
-                    sum = sum + FFeatureTypeVector[jx].SimilarityFunctionForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                    sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
                 } // for ix
+                sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
+                sum = sum * FFeatureTypeVector[jx].FeatureWeight;
             } // for jx
             return sum;
         } // calculateSimilarityFunction
 
         // ====================================================================
-
-
-        public static void CalculateScaledSimilarityValue(List<RetrievedCaseClass> nearby)
-        {
-            double highest = nearby[0].RawSimilarityValue;
-            for (int i = 0; i < nearby.Count; i++)
-            {
-                if (nearby[i].RawSimilarityValue > highest)
-                {
-                    highest = nearby[i].RawSimilarityValue;
-                }
-            }
-            
-            double mod = 1.0 / highest;
-            for (int i = 0; i< nearby.Count; i++)
-            {
-                nearby[i].ScaledSimilarityValue = nearby[i].RawSimilarityValue * mod;
-            }
-        
-        
-        }
 
         public override string ToString()
         {

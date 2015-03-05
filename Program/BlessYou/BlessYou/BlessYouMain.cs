@@ -42,7 +42,7 @@ namespace BlessYou
             CaseLibraryClass caseLibraryObj;
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
-            List<RetrievedCaseClass> retrievedMatchesList;
+            List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
 
 
             // 1. Decode Params
@@ -82,6 +82,10 @@ namespace BlessYou
                 List<CaseClass> caseList = new List<CaseClass>();
                 caseList.AddRange(caseLibraryObj.ListOfCases);
                 cbrSystemObj.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                
+                //4. Start reuse function
+                EnumCaseStatus caseStatus; 
+                cbrSystemObj.Reuse(retrievedMatchesList,out caseStatus);
             } // if
             else
             {
@@ -98,25 +102,26 @@ namespace BlessYou
                         }
                     } // for jx
                     cbrSystemObj.Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
-
+                    
+                    //4. Start reuse function
+                    EnumCaseStatus caseStatus;
+                    cbrSystemObj.Reuse(retrievedMatchesList, out caseStatus);
                 } // for ix
                 // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                throw new System.NotImplementedException();
+                //ToDo throw new System.NotImplementedException();
             }
 
-            //ToDo: Start reuse fucntion
-            //EnumCaseStatus theCase;
-            //cbrSystemObj.Reuse(retrievedMatchesList, 
+             
 
-            // 4. Skriv ut rapport
+            // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
             for (int ix = 0; ix < retrievedMatchesList.Count; ++ix)
             {
-                Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
+                //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
             } // for ix
 
 
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         } // Main
 
         // ====================================================================

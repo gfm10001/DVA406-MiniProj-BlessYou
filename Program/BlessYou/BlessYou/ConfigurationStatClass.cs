@@ -18,6 +18,8 @@ namespace BlessYou
         public static double C_DEFAULT_PEAK_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_RMS_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
+
+        public static double C_EPSILON = 0.000001;
 		// ToDo add missing consts
     } // ConfigurationClass
 }

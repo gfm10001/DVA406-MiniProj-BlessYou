@@ -60,9 +60,17 @@ namespace BlessYou
 
         //=====================================================================
 
-        public double SimilarityFunctionForAttribute(double i_NewValue, double i_RetrievedValue)
+        public double AbsDiffForAttribute(double i_NewValue, double i_RetrievedValue)
         {
-            return FFeatureWeight * Math.Abs(i_NewValue - i_RetrievedValue);
+            // The goal is to return 1 if the difference is very small
+            double absDiff;
+            double retDouble = 1;
+            absDiff =  Math.Abs(i_NewValue - i_RetrievedValue);
+            if (absDiff > ConfigurationStatClass.C_EPSILON)
+            {
+                retDouble = 1.0 / absDiff;
+            }
+            return retDouble;
         }
 
     } // FeatureBaseClass

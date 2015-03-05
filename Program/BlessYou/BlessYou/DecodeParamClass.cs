@@ -45,6 +45,7 @@ namespace BlessYou
                                  "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" + 
                                  "P3 = path to directory for created .ftr­files (optional)\n";
                 throw new System.Exception(tempStr);              // Typically: ..\..\..\samplesFileNames.txt all OR ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
+                                                                  // Typically: ..\..\..\samplesFileNames-all.txt all (For all samples)
             }
 
             if ("all" == o_NewProblemFileName.ToLower())

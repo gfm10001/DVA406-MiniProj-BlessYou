@@ -17,12 +17,11 @@ namespace BlessYou
     {
         double FSimilarityValue;
         EnumCaseStatus FProposedStatus;
-        double _ScaledSimilarity;
 
         //=====================================================================
 
         #region Properties
-        public EnumCaseStatus CaseStatus
+        public EnumCaseStatus ProposedStatus
         {
             get { return FProposedStatus; }
 
@@ -32,7 +31,7 @@ namespace BlessYou
 
         //=====================================================================
 
-        public double RawSimilarityValue
+        public double SimilarityValue
         {
             get
             {
@@ -43,15 +42,6 @@ namespace BlessYou
                 FSimilarityValue = value;
             }
         } // FeatureName
-
-
-        public double ScaledSimilarityValue
-        {
-            get { return _ScaledSimilarity; }
-            set { _ScaledSimilarity = value; }
-        
-        
-        }
         #endregion
 
         //=====================================================================
@@ -65,8 +55,13 @@ namespace BlessYou
 
         public RetrievedCaseClass(CaseClass i_CaseClassObj)
         {
+            // ToDo better implementation
+            base.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
+            base.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
+            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
+            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
             this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
-            this.SneezeStatus = i_CaseClassObj.SneezeStatus;
+            this.ProposedStatus = EnumCaseStatus.csUnknown;
             this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
         }
 

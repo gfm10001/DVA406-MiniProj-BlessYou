@@ -37,25 +37,30 @@ namespace BlessYou
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
-                theCase.RawSimilarityValue = currentCase.CalculateRawSimilarityValue(i_NewCase);
+                theCase.SimilarityValue = currentCase.CalculateRawSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
                 similarityCaseList.Add(theCase);
             } // for ix
 
-            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.RawSimilarityValue).ToList();
+            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
 
             for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
             {
                 o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
-            CaseClass.CalculateScaledSimilarityValue(o_RetrievedMatches);
 
+            for (int ix = 0; ix < o_RetrievedMatches.Count; ++ix)
+            {
+                Console.WriteLine("ix: " + ix);
+               // Console.WriteLine(o_RetrievedMatches[ix].ToString());
+                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityValue + " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
+            } // for ix
            // ToDo throw new System.NotImplementedException();
         } // Retrieve
 
         // ====================================================================
 
         /// <summary>
-        /// Reuse most similar match for a specifiled case vs. the case library
+        /// Reuse most similar match for a specified case vs. the case library
         /// </summary>
         /// 
 
@@ -71,12 +76,18 @@ namespace BlessYou
             Dictionary<EnumCaseStatus, int> countResults = new Dictionary<EnumCaseStatus, int>();
             Dictionary<EnumCaseStatus, double> distanceResults = new Dictionary<EnumCaseStatus, double>();
             RetrievedCaseClass BestSimCase = i_RetrievedMatches[0];
+
+            foreach (EnumCaseStatus ecs in Enum.GetValues(typeof(EnumCaseStatus)))
+            {
+                countResults[ecs] = 0;
+                distanceResults[ecs] = 0.0;
+            }
             
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
-                countResults[i_RetrievedMatches[i].CaseStatus]++;
-                distanceResults[i_RetrievedMatches[i].CaseStatus] += i_RetrievedMatches[i].RawSimilarityValue;
-                if (i_RetrievedMatches[i].RawSimilarityValue > BestSimCase.RawSimilarityValue)
+                countResults[i_RetrievedMatches[i].ProposedStatus]++;
+                distanceResults[i_RetrievedMatches[i].ProposedStatus] = distanceResults[i_RetrievedMatches[i].ProposedStatus] + i_RetrievedMatches[i].SimilarityValue;
+                if (i_RetrievedMatches[i].SimilarityValue > BestSimCase.SimilarityValue)
                     BestSimCase = i_RetrievedMatches[i];
             }
 
@@ -92,7 +103,7 @@ namespace BlessYou
                     topCountValue = countResults[c];
                     topCountCase = c;
                 }
-                if (bestDistanceValue < distanceResults[c])
+                if (bestDistanceValue > distanceResults[c])
                 {
                     bestDistanceValue = distanceResults[c];
                     bestDistanceCase = c;
@@ -111,7 +122,7 @@ namespace BlessYou
             //If count and similarity does not evaluate to same, determine witch is most reliable
 
             double countProbability = (double)i_RetrievedMatches.Count / (double)topCountValue;
-            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.RawSimilarityValue);
+            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.SimilarityValue);
 
             if (countProbability > bestDistanceValue)
             {
