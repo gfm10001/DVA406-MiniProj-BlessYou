@@ -119,7 +119,7 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featureCrestFactorObj);
             FFeatureTypeVector.Add(featureCrestFactorObj);
 
-            FeaturePassingZero featurePassingZeroObj = new FeaturePassingZero();
+            FeaturePassingZeroClass featurePassingZeroObj = new FeaturePassingZeroClass();
             waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
             FFeatureTypeVector.Add(featurePassingZeroObj);
 

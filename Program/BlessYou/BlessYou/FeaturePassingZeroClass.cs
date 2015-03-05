@@ -5,12 +5,12 @@ using System.Text;
 
 namespace BlessYou
 {
-    class FeaturePassingZero : FeatureBaseClass
+    class FeaturePassingZeroClass : FeatureBaseClass
     {
 
         //=====================================================================
 
-        public FeaturePassingZero() :
+        public FeaturePassingZeroClass() :
             base("PassingZero")
         {
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
