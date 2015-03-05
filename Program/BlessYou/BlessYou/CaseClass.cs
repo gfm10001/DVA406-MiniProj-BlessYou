@@ -3,8 +3,8 @@
 // DVA406 Intelligent Systems, Mdh, vt15
 //
 // History:
-// 2015-02-24   Introduced.
-//
+// 2015-02-24       Introduced.
+// 2015-03-05/GF    FeatureTypeToString: merged to single line
 
 using System;
 using System.Collections.Generic;
@@ -174,13 +174,13 @@ namespace BlessYou
             FeatureBaseClass fbc;
 
             fbc = FFeatureTypeVector[i_FeatureTypeIx];
-            resStr = resStr + "Feature Type = " + fbc.FeatureName + " _SneezeStatus=" + _SneezeStatus.ToString() + "\n";
+
+            resStr = String.Format("{0,-40}", System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+
             for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
             {
-                resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueVector[ix]);
+                resStr = resStr + " " + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
             } // for
-            resStr = resStr + "\n";
-
             return resStr;
         } // FeatureTypeToString
 

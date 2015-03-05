@@ -130,7 +130,7 @@ namespace BlessYou
             // Calculate intevall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
-            Console.WriteLine("FStartOfFirstIntervalIx={0}, triggerOffIx={1}, FIntervalSampleCount={2}", FStartOfFirstIntervalIx, triggerOffIx, FIntervalSampleCount);
+            Console.WriteLine("{0,-40} - FStartOfFirstIntervalIx={1, 6} triggerOffIx={2, 6} FIntervalSampleCount={3, 6}", System.IO.Path.GetFileName(FWaveFileName), FStartOfFirstIntervalIx, triggerOffIx, FIntervalSampleCount);
         } // AnalyseWaveFileContents
 
         // ====================================================================
@@ -140,7 +140,7 @@ namespace BlessYou
           
             // 1. calculate featurevector
             // 2. Type of feature depends on i_FeatureObj
-            Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
+           // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
             int soundSampleIx;
             
 
