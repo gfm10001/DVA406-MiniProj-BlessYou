@@ -47,6 +47,7 @@ namespace BlessYou
             {
                 o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
+            CaseClass.CalculateScaledSimilarityValue(o_RetrievedMatches);
 
            // ToDo throw new System.NotImplementedException();
         } // Retrieve

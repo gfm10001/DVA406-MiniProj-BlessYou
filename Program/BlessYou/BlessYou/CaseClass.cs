@@ -157,7 +157,7 @@ namespace BlessYou
         // ====================================================================
 
 
-        public void CalculateScaledSimilarityValue(CaseClass i_NewCase, List<RetrievedCaseClass> nearby)
+        public static void CalculateScaledSimilarityValue(List<RetrievedCaseClass> nearby)
         {
             double highest = nearby[0].RawSimilarityValue;
             for (int i = 0; i < nearby.Count; i++)
