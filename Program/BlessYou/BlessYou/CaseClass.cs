@@ -61,13 +61,24 @@ namespace BlessYou
 
         // ====================================================================
 
+        // CaseClass Default Constructor
         public CaseClass()
         {
             FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
-            // Tips: anv. const declr i egen fil som ingångs data
+            // Tips: anv. const declr i egen fil som ingångs i_Data
             // ToDo throw new System.NotImplementedException();
-        } // Case
+        } // CaseClass
+
+        // ====================================================================
+
+        // CaseClass Copy Constructor
+        public CaseClass(CaseClass i_CaseClassObj)
+        {
+            this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
+            this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
+            this.SneezeStatus = i_CaseClassObj.SneezeStatus;
+        } // CaseClass
 
         // ====================================================================
 
@@ -123,6 +134,9 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
+            FeatureFFTClass featureFFTObj = new FeatureFFTClass();
+            waveFileObj.CalculateFeatureVector(featureFFTObj);
+            FFeatureTypeVector.Add(featureFFTObj);
 
 
             // At last normalize feature weights

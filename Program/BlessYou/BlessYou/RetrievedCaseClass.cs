@@ -53,17 +53,13 @@ namespace BlessYou
 
         //=====================================================================
 
-        public RetrievedCaseClass(CaseClass i_CaseClassObj)
+        public RetrievedCaseClass(CaseClass i_CaseClassObj) :
+               base (i_CaseClassObj)
         {
             // ToDo better implementation
-            base.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
-            base.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
-            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
-            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
             this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
             this.ProposedStatus = EnumCaseStatus.csUnknown;
-            this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
-        }
+        } // RetrievedCaseClass
 
         //=====================================================================
     
@@ -71,12 +67,7 @@ namespace BlessYou
         {
             return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
                                 + " Actual: " + base.SneezeStatus.ToString();
-        }
-
-        void CalculateSimilarityValue(CaseClass i_NewCase)
-        {
-
-        } // CalculateSimilarityValue
+        } // GetCurrentMatchingString
     } // RetrievedCaseClass
 
 }

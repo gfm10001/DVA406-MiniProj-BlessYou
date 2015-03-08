@@ -13,7 +13,7 @@ namespace BlessYou
         public FeaturePassingZeroClass() :
             base("PassingZero")
         {
-            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
         } // FeaturePeakClass
 
         private bool _IsPositive(double value)

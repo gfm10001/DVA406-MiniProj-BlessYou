@@ -32,11 +32,11 @@ namespace BlessYou
         }
         unsafe public struct datachunk
         {
-            public fixed byte sChunkID[4];       //Four bytes: "data"
+            public fixed byte sChunkID[4];       //Four bytes: "i_Data"
             public uint dwChunkSize;    //Length of header in bytes
             //Different arrays for the different frame sizes
-            //public fixed byte byteArray[8];     //8 bit unsigned data; or...
-            //public fixed short shortArray[16];    //16 bit signed data
+            //public fixed byte byteArray[8];     //8 bit unsigned i_Data; or...
+            //public fixed short shortArray[16];    //16 bit signed i_Data
         }
 
 
@@ -94,7 +94,7 @@ namespace BlessYou
         //}
 
        /// <summary>
-       /// Creates a wav object without modifying the data
+       /// Creates a wav object without modifying the i_Data
        /// </summary>
        /// <param name="filepath"></param>
         public WavFile(string filepath)
@@ -115,9 +115,9 @@ namespace BlessYou
         }
 
        /// <summary>
-       /// Normalize all values in the given data to the specifed limit
+       /// Normalize all values in the given i_Data to the specifed limit
        /// </summary>
-       /// <param name="data"></param>
+       /// <param name="i_Data"></param>
        /// <param name="limit"></param>
        /// <returns></returns>
         public static double[] Normalize(int[] data, double limit)
@@ -147,7 +147,7 @@ namespace BlessYou
         }
 
        /// <summary>
-       /// Return the specified Wavfile´s data as single channel.
+       /// Return the specified Wavfile´s i_Data as single channel.
        /// </summary>
        /// <param name="file"></param>
        /// <returns></returns>
@@ -215,7 +215,7 @@ namespace BlessYou
             darr.CopyTo(retval, harr.Length + farr.Length);
 
 
-            //If data needs to be evaluated, use this code
+            //If i_Data needs to be evaluated, use this code
             //int errors = 0;
             /*
             for (int i = 0; i < 44; i++)
@@ -280,7 +280,7 @@ namespace BlessYou
 
             int index = 0;
 
-            while (pointer < limit) //extract data
+            while (pointer < limit) //extract i_Data
             {
                 _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
                 pointer += 4;

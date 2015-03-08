@@ -49,7 +49,7 @@ namespace BlessYou
 
             // 1. Öppna i_WaveFileName
             // 2. Analyser antal kanaler (1/2)
-            // 3. Läs data 
+            // 3. Läs i_Data 
             //   för varje 16bit sample:
             //      Mono:   läs integer 16 bit och placera som double i FWaveFileContents 
             //      Stereo: läs 2 (L, R)  integer 16 bit, konvertera till double och medelvärdesbilda, placera som double i FWaveFileContents44p1KHz16bitSamples 
@@ -69,7 +69,7 @@ namespace BlessYou
 
 
             // 1. Leta upp absoluta max värdet (maxValue)
-            // 2: Calculate: scalefactor = C_MAX_POSSIBLE_VALUE / maxValue;
+            // 2: CalculateFFT: scalefactor = C_MAX_POSSIBLE_VALUE / maxValue;
             // 2. Skala alla värden: 
             //      i = [0, FWaveFileContents44p1KHz16bitSamples.Count - 1]
             //      FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor
@@ -90,7 +90,7 @@ namespace BlessYou
           
             
 
-            // 1. Analyze sample data and calculate 
+            // 1. Analyze sample i_Data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
             //    FStartOfFirstIntervalIx = ix
             // 3. FNrOfIntevals; DONE
@@ -127,7 +127,7 @@ namespace BlessYou
                 }
             } // for ix;
 
-            // Calculate intevall length
+            // CalculateFFT intevall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
             Console.WriteLine("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",

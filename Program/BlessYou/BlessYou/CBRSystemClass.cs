@@ -91,7 +91,7 @@ namespace BlessYou
                     BestSimCase = i_RetrievedMatches[i];
             }
 
-            //Calculate best match based on number of matches
+            //CalculateFFT best match based on number of matches
             EnumCaseStatus topCountCase = EnumCaseStatus.csUnknown;
             int topCountValue = 0;
             EnumCaseStatus bestDistanceCase = EnumCaseStatus.csUnknown;
