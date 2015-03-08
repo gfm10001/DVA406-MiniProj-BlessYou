@@ -3,7 +3,8 @@
 // DVA406 Intelligent Systems, Mdh, vt15
 //
 // History:
-// 2015-02-24   Introduced.
+// 2015-02-24       Introduced.
+// 2015-03-08/GF    Added: DumpWaveFileContents, moved Normalise o this module.
 //
 
 using System;
@@ -15,7 +16,7 @@ using System.Text;
 namespace BlessYou
 {
 
-    
+
     public class WaveFileClass
     {
         string FWaveFileName;
@@ -23,9 +24,6 @@ namespace BlessYou
         int FStartOfFirstIntervalIx;
         int FNrOfIntevals;
         int FIntervalSampleCount;
-        WavFile _wavFile;
-
-        const double C_MAX_POSSIBLE_VALUE = 100000; // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
         // ====================================================================
 
@@ -34,18 +32,10 @@ namespace BlessYou
             FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
         } // WaveFileClass
 
-        public WaveFileClass(string filepath, int limit)
-        {
-            _wavFile = new WavFile(filepath, limit);
-            //FWaveFileContents44p1KHz16bitSamples = _wavFile.Data;
-        }
+        // ====================================================================
 
         public void ReadWaveFile(string i_WaveFileName)
         {
-            FWaveFileName = i_WaveFileName;
-            _wavFile = new WavFile(i_WaveFileName);
-            //FWaveFileContents44p1KHz16bitSamples = wf.Data;
-
 
             // 1. Öppna i_WaveFileName
             // 2. Analyser antal kanaler (1/2)
@@ -54,8 +44,18 @@ namespace BlessYou
             //      Mono:   läs integer 16 bit och placera som double i FWaveFileContents 
             //      Stereo: läs 2 (L, R)  integer 16 bit, konvertera till double och medelvärdesbilda, placera som double i FWaveFileContents44p1KHz16bitSamples 
             // 4. Utvärdera ev. fel kasta exception om fel
-         
-            //throw new System.NotImplementedException();
+
+            FWaveFileName = i_WaveFileName;
+            WavFile _wavFile = new WavFile(FWaveFileName);
+
+            FWaveFileContents44p1KHz16bitSamples = new double[_wavFile.RawData.Length];
+            for (int ix = 0; ix < _wavFile.RawData.Length; ++ix)
+            {
+                FWaveFileContents44p1KHz16bitSamples[ix] = (double) _wavFile.RawData[ix];
+            } // for ix
+
+            DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+
         } // ReadWaveFile
 
         // ====================================================================
@@ -63,32 +63,47 @@ namespace BlessYou
         public void NormalizeWaveFileContents()
         {
             //double scaleFactor;
-            //double maxValue;
-             //_wavFile.Normalize(C_MAX_POSSIBLE_VALUE);
-             FWaveFileContents44p1KHz16bitSamples = _wavFile.Data;
+            //double hightest;
+            //_wavFile.Normalize(C_MAX_POSSIBLE_VALUE);
 
-
-            // 1. Leta upp absoluta max värdet (maxValue)
-            // 2: Calculate: scalefactor = C_MAX_POSSIBLE_VALUE / maxValue;
+            // 1. Leta upp absoluta max värdet (hightest)
+            // 2: Calculate: scalefactor = C_MAX_POSSIBLE_VALUE / hightest;
             // 2. Skala alla värden: 
             //      i = [0, FWaveFileContents44p1KHz16bitSamples.Count - 1]
             //      FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor
 
-            //throw new System.NotImplementedException();
-        } // AnalyseWaveFileContents
+            double hightest = 0;
+
+            for (int i = 0; i < FWaveFileContents44p1KHz16bitSamples.Length; i++)
+            {
+                if (hightest < Math.Abs(FWaveFileContents44p1KHz16bitSamples[i]))
+                {
+                    hightest = Math.Abs(FWaveFileContents44p1KHz16bitSamples[i]);
+                }
+            }
+
+            double scalefactor = Math.Abs(ConfigurationStatClass.C_MAX_POSSIBLE_VALUE / hightest);
+            for (int i = 0; i < FWaveFileContents44p1KHz16bitSamples.Length; i++)
+            {
+                FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor;
+            }
+
+            DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+
+        } // NormalizeWaveFileContents
 
 
         // ====================================================================
 
         public void AnalyseWaveFileContents()
         {
-            double triggerOnLevel = (ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0) * C_MAX_POSSIBLE_VALUE;
-            double triggerOffLevel = (ConfigurationStatClass.C_TRIGGER_OFF_LEVEL_IN_PERCENT / 100.0) * C_MAX_POSSIBLE_VALUE;
+            double triggerOnLevel = (ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0) * ConfigurationStatClass.C_MAX_POSSIBLE_VALUE;
+            double triggerOffLevel = (ConfigurationStatClass.C_TRIGGER_OFF_LEVEL_IN_PERCENT / 100.0) * ConfigurationStatClass.C_MAX_POSSIBLE_VALUE;
             int sampleCountOfTriggerOffDuration = (int)Math.Round(ConfigurationStatClass.C_TRIGGER_OFF_DURATION_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
             int triggerOffIx;
             int nrOfSamplesBelowTriggerOff;
-          
-            
+
+
 
             // 1. Analyze sample data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
@@ -96,9 +111,9 @@ namespace BlessYou
             // 3. FNrOfIntevals; DONE
             // 4. FIntervalSampleCount = (FWaveFileContents44p1KHz16bitSamples.Count - FStartOfFirstIntervalIx) / FNrOfIntevals
 
-            FStartOfFirstIntervalIx = 0 ;
+            FStartOfFirstIntervalIx = 0;
             triggerOffIx = 0;
-            for (int ix = 0; ix < FWaveFileContents44p1KHz16bitSamples.Length ; ++ix)
+            for (int ix = 0; ix < FWaveFileContents44p1KHz16bitSamples.Length; ++ix)
             {
                 // ToDo filter with more samples?
                 if (Math.Abs(FWaveFileContents44p1KHz16bitSamples[ix]) > triggerOnLevel)
@@ -136,18 +151,24 @@ namespace BlessYou
                               triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               100.00 * FIntervalSampleCount * ConfigurationStatClass.C_NR_OF_INTERVALS / FWaveFileContents44p1KHz16bitSamples.Length);
+
+            // Dump each interval as a seperate file.
+            for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
+            {
+                DumpWaveFileContents("Interval_" + ix.ToString(), FStartOfFirstIntervalIx + ix * FIntervalSampleCount, FStartOfFirstIntervalIx + (ix + 1) * FIntervalSampleCount - 1);
+            } // for ix
         } // AnalyseWaveFileContents
 
         // ====================================================================
 
         public void CalculateFeatureVector(FeatureBaseClass i_FeatureObj)
         {
-          
+
             // 1. calculate featurevector
             // 2. Type of feature depends on i_FeatureObj
-           // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
+            // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
             int soundSampleIx;
-            
+
 
             soundSampleIx = FStartOfFirstIntervalIx;
             for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
@@ -158,6 +179,67 @@ namespace BlessYou
 
 
         } // CalculateFeatureVector
+
+        // ====================================================================
+
+        public void DumpWaveFileContents(string i_FileNameModifier, int i_BegIx, int i_EndIx)
+        {
+            // Dump wave file contents as x, y pairs for use in Excel.
+
+            int soundSampleIx;
+            string lines = "";
+            double x;
+            double y;
+            string usedFileName;
+            int theUsedEndIx = i_EndIx;
+
+            
+
+            // ToDo: - only use a part at debug - or too many samples!
+            if (theUsedEndIx - i_BegIx > 50000)
+            {
+                theUsedEndIx = i_BegIx + 50000;
+            }
+            string[] lineArr = new string[theUsedEndIx - i_BegIx + 2];
+
+            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".wav";
+            Console.WriteLine("Dumping: " + usedFileName, ", from " + i_BegIx + " to " + i_EndIx);
+
+            // Scale Excel byte adding two samples with min/max
+            y = -100000;
+            x = 0;
+            lines = x.ToString() + " ; " + y.ToString() + Environment.NewLine;
+            y = 100000;
+            x = 1;
+            lines = x.ToString() + " ; " + y.ToString() + Environment.NewLine;
+
+            // Convert the samples to text lines
+            for (soundSampleIx = i_BegIx; soundSampleIx < theUsedEndIx; ++soundSampleIx)
+            {
+                x = soundSampleIx - i_BegIx;        // / (ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz * 1000.0);
+                y = FWaveFileContents44p1KHz16bitSamples[soundSampleIx];
+  
+                // lineArr[soundSampleIx] = x.ToString() + " ; " + y.ToString();
+                lines = lines + x.ToString() + " \t " + y.ToString() + Environment.NewLine;
+
+                if (soundSampleIx % 1000 == 0)
+                {
+                    Console.WriteLine("sample {0}", soundSampleIx);
+                }
+            } // for soundSampleIx
+
+
+            try
+            {
+                Console.WriteLine("saveing: " + usedFileName);
+                System.IO.File.WriteAllText(usedFileName, lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DumpWaveFileContents - ERR: " + ex.Message);
+            }
+
+        } // DumpWaveFileContents
 
         // ====================================================================
 

@@ -5,6 +5,7 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-05/GF    FeatureTypeToString: merged to single line
+// 2015-03-08/GF    Added dump of wave contents
 
 using System;
 using System.Collections.Generic;

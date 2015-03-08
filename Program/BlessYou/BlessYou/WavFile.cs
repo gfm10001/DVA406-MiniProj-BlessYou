@@ -1,4 +1,13 @@
-﻿using System;
+﻿// WaveFile.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+// 2015-03-08/GF    Moved Normalise to WaveFileClass.
+//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,22 +55,21 @@ namespace BlessYou
         fmtchunk _fmt;
         datachunk _dataheader;
         int[] _rawdata;
-        double[] _truedata;
-        static int _DefaultNormalizer = 100000;
+     //   double[] _truedata;
 
         #region Properties
-        public double[] Data
-        {
-            get
-            {
-                if (_truedata == null)
-                {
-                    PrepareFile(_filepath, _DefaultNormalizer);
-                }
-                return _truedata;
-            }
+        //public double[] Data
+        //{
+        //    get
+        //    {
+        //        if (_truedata == null)
+        //        {
+        //            PrepareFile(_filepath);
+        //        }
+        //        return _truedata;
+        //    }
         
-        }
+        //}
         public int[] RawData
         {
             get { return _rawdata; }
@@ -111,39 +119,7 @@ namespace BlessYou
         public WavFile(string filepath, int normal)
         {
             //_filepath = filepath;
-            PrepareFile(filepath, normal);
-        }
-
-       /// <summary>
-       /// Normalize all values in the given data to the specifed limit
-       /// </summary>
-       /// <param name="data"></param>
-       /// <param name="limit"></param>
-       /// <returns></returns>
-        public static double[] Normalize(int[] data, double limit)
-        {
-            int hightest = 0;
-            //int maxat = 0;
-            for (int i = 0; i < data.Length; i++)
-            {
-                if (hightest < Math.Abs(data[i]))
-                {
-                    hightest = Math.Abs(data[i]);
-                    //maxat = i;
-                }
-            }
-            double mod = Math.Abs((double)limit / (double)hightest);
-            double[] retval = new double[data.Length];
-            for (int i = 0; i < retval.Length; i++)
-            {
-                retval[i] = data[i] * mod;
-            }
-            return retval;
-        
-        }
-        public void Normalize(double limit)
-        {
-            _truedata = Normalize(_rawdata, limit);
+            PrepareFile(filepath);
         }
 
        /// <summary>
@@ -294,12 +270,12 @@ namespace BlessYou
        /// Load the specified file and prepare it for use.
        /// </summary>
        /// <param name="filepath"></param>
-       public unsafe void PrepareFile(string filepath,int NormalizationLimit)
+       public unsafe void PrepareFile(string filepath)
         {
 
             LoadFile(filepath);
             _rawdata = WavFile.GetSingleChannelData(this);
-            _truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
+            //_truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
         }
     }
 }

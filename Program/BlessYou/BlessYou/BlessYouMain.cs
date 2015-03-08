@@ -69,7 +69,7 @@ namespace BlessYou
             } // foreach FeatureBaseClass
             Console.WriteLine();
 
-
+ 
             // 3. Evaluate cases
             if ("" != newProblemFileName)
             {
@@ -79,6 +79,7 @@ namespace BlessYou
                 
                 CaseClass newProblemObj = new CaseClass();
                 newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj);
+
                 List<CaseClass> caseList = new List<CaseClass>();
                 caseList.AddRange(caseLibraryObj.ListOfCases);
                 cbrSystemObj.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
