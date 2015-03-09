@@ -20,7 +20,8 @@ namespace BlessYou
         public static double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_CREST_FACTOR_WEIGHT = 0.2;
         public static double C_DEFAULT_PASSING_ZERO_WEIGHT = 0.2;
-        public static double C_DEFAULT_FFT_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
 
         public static double C_EPSILON = 0.000001;
 		// ToDo add missing consts

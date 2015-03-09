@@ -150,7 +150,7 @@ namespace BlessYou
             
 
             soundSampleIx = FStartOfFirstIntervalIx;
-            for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
+            //for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
             {
                 i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount);
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;

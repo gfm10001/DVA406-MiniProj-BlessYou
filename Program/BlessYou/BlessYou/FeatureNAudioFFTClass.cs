@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NAudio.Dsp;
 
 namespace BlessYou
 {
-    public class FeatureFFTClass : FeatureBaseClass
-    {
+    class FeatureNAudioFFTClass : FeatureBaseClass
+{
         //
         //=====================================================================
 
-        public FeatureFFTClass() : 
-               base("FFT")
+        public FeatureNAudioFFTClass() : 
+               base("NAudioFFT")
         {
-            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_FFT_FEATURE_WEIGHT;
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================
@@ -22,14 +23,14 @@ namespace BlessYou
         {
             int samplingFrequency = 44100;
             int startIx = i_FirstListIx;
-            LomontFFTClass LFFTObj = new LomontFFTClass();
             bool forward = true;
             int nrOfMaxDescendingFrequencies = 10;
 
             int nrOfSamples = (int)Math.Pow(2, 16);
             int nrOfBins = nrOfSamples / 2;
-            double[] dataForFFTAnalysis = new double[nrOfSamples];
-            double[] dataFFTAnalysisDone = new double[nrOfSamples / 2];
+            Complex[] dataForFFTAnalysis = new Complex[nrOfSamples];
+            float[] dataFFTAnalysisDone = new float[nrOfSamples];
+            double[] frequencyArr = new double[nrOfSamples / 2];
 
             if (i_FirstListIx + nrOfSamples > i_WaveFileContents44p1KHz16bitSamples.Length)
             {
@@ -38,22 +39,31 @@ namespace BlessYou
 
             for (int ix = 0; ix < nrOfSamples; ++ix)
             {
-                dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[i_FirstListIx + ix];
+                dataForFFTAnalysis[ix].X = (float) i_WaveFileContents44p1KHz16bitSamples[i_FirstListIx + ix];
+                dataForFFTAnalysis[ix].Y = 0;
             }
 
             // The Lomont FFT has the following parameters
             // data: real values of wave file data
             // Length of the data must be a power of 2, chosen 66536
             // forward: a bool  that is set to true (forward is done)
-            LFFTObj.RealFFT(dataForFFTAnalysis, forward);
+            FastFourierTransform.FFT(forward, 16, dataForFFTAnalysis);
 
-            // remove all imagine parts
-            for (int ix = 0; ix < nrOfSamples; ix += 2)
+            // remove all imaginary parts
+            for (int ix = 0; ix < nrOfSamples / 4; ++ix)
             {
-                dataFFTAnalysisDone[ix / 2] = dataForFFTAnalysis[ix];
+                dataFFTAnalysisDone[ix] = Math.Abs(dataForFFTAnalysis[ix].X);
+                frequencyArr[ix] = Math.Round(ix / (double)nrOfSamples * samplingFrequency);
             } // for ix
 
 
+
+            //for (int ix = 0; ix < 20; ++ix)
+            //{
+            //    Console.WriteLine("i=" + ix + " data=" + dataFFTAnalysisDone[ix]);
+            //    int x = nrOfSamples / 2 - ix;
+            //    Console.WriteLine("x=" + x + " data=" + dataFFTAnalysisDone[x]);
+            //} // for ix
             // Calulate the nrOfDominantFrequencies
             int bin = dataFFTAnalysisDone.ToList().IndexOf(dataFFTAnalysisDone.ToList().Max());
             int[] binArray = new int[nrOfMaxDescendingFrequencies];
@@ -71,24 +81,31 @@ namespace BlessYou
             }
 
             // ToDo Remove debug prints
-            Console.WriteLine("\nDominant Bin: " + binArray[0] + " Dominant Frequency: " + frequencyArray[0]);
-            Console.Write("Data: ");
-            for (int ix = bin; ix <= bin + 10; ++ix)
-            {
-                Console.Write(dataFFTAnalysisDone[ix] + " | ");
-            }
-            Console.WriteLine("");
+            Console.Write("NAUDIO===============================================");
+            //Console.WriteLine("\nDominant Bin: " + binArray[0] + " Dominant Frequency: " + frequencyArray[0]);
+            //Console.Write("Data: ");
+            //for (int ix = bin - 5; ix <= bin + 6; ++ix)
+            //{
+            //    Console.Write(dataFFTAnalysisDone[ix] + " | ");
+            //}
+            //Console.WriteLine("");
 
-            Console.WriteLine("TopTen dominant bins: ");
-            foreach (int x in binArray)
+            //Console.WriteLine("TopTen dominant bins: ");
+            //foreach (int x in binArray)
+            //{
+            //    Console.Write(x + " | ");
+            //}
+            //Console.WriteLine(""); 
+            //Console.WriteLine("TopTen dominant frequencies: ");
+            //foreach (double x in frequencyArray)
+            //{
+            //    Console.Write(x + " | ");
+            //}
+            //Console.WriteLine("");
+
+            for (int ix = 0; ix < nrOfSamples / 4; ++ix)
             {
-                Console.Write(x + " | ");
-            }
-            Console.WriteLine(""); 
-            Console.WriteLine("TopTen dominant frequencies: ");
-            foreach (double x in frequencyArray)
-            {
-                Console.Write(x + " | ");
+                Console.WriteLine(dataFFTAnalysisDone[ix] + "\t" + frequencyArr[ix] + "\n");
             }
             Console.WriteLine("");
 
@@ -98,5 +115,5 @@ namespace BlessYou
 
         //=====================================================================
 
-    } // FeatureCrestFactorClass
+    } // FeatureLomontFFTClass
 }

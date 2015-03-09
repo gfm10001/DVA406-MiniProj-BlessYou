@@ -50,8 +50,9 @@
   <ItemGroup>
     <Compile Include="CalculateSimilarityStatClass.cs" />
     <Compile Include="CaseClass.cs" />
-    <Compile Include="FeatureFFTClass.cs" />
+    <Compile Include="FeatureLomontFFTClass.cs" />
     <Compile Include="ConfigurationStatClass.cs" />
+    <Compile Include="FeatureNAudioFFTClass.cs" />
     <Compile Include="FeaturePassingZeroClass.cs" />
     <Compile Include="EnumCaseStatus.cs" />
     <Compile Include="CaseLibraryClass.cs" />
