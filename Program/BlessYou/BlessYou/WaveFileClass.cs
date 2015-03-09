@@ -5,6 +5,7 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-08/GF    Added: DumpWaveFileContents, moved Normalise o this module.
+// 2015-03-09/GF    AnalyseWaveFileContents: back off after found trigg ("prefetch").
 //
 
 using System;
@@ -19,6 +20,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
+        bool FDoWaveDump = true;
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -107,7 +109,7 @@ namespace BlessYou
 
             // 1. Analyze sample data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
-            //    FStartOfFirstIntervalIx = ix
+            //    FStartOfFirstIntervalIx = ix - ix(C_TRIGGER_PREFETCH_IN_MILLI_SECS)
             // 3. FNrOfIntevals; DONE
             // 4. FIntervalSampleCount = (FWaveFileContents44p1KHz16bitSamples.Count - FStartOfFirstIntervalIx) / FNrOfIntevals
 
@@ -118,7 +120,11 @@ namespace BlessYou
                 // ToDo filter with more samples?
                 if (Math.Abs(FWaveFileContents44p1KHz16bitSamples[ix]) > triggerOnLevel)
                 {
-                    FStartOfFirstIntervalIx = ix;
+                    FStartOfFirstIntervalIx = ix - (int)(ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
+                    if (FStartOfFirstIntervalIx < 0)
+                    {
+                        FStartOfFirstIntervalIx = 0;
+                    }
                     break;
                 } // if
             } // for ix;
@@ -152,11 +158,15 @@ namespace BlessYou
                               FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               100.00 * FIntervalSampleCount * ConfigurationStatClass.C_NR_OF_INTERVALS / FWaveFileContents44p1KHz16bitSamples.Length);
 
-            // Dump each interval as a seperate file.
-            for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
-            {
-                DumpWaveFileContents("Interval_" + ix.ToString(), FStartOfFirstIntervalIx + ix * FIntervalSampleCount, FStartOfFirstIntervalIx + (ix + 1) * FIntervalSampleCount - 1);
-            } // for ix
+            //// Dump each interval as a seperate file.
+            //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
+            //{
+            //    DumpWaveFileContents("Interval_" + ix.ToString(), FStartOfFirstIntervalIx + ix * FIntervalSampleCount, FStartOfFirstIntervalIx + (ix + 1) * FIntervalSampleCount - 1);
+            //} // for ix
+
+            // DumpWaveFileContents split into intervalls.
+            DumpWaveFileIntervalContents(FStartOfFirstIntervalIx, FIntervalSampleCount);
+        
         } // AnalyseWaveFileContents
 
         // ====================================================================
@@ -193,36 +203,41 @@ namespace BlessYou
             string usedFileName;
             int theUsedEndIx = i_EndIx;
 
-            
+            if (!FDoWaveDump)
+            {
+                return;
+            }
 
             // ToDo: - only use a part at debug - or too many samples!
-            if (theUsedEndIx - i_BegIx > 50000)
-            {
-                theUsedEndIx = i_BegIx + 50000;
-            }
+            //if (theUsedEndIx - i_BegIx > 50000)
+            //{
+            //    theUsedEndIx = i_BegIx + 50000;
+            //}
             string[] lineArr = new string[theUsedEndIx - i_BegIx + 2];
 
-            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".wav";
+            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_BegIx + " to " + i_EndIx);
 
             // Scale Excel byte adding two samples with min/max
             y = -100000;
             x = 0;
-            lines = x.ToString() + " ; " + y.ToString() + Environment.NewLine;
+            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t" + i_FileNameModifier + "\t" + i_BegIx + "\t" + i_EndIx;
+            lines = lineArr[0] + Environment.NewLine;
             y = 100000;
             x = 1;
-            lines = x.ToString() + " ; " + y.ToString() + Environment.NewLine;
+            lineArr[1] = x.ToString() + " \t " + y.ToString();
+            lines = lines + lineArr[1] + Environment.NewLine;
 
             // Convert the samples to text lines
             for (soundSampleIx = i_BegIx; soundSampleIx < theUsedEndIx; ++soundSampleIx)
             {
                 x = soundSampleIx - i_BegIx;        // / (ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz * 1000.0);
                 y = FWaveFileContents44p1KHz16bitSamples[soundSampleIx];
-  
-                // lineArr[soundSampleIx] = x.ToString() + " ; " + y.ToString();
-                lines = lines + x.ToString() + " \t " + y.ToString() + Environment.NewLine;
 
-                if (soundSampleIx % 1000 == 0)
+                lineArr[soundSampleIx - i_BegIx + 2] = x.ToString() + " \t " + y.ToString();
+               // lines = lines + x.ToString() + " \t " + y.ToString() + Environment.NewLine;
+
+                if (soundSampleIx % 100000 == 0)
                 {
                     Console.WriteLine("sample {0}", soundSampleIx);
                 }
@@ -232,7 +247,9 @@ namespace BlessYou
             try
             {
                 Console.WriteLine("saveing: " + usedFileName);
-                System.IO.File.WriteAllText(usedFileName, lines);
+//                System.IO.File.WriteAllText(usedFileName, lines);
+                System.IO.File.WriteAllLines(usedFileName, lineArr);
+                
             }
             catch (Exception ex)
             {
@@ -240,6 +257,76 @@ namespace BlessYou
             }
 
         } // DumpWaveFileContents
+
+        // ====================================================================
+
+        public void DumpWaveFileIntervalContents(int i_TriggerIx, int i_IntervalLengthInSamples)
+        {
+            // Dump wave file contents as x, y, interval-nr triplets for use in Excel.
+
+            int soundSampleIx;
+            double x;
+            double y;
+            string usedFileName;
+            int theUsedEndIx = FWaveFileContents44p1KHz16bitSamples.Length;
+            int intervalIx;
+            string fileNameModifier = "_Intervals";
+
+            if (!FDoWaveDump)
+            {
+                return;
+            }
+
+
+            string[] lineArr = new string[theUsedEndIx + 2];
+
+            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
+            Console.WriteLine("Dumping: " + usedFileName, ", from " + i_TriggerIx + " to " + theUsedEndIx);
+
+            // Scale Excel byte adding two samples with min/max
+            y = -100000;
+            x = 0;
+            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t0\t0\t" + usedFileName + "\t" + fileNameModifier + "\t" + i_TriggerIx + "\t" + theUsedEndIx;
+            y = 100000;
+            x = 1;
+            lineArr[1] = x.ToString() + " \t " + y.ToString() + "\t0\t0\t";
+            
+            // Convert the samples to text lines
+            for (soundSampleIx = 0; soundSampleIx < theUsedEndIx; ++soundSampleIx)
+            {
+                x = soundSampleIx;        
+                y = FWaveFileContents44p1KHz16bitSamples[soundSampleIx];
+                intervalIx = 0;
+                if (soundSampleIx > i_TriggerIx)
+                {
+                    intervalIx = 1 + (int)(soundSampleIx / i_IntervalLengthInSamples);
+                }
+                if (intervalIx > 10)
+                {
+                    intervalIx = 10;
+                }
+                intervalIx = intervalIx * 10000;
+                lineArr[soundSampleIx + 2] = x.ToString() + " \t " + y.ToString() + " \t " + intervalIx.ToString(); ;
+ 
+                if (soundSampleIx % 100000 == 0)
+                {
+                    Console.WriteLine("sample {0}", soundSampleIx);
+                }
+            } // for soundSampleIx
+
+
+            try
+            {
+                Console.WriteLine("saveing: " + usedFileName);
+                System.IO.File.WriteAllLines(usedFileName, lineArr);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DumpWaveFileIntervalContents - ERR: " + ex.Message);
+            }
+
+        } // DumpWaveFileIntervalContents
 
         // ====================================================================
 

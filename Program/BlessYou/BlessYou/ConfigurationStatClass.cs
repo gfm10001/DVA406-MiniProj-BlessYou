@@ -11,6 +11,7 @@ namespace BlessYou
 
         public static int C_NR_OF_INTERVALS = 10;                       // The interesting part of the sound file is split into this number of equal size intervals
         public static double C_TRIGGER_LEVEL_IN_PERCENT = 50;
+        public static double C_TRIGGER_PREFETCH_IN_MILLI_SECS = 500;
         public static double C_TRIGGER_OFF_LEVEL_IN_PERCENT = 10;
         public static double C_TRIGGER_OFF_DURATION_IN_MILLI_SECS = 1000;
         public static double C_SOUND_SAMPLE_FREQUENCY_IN_kHz = 44.1;
