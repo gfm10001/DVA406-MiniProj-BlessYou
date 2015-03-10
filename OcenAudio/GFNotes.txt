@@ -1,0 +1,6 @@
+11:35 2015-03-10/GF
+
+http://www.ocenaudio.com.br/en/download
+
+OcenAudio, liknar Audacity.
+Har tids-dynamisk FFT-funtktion!
