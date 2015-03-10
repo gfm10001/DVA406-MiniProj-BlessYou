@@ -6,6 +6,7 @@
 // 2015-02-24       Introduced.
 // 2015-03-08/GF    Moved Normalise to WaveFileClass.
 // 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
+//                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
 
 using System;
 using System.Collections.Generic;
@@ -118,7 +119,11 @@ namespace BlessYou
         {
             //_filepath = filepath;
             LoadFile(filepath);
-            PrepareFile(filepath);
+            // If 2 channels, do Stereo to Mono adaption!
+  //          if (2 == _fmt.wChannels)
+            {
+                PrepareFile(filepath); // Convert to mono!
+            }
 
         }
 
@@ -138,23 +143,22 @@ namespace BlessYou
        /// </summary>
        /// <param name="file"></param>
        /// <returns></returns>
-        public static int[] GetSingleChannelData(WavFile file)
+        public static int[] GetSingleChannelData(WavFile file, int i_NrOfChannels)
         {
-
-
 
             NAudio.Wave.WaveFormat format = new NAudio.Wave.WaveFormat(44100, 16, 1);
             NAudio.Wave.WaveStream stream = new NAudio.Wave.WaveFileReader(new MemoryStream(file.filedata));
             NAudio.Wave.WaveFormatConversionStream str = new NAudio.Wave.WaveFormatConversionStream(format, stream);
-            //NAudio.Wave.WaveFileWriter.CreateWaveFile("TEST.wav", str);
+           // NAudio.Wave.WaveFileWriter.CreateWaveFile("TEST.wav", str);
 
             BinaryReader br = new BinaryReader(str);
             byte[] temp = br.ReadBytes((int)str.Length);
 
+            long usedByteLenght = str.Length;
 
-            int[] retval = new int[str.Length];
+            int[] retval = new int[usedByteLenght / 2]; // Adapt to 16bit from bytes
 
-            for (int i = 0, z = 0; i < temp.Length; i += 2, z++)
+            for (int i = 0, z = 0; i < retval.Length; i += 2, z++)
             {
                 retval[z] = BitConverter.ToInt16(temp, i);
             }
@@ -263,11 +267,11 @@ namespace BlessYou
             if (_header.dwFileLength > Int32.MaxValue)
                 throw new InvalidDataException("File too big to be analyzed!");
 
-            int pointer = 44;
-            int limit = filedata.Length;
+       //     int pointer = 44;
+       //     int limit = filedata.Length;
             //_rawdata = new int[filedata.Length - 44];
 
-            int index = 0;
+     //       int index = 0;
 
             //while (pointer < limit) //extract data
             //{
@@ -287,7 +291,7 @@ namespace BlessYou
         {
 
             LoadFile(filepath);
-            _rawdata = WavFile.GetSingleChannelData(this);
+            _rawdata = WavFile.GetSingleChannelData(this, _fmt.wChannels);
             //_truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
         }
     }

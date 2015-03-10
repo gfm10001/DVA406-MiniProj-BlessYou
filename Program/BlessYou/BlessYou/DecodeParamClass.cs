@@ -47,8 +47,7 @@ namespace BlessYou
                 throw new System.Exception(tempStr);              // Set i Project Properties -> Debug: command line params.
                                                                   // Typical examples as below:
                                                                   //    ..\..\..\samplesFileNames.txt all 
-                                                                  //    ..\..\..\samplesFileNames.txt  
-                                                                  //    ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
+                                                                  //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
                                                                   //    ..\..\..\samplesFileNames-all.txt all (For all samples)
             }
 
