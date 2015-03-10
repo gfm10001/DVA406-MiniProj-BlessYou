@@ -26,6 +26,7 @@ namespace BlessYou
         int FStartOfFirstIntervalIx;
         int FNrOfIntevals;
         int FIntervalSampleCount;
+        int FNumberOfChannelsInOrgininalWaveFile;
 
         // ====================================================================
 
@@ -57,6 +58,13 @@ namespace BlessYou
 
         // ====================================================================
 
+        public int NumberOfChannelsInOrgininalWaveFile
+        {
+            get { return FNumberOfChannelsInOrgininalWaveFile; }
+        } // NumberOfChannelsInOrgininalWaveFile
+
+        // ====================================================================
+
         public void ReadWaveFile(string i_WaveFileName)
         {
 
@@ -74,8 +82,14 @@ namespace BlessYou
             FWaveFileContents44p1KHz16bitSamples = new double[_wavFile.RawData.Length];
             for (int ix = 0; ix < _wavFile.RawData.Length; ++ix)
             {
+                if ((double)_wavFile.RawData[ix] > 300)
+                {
+                   // Console.WriteLine("ix=" + ix + " = " + _wavFile.RawData[ix] );
+                }
                 FWaveFileContents44p1KHz16bitSamples[ix] = (double) _wavFile.RawData[ix];
             } // for ix
+
+            FNumberOfChannelsInOrgininalWaveFile = _wavFile.NumberOfChannelsInWaveFile;
 
             DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 

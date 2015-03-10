@@ -6,6 +6,7 @@
 // 2015-02-24       Introduced.
 // 2015-03-05/GF    FeatureTypeToString: merged to single line
 // 2015-03-08/GF    Added dump of wave contents
+// 2015-03-08/GF    AnalyseParamsToString: added
 
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace BlessYou
         double FWaveFileLengthInMilliSecs;
         double FWaveFileTriggPositionInMilliSecs;
         double FWaveFileIntervallLengthInMilliSecs;
+        int FNumberOfChannelsInOrgininalWaveFile;
 
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
@@ -107,6 +109,7 @@ namespace BlessYou
             FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;
             FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
             FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
+            FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass();
             waveFileObj.CalculateFeatureVector(featurePeakObj);
@@ -207,13 +210,14 @@ namespace BlessYou
             string resStr = "";
 
 
-            resStr = String.Format("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
+            resStr = String.Format("{0,-50} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}% (was {6} channels)",
                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
                                     FWaveFileLengthInMilliSecs,
                                     FWaveFileTriggPositionInMilliSecs,
                                     FWaveFileTriggPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
                                     FWaveFileIntervallLengthInMilliSecs,
-                                    100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs));
+                                    100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
+                                    FNumberOfChannelsInOrgininalWaveFile);
             return resStr;
         } // AnalyseParamsToString
 
