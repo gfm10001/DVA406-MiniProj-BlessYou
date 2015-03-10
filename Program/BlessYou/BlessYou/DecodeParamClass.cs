@@ -17,6 +17,95 @@ namespace BlessYou
 {
     public static class DecodeParamClass
     {
+        public static void DecodeParam2(string[] i_Param, out List<SoundFileClass> o_LibList, out List<RetrievedCaseClass> o_NewProblemFileNames)
+        {
+
+            o_LibList = new List<SoundFileClass>();
+            o_NewProblemFileNames = new List<RetrievedCaseClass>();
+
+            string lib = i_Param[0].ToLower();
+            string testcases = i_Param[1].ToLower();
+
+            string paramListOfFileNamesStr = System.IO.File.ReadAllText(lib);
+            char[] lineFeedSep = { '\n' };
+            string[] listOfLibFiles;
+            listOfLibFiles = paramListOfFileNamesStr.Split(lineFeedSep);
+
+            paramListOfFileNamesStr = System.IO.File.ReadAllText(testcases);
+            string[] listOfCaseFiles;
+            listOfCaseFiles = paramListOfFileNamesStr.Split(lineFeedSep);
+
+            string tempS1 = Path.GetFullPath(lib);
+            string tempS2 = Path.GetDirectoryName(tempS1);
+            tempS2 = tempS2 + "\\";
+
+
+            char[] tabSep = { '\t' };
+            string[] linePartsArr;
+            for (int i = 0; i < listOfLibFiles.Length; ++i)
+            {
+                SoundFileClass soundFileObj = new SoundFileClass();
+
+                // Skip too short lines.
+                if (listOfLibFiles[i].Length < 2)
+                {
+                    continue;
+                }
+
+                // Skip any comment lines (starts with ";")
+                if (';' == listOfLibFiles[i][0])
+                {
+                    continue;
+                }
+
+
+                linePartsArr = listOfLibFiles[i].Split(tabSep);
+
+                if ("0" == linePartsArr[0])
+                {
+                    soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smNoSneeze;
+                }
+                else if ("1" == linePartsArr[0])
+                {
+                    soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smSneeze;
+                }
+
+                string s = tempS2 + linePartsArr[1];
+                soundFileObj.SoundFileName = Path.GetFullPath(s);
+
+                o_LibList.Add(soundFileObj);
+
+            }
+
+
+
+            for (int i = 0; i < listOfCaseFiles.Length; ++i)
+            {
+                RetrievedCaseClass soundFileObj = new RetrievedCaseClass();
+
+                // Skip too short lines.
+                if (listOfCaseFiles[i].Length < 2)
+                {
+                    continue;
+                }
+
+                // Skip any comment lines (starts with ";")
+                if (';' == listOfCaseFiles[i][0])
+                {
+                    continue;
+                }
+
+
+                linePartsArr = listOfCaseFiles[i].Split(tabSep);
+                string s = tempS2 + linePartsArr[1];
+                soundFileObj.WavFile_FullPathAndFileNameStr = Path.GetFullPath(s);
+
+                o_NewProblemFileNames.Add(soundFileObj);
+            }
+        }
+
+
+
         // o_NewProblemFileName parameter: if empty means run all cases if not run this specific new problem 
         public static void DecodeParam(string[] i_Param, out List<SoundFileClass> o_FileNameList, out string o_NewProblemFileName, out string o_FtrFilePath)
         {

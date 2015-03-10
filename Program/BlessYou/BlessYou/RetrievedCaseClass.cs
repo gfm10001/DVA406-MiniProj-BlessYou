@@ -15,7 +15,7 @@ namespace BlessYou
 {
     public class RetrievedCaseClass : CaseClass
     {
-        double FSimilarityValue;
+        double FDistanceValue;
         EnumCaseStatus FProposedStatus;
 
         //=====================================================================
@@ -31,15 +31,15 @@ namespace BlessYou
 
         //=====================================================================
 
-        public double SimilarityValue
+        public double SimilarityDistance
         {
             get
             {
-                return FSimilarityValue;
+                return FDistanceValue;
             }
             set
             {
-                FSimilarityValue = value;
+                FDistanceValue = value;
             }
         } // FeatureName
         #endregion
@@ -69,7 +69,7 @@ namespace BlessYou
     
         public string GetCurrentMatchingString()
         {
-            return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
+            return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FDistanceValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
                                 + " Actual: " + base.SneezeStatus.ToString();
         }
 

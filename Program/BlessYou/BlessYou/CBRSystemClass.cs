@@ -15,6 +15,7 @@ namespace BlessYou
 {
     public class CBRSystemClass
     {
+        public static int CaseConsiderationLimit = 10;
 
         // ====================================================================
 
@@ -32,16 +33,27 @@ namespace BlessYou
             o_RetrievedMatches = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
 
+
+
             for (int ix = 0; ix < i_CaseLibraryList.Count; ++ix)
             {
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
-                theCase.SimilarityValue = currentCase.CalculateDistanceValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+                theCase.SimilarityDistance = currentCase.CalculateDistanceValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
                 similarityCaseList.Add(theCase);
             } // for ix
 
-            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
+            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityDistance).ToList();
+
+            if (o_RetrievedMatches.Count < CaseConsiderationLimit)
+                CaseConsiderationLimit = o_RetrievedMatches.Count;
+
+            for (int ix = 0; ix < CaseConsiderationLimit; ix++)
+            {
+                o_RetrievedMatches.Add(sortedCaseList[ix]);
+            
+            }
 
             for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
             {
@@ -52,7 +64,7 @@ namespace BlessYou
             {
                 Console.WriteLine("ix: " + ix);
                // Console.WriteLine(o_RetrievedMatches[ix].ToString());
-                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityValue /*+ " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus */ + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
+                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityDistance /*+ " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus */ + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
             } // for ix
            // ToDo throw new System.NotImplementedException();
         } // Retrieve
@@ -86,8 +98,8 @@ namespace BlessYou
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
                 countResults[i_RetrievedMatches[i].SneezeStatus]++;
-                distanceResults[i_RetrievedMatches[i].SneezeStatus] = distanceResults[i_RetrievedMatches[i].SneezeStatus] + i_RetrievedMatches[i].SimilarityValue;
-                if (i_RetrievedMatches[i].SimilarityValue > BestSimCase.SimilarityValue)
+                distanceResults[i_RetrievedMatches[i].SneezeStatus] = distanceResults[i_RetrievedMatches[i].SneezeStatus] + i_RetrievedMatches[i].SimilarityDistance;
+                if (i_RetrievedMatches[i].SimilarityDistance > BestSimCase.SimilarityDistance)
                     BestSimCase = i_RetrievedMatches[i];
             }
             foreach (EnumCaseStatus c in Enum.GetValues(typeof(EnumCaseStatus)))
@@ -101,6 +113,7 @@ namespace BlessYou
             int topCountValue = 0;
             EnumCaseStatus bestDistanceCase = EnumCaseStatus.csUnknown;
             double bestDistanceValue = double.MaxValue;
+            double totalAVGdistance = 0;
             foreach (EnumCaseStatus c in countResults.Keys)
             {
                 if (countResults[c] > topCountValue)
@@ -108,12 +121,18 @@ namespace BlessYou
                     topCountValue = countResults[c];
                     topCountCase = c;
                 }
-                if (bestDistanceValue > distanceResults[c])
+            }
+            foreach (RetrievedCaseClass c in i_RetrievedMatches)
+            {
+                totalAVGdistance += c.SimilarityDistance;
+                if (bestDistanceValue > c.SimilarityDistance)
                 {
-                    bestDistanceValue = distanceResults[c];
-                    bestDistanceCase = c;
+                    bestDistanceValue = c.SimilarityDistance;
+                    bestDistanceCase = c.SneezeStatus;
+                    
                 }
             }
+            totalAVGdistance /= i_RetrievedMatches.Count;
 
             Console.WriteLine("\nCount:" + topCountCase + " got most matches with " + topCountValue + "/" + i_RetrievedMatches.Count);
             Console.WriteLine("\nDistance:" + bestDistanceCase + " was closest with a value of " + bestDistanceValue);
@@ -136,7 +155,7 @@ namespace BlessYou
                     worstDistance = distanceResults[c];
             }
 
-            double DistancePrbability = bestDistanceValue / worstDistance;
+            double DistancePrbability = 1 - bestDistanceValue / totalAVGdistance;
 
             Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nDistance value:" + DistancePrbability);
 
@@ -182,6 +201,7 @@ namespace BlessYou
             // TBA
             throw new System.NotImplementedException();
         } // Retain
+
 
         // ====================================================================
 
