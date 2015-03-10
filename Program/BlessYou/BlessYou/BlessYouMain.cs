@@ -119,8 +119,21 @@ namespace BlessYou
             for (int ix = 0; ix < retrievedMatchesList.Count; ++ix)
             {
                 //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
+                
             } // for ix
 
+            // 6. Optionally dump case info
+            if (1 == 1)
+            {
+                Console.WriteLine("Dump case library report to file...");
+                List<string> classReportStringList;
+                caseLibraryObj.GenerateReportOfAllCases(out classReportStringList);
+                System.IO.File.WriteAllLines("ClassLibraryReport.txt", classReportStringList);
+            } // if
+
+            // 7. Finish.
+            Console.Write("\nPress any key to exit! ");
+            Console.ReadKey();
 
            // throw new System.NotImplementedException();
         } // Main

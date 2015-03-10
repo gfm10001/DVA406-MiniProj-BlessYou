@@ -41,6 +41,21 @@ namespace BlessYou
         } // RemoveCase
 
         // ====================================================================
-    
+
+        public void GenerateReportOfAllCases(out List<string> o_ClassReportStringList)
+        {
+            o_ClassReportStringList = new List<string>();
+
+            int ix = 0;
+            foreach (CaseClass cObj in FListOfCases)
+            {
+                string s;
+                s = String.Format("{0, 4}", ix) + " - " + cObj.AnalyseParamsToString();
+                o_ClassReportStringList.Add(s);
+                ++ix;
+            } // foreach
+
+        } // GenerateReportOfAllCases
+
     } // CaseLibraryClass
 }

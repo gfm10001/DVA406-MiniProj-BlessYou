@@ -34,6 +34,27 @@ namespace BlessYou
             FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
         } // WaveFileClass
 
+        //=====================================================================
+
+        public double WaveFileLengthInMilliSecs
+        {
+            get { return FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
+        } // WaveFileLengthInMilliSecs
+        
+        // ====================================================================
+
+        public double WaveFileTrigAtMilliSecs
+        {
+            get { return FStartOfFirstIntervalIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
+        } // WaveFileTrigAtMilliSecs
+
+        // ====================================================================
+
+        public double WaveFileIntervalLengthInMilliSecs
+        {
+            get { return FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
+        } // WaveFileIntervalLengthInMilliSecs
+
         // ====================================================================
 
         public void ReadWaveFile(string i_WaveFileName)
@@ -110,7 +131,7 @@ namespace BlessYou
             // 1. Analyze sample data and calculate 
             // 2. Find ix of first sample with an absolute level higher than the triggerLevel
             //    FStartOfFirstIntervalIx = ix - ix(C_TRIGGER_PREFETCH_IN_MILLI_SECS)
-            // 3. FNrOfIntevals; DONE
+            // 3. FNrOfIntevals from C_NR_OF_INTERVALS
             // 4. FIntervalSampleCount = (FWaveFileContents44p1KHz16bitSamples.Count - FStartOfFirstIntervalIx) / FNrOfIntevals
 
             FStartOfFirstIntervalIx = 0;
@@ -148,15 +169,15 @@ namespace BlessYou
                 }
             } // for ix;
 
-            // Calculate intevall length
+            // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
             Console.WriteLine("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
-                              System.IO.Path.GetFileName(FWaveFileName), FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
-                              FStartOfFirstIntervalIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              System.IO.Path.GetFileName(FWaveFileName), WaveFileLengthInMilliSecs,
+                              WaveFileTrigAtMilliSecs,
                               triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
-                              100.00 * FIntervalSampleCount * ConfigurationStatClass.C_NR_OF_INTERVALS / FWaveFileContents44p1KHz16bitSamples.Length);
+                              100.00 * WaveFileIntervalLengthInMilliSecs / FWaveFileContents44p1KHz16bitSamples.Length);
 
             //// Dump each interval as a seperate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)

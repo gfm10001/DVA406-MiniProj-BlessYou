@@ -19,6 +19,10 @@ namespace BlessYou
     public class CaseClass
     {
         string _WavFile_FullPathAndFileNameStr;
+        double FWaveFileLengthInMilliSecs;
+        double FWaveFileTriggPositionInMilliSecs;
+        double FWaveFileIntervallLengthInMilliSecs;
+
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
         
@@ -99,6 +103,10 @@ namespace BlessYou
             waveFileObj.ReadWaveFile(i_SoundFileObj.SoundFileName);
             waveFileObj.NormalizeWaveFileContents();
             waveFileObj.AnalyseWaveFileContents();
+
+            FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;
+            FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
+            FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass();
             waveFileObj.CalculateFeatureVector(featurePeakObj);
@@ -193,5 +201,26 @@ namespace BlessYou
         } // FeatureTypeToString
 
         // ====================================================================
+
+        public string AnalyseParamsToString()
+        {
+            string resStr = "";
+
+
+            resStr = String.Format("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
+                                    System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
+                                    FWaveFileLengthInMilliSecs,
+                                    FWaveFileTriggPositionInMilliSecs,
+                                    FWaveFileTriggPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
+                                    FWaveFileIntervallLengthInMilliSecs,
+                                    100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs));
+            return resStr;
+        } // AnalyseParamsToString
+
+        // ====================================================================
+
+
+
+
     } // CaseClass
 }
