@@ -13,7 +13,7 @@ namespace BlessYou
         public FeatureCrestFactorClass() : 
                base("CF")
         {
-            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
+            base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_CREST_FACTOR_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================

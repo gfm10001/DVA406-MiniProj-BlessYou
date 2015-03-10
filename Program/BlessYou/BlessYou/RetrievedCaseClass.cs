@@ -15,7 +15,7 @@ namespace BlessYou
 {
     public class RetrievedCaseClass : CaseClass
     {
-        double FSimilarityValue;
+        double FDistanceValue;
         EnumCaseStatus FProposedStatus;
 
         //=====================================================================
@@ -31,15 +31,15 @@ namespace BlessYou
 
         //=====================================================================
 
-        public double SimilarityValue
+        public double SimilarityDistance
         {
             get
             {
-                return FSimilarityValue;
+                return FDistanceValue;
             }
             set
             {
-                FSimilarityValue = value;
+                FDistanceValue = value;
             }
         } // FeatureName
         #endregion
@@ -53,23 +53,19 @@ namespace BlessYou
 
         //=====================================================================
 
-        public RetrievedCaseClass(CaseClass i_CaseClassObj)
+        public RetrievedCaseClass(CaseClass i_CaseClassObj) :
+               base (i_CaseClassObj)
         {
             // ToDo better implementation
-            base.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
-            base.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
-            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
-            base.SneezeStatus = i_CaseClassObj.SneezeStatus;
             this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
             this.ProposedStatus = EnumCaseStatus.csUnknown;
-            this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
-        }
+        } // RetrievedCaseClass
 
         //=====================================================================
     
         public string GetCurrentMatchingString()
         {
-            return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FSimilarityValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
+            return "Filename: " + base.WavFile_FullPathAndFileNameStr + " Similarityvalue: " + FDistanceValue.ToString() + " Proposed result: " + FProposedStatus.ToString()
                                 + " Actual: " + base.SneezeStatus.ToString();
         }
 

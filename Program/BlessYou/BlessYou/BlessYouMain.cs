@@ -39,6 +39,7 @@ namespace BlessYou
 
             CBRSystemClass cbrSystemObj = new CBRSystemClass();
             List<SoundFileClass> soundfileObjList;
+            //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
@@ -46,7 +47,9 @@ namespace BlessYou
 
 
             // 1. Decode Params
+            //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
             DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
+
 
             
             // 2. Create CASE-library
@@ -73,20 +76,23 @@ namespace BlessYou
             // 3. Evaluate cases
             if ("" != newProblemFileName)
             {
-                SoundFileClass newProblemSoundFileObj = new SoundFileClass();
-                newProblemSoundFileObj.SoundFileName = newProblemFileName;
-                newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
-                
-                CaseClass newProblemObj = new CaseClass();
-                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj);
+                //foreach (SoundFileClass sfc in soundfileObjList)
+                //{
+                    SoundFileClass newProblemSoundFileObj = new SoundFileClass();
+                    newProblemSoundFileObj.SoundFileName = newProblemFileName;
+                    newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
 
-                List<CaseClass> caseList = new List<CaseClass>();
-                caseList.AddRange(caseLibraryObj.ListOfCases);
-                cbrSystemObj.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
-                
-                //4. Start reuse function
-                EnumCaseStatus caseStatus; 
-                cbrSystemObj.Reuse(retrievedMatchesList,out caseStatus);
+                    CaseClass newProblemObj = new CaseClass();
+                    newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj);
+
+                    List<CaseClass> caseList = new List<CaseClass>();
+                    caseList.AddRange(caseLibraryObj.ListOfCases);
+                    cbrSystemObj.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+
+                    //4. Start reuse function
+                    EnumCaseStatus caseStatus;
+                    cbrSystemObj.Reuse(retrievedMatchesList, out caseStatus);
+                //}
             } // if
             else
             {
@@ -164,5 +170,6 @@ namespace BlessYou
 
         // ====================================================================
 
-    } // BlessYouMain
+    }
+    // BlessYouMain
 }

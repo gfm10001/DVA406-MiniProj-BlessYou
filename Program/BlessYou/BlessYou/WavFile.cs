@@ -119,11 +119,7 @@ namespace BlessYou
         {
             //_filepath = filepath;
             LoadFile(filepath);
-            // If 2 channels, do Stereo to Mono adaption!
-  //          if (2 == _fmt.wChannels)
-            {
-                PrepareFile(filepath); // Convert to mono!
-            }
+            PrepareFile(filepath);
 
         }
 

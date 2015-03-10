@@ -68,13 +68,24 @@ namespace BlessYou
 
         // ====================================================================
 
+        // CaseClass Default Constructor
         public CaseClass()
         {
             FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
             // Tips: anv. const declr i egen fil som ingångs data
             // ToDo throw new System.NotImplementedException();
-        } // Case
+        } // CaseClass
+
+        // ====================================================================
+
+        // CaseClass Copy Constructor
+        public CaseClass(CaseClass i_CaseClassObj)
+        {
+            this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
+            this.FeatureTypeVector = i_CaseClassObj.FeatureTypeVector;
+            this.SneezeStatus = i_CaseClassObj.SneezeStatus;
+        } // CaseClass
 
         // ====================================================================
 
@@ -135,7 +146,17 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
+            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+            FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
+            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+            FFeatureTypeVector.Add(featureLomontFFT14Obj);
+
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+            FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
             // At last normalize feature weights
             double sum = 0;

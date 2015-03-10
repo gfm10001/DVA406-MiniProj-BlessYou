@@ -20,7 +20,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = true;
+        bool FDoWaveDump = false;
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -181,10 +181,7 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            if (FIntervalSampleCount < 100)
-            {
-                throw new System.NotImplementedException("AnalyseWaveFileContents - too small interval size!");
-            }
+
             Console.WriteLine("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
                               System.IO.Path.GetFileName(FWaveFileName), WaveFileLengthInMilliSecs,
                               WaveFileTrigAtMilliSecs,
