@@ -269,6 +269,7 @@ namespace BlessYou
 
             int pointer = 44;
             int limit = filedata.Length;
+            int trueLength = (int)(_fmt.dwSamplesPerSec * _fmt.wChannels * _fmt.dwChunkSize);
             _rawdata = new int[filedata.Length - 44];
 
             int index = 0;
