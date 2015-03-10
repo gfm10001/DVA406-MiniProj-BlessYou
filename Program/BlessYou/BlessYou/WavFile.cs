@@ -5,7 +5,7 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-08/GF    Moved Normalise to WaveFileClass.
-//
+// 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
 
 using System;
 using System.Collections.Generic;
@@ -22,6 +22,15 @@ namespace BlessYou
 {
    public class WavFile
     {
+        // ====================================================================
+
+        public int NumberOfChannelsInWaveFile
+        {
+            get { return _fmt.wChannels; }
+        } // NumberOfChannelsInWaveFile
+
+        // ====================================================================
+
          unsafe public struct fileheader
         {
             public fixed byte sGroupID[4];       //Surprisingly enough, this is always "RIFF"
