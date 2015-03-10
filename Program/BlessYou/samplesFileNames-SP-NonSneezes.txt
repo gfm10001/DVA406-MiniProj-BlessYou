@@ -1,4 +1,3 @@
-0	..\Data\SP\None-Sneezes\160909__raccoonanimator__scratch-speed.wav
 0	..\Data\SP\None-Sneezes\79671__joedeshon__slide-whistle-down-01.wav
 0	..\Data\SP\None-Sneezes\alchemist1.wav
 0	..\Data\SP\None-Sneezes\alchemist2.wav

@@ -1,5 +1,4 @@
-1	..\Data\GF\Sneezes\sneeze-1-1.wav
-0	..\Data\SP\None-Sneezes\alchemist1.wav
-0	..\Data\SP\None-Sneezes\alchemist2.wav
-1	..\Data\SP\Sneezes\SP1.wav
-1	..\Data\NS\Sneezes\Sneeze1.wav
+0	..\Data\SP\None-Sneezes\animated-object2.wav
+0	..\Data\SP\None-Sneezes\animated-object1.wav
+0	..\Data\SP\None-Sneezes\bow.wav
+0	..\Data\SP\None-Sneezes\horse.wav
