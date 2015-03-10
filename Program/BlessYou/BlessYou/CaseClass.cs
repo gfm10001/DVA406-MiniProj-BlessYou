@@ -5,6 +5,8 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-05/GF    FeatureTypeToString: merged to single line
+// 2015-03-08/GF    Added dump of wave contents
+// 2015-03-08/GF    AnalyseParamsToString: added
 
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,11 @@ namespace BlessYou
     public class CaseClass
     {
         string _WavFile_FullPathAndFileNameStr;
+        double FWaveFileLengthInMilliSecs;
+        double FWaveFileTriggPositionInMilliSecs;
+        double FWaveFileIntervallLengthInMilliSecs;
+        int FNumberOfChannelsInOrgininalWaveFile;
+
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
         
@@ -66,7 +73,7 @@ namespace BlessYou
         {
             FFeatureTypeVector = new List<FeatureBaseClass>();
             // Create FFeatureWeights and make sure sum = 1
-            // Tips: anv. const declr i egen fil som ingångs i_Data
+            // Tips: anv. const declr i egen fil som ingångs data
             // ToDo throw new System.NotImplementedException();
         } // CaseClass
 
@@ -109,6 +116,11 @@ namespace BlessYou
             waveFileObj.ReadWaveFile(i_SoundFileObj.SoundFileName);
             waveFileObj.NormalizeWaveFileContents();
             waveFileObj.AnalyseWaveFileContents();
+
+            FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;
+            FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
+            FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
+            FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass();
             waveFileObj.CalculateFeatureVector(featurePeakObj);
@@ -162,7 +174,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public double CalculateRawSimilarityValue(CaseClass i_NewCase)
+        public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
@@ -171,7 +183,7 @@ namespace BlessYou
                 {
                     sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
                 } // for ix
-                sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
+                //sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
                 sum = sum * FFeatureTypeVector[jx].FeatureWeight;
             } // for jx
             return sum;
@@ -213,5 +225,27 @@ namespace BlessYou
         } // FeatureTypeToString
 
         // ====================================================================
+
+        public string AnalyseParamsToString()
+        {
+            string resStr = "";
+
+
+            resStr = String.Format("{0,-50} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}% (was {6} channels)",
+                                    System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
+                                    FWaveFileLengthInMilliSecs,
+                                    FWaveFileTriggPositionInMilliSecs,
+                                    FWaveFileTriggPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
+                                    FWaveFileIntervallLengthInMilliSecs,
+                                    100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
+                                    FNumberOfChannelsInOrgininalWaveFile);
+            return resStr;
+        } // AnalyseParamsToString
+
+        // ====================================================================
+
+
+
+
     } // CaseClass
 }

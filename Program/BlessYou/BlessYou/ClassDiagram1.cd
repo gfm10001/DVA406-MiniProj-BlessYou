@@ -10,14 +10,14 @@
   <Class Name="BlessYou.CaseClass">
     <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AEAAABSAAAAAAAAEACAAAAAAAABAAAAABAAABAAAEAA=</HashCode>
+      <HashCode>AAAAAAQAAAAAAAAAACAAAAAAAAAAAAAAAAAABAAAEIA=</HashCode>
       <FileName>CaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.CBRSystemClass">
     <Position X="3.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAgAAAAAAAAACAAAAAgAAAAIAAAAAA=</HashCode>
+      <HashCode>AIAAAAAAAAAAAAAgAAAAAAAAACAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>CBRSystemClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -52,7 +52,7 @@
   <Class Name="BlessYou.RetrievedCaseClass">
     <Position X="0.75" Y="3.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AACAAAAAAAAACAAAAAAAAAAAAAIIQAAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AACAAAAAAAAACAAAAQAAAAAAAAAIQAAAAAQAAAAAAAA=</HashCode>
       <FileName>RetrievedCaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,14 +73,14 @@
   <Class Name="BlessYou.SoundFileClass">
     <Position X="13.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAAAAAAAAAAABAAAAABAAgAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAQAAAAAAAAAIAAAAAABAAAA=</HashCode>
       <FileName>SoundFileClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BlessYou.FeatureBaseClass">
     <Position X="4" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACAAAAACAAAAgAABABAAAAAAAAAAACAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAAAACEAAAgAABABAAAAAAAAAAACAAAAAAAAABAAA=</HashCode>
       <FileName>FeatureBaseClass.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -117,20 +117,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FeaturePeak2PeakClass.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="BlessYou.FFTClass">
-    <Position X="12.25" Y="0.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>FFTClass.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="BlessYou.FeatureFFTClass">
-    <Position X="11.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>FeatureFFTClass.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="BlessYou.EnumCaseStatus">

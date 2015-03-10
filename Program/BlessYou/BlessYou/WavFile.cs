@@ -1,4 +1,13 @@
-﻿using System;
+﻿// WaveFile.cs
+//
+// DVA406 Intelligent Systems, MdH, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+// 2015-03-08/GF    Moved Normalise to WaveFileClass.
+// 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +22,19 @@ namespace BlessYou
 {
    public class WavFile
     {
+        // ====================================================================
+
+        public int NumberOfChannelsInWaveFile
+        {
+            get { return _fmt.wChannels; }
+        } // NumberOfChannelsInWaveFile
+
+        // ====================================================================
+
          unsafe public struct fileheader
         {
             public fixed byte sGroupID[4];       //Surprisingly enough, this is always "RIFF"
-            public uint dwFileLength;   //File length in bytes, measured from offset 8
+            public uint dwFileLength;            //File length in bytes, measured from offset 8
             public fixed byte sRiffType[4];      //In wave files, this is always "WAVE"
         }
         unsafe public struct fmtchunk
@@ -32,11 +50,11 @@ namespace BlessYou
         }
         unsafe public struct datachunk
         {
-            public fixed byte sChunkID[4];       //Four bytes: "i_Data"
+            public fixed byte sChunkID[4];       //Four bytes: "data"
             public uint dwChunkSize;    //Length of header in bytes
             //Different arrays for the different frame sizes
-            //public fixed byte byteArray[8];     //8 bit unsigned i_Data; or...
-            //public fixed short shortArray[16];    //16 bit signed i_Data
+            //public fixed byte byteArray[8];     //8 bit unsigned data; or...
+            //public fixed short shortArray[16];    //16 bit signed data
         }
 
 
@@ -46,22 +64,21 @@ namespace BlessYou
         fmtchunk _fmt;
         datachunk _dataheader;
         int[] _rawdata;
-        double[] _truedata;
-        static int _DefaultNormalizer = 100000;
+     //   double[] _truedata;
 
         #region Properties
-        public double[] Data
-        {
-            get
-            {
-                if (_truedata == null)
-                {
-                    PrepareFile(_filepath, _DefaultNormalizer);
-                }
-                return _truedata;
-            }
+        //public double[] Data
+        //{
+        //    get
+        //    {
+        //        if (_truedata == null)
+        //        {
+        //            PrepareFile(_filepath);
+        //        }
+        //        return _truedata;
+        //    }
         
-        }
+        //}
         public int[] RawData
         {
             get { return _rawdata; }
@@ -94,13 +111,15 @@ namespace BlessYou
         //}
 
        /// <summary>
-       /// Creates a wav object without modifying the i_Data
+       /// Creates a wav object without modifying the data
        /// </summary>
        /// <param name="filepath"></param>
         public WavFile(string filepath)
         {
             //_filepath = filepath;
             LoadFile(filepath);
+            PrepareFile(filepath);
+
         }
 
        /// <summary>
@@ -111,48 +130,18 @@ namespace BlessYou
         public WavFile(string filepath, int normal)
         {
             //_filepath = filepath;
-            PrepareFile(filepath, normal);
+            PrepareFile(filepath);
         }
 
        /// <summary>
-       /// Normalize all values in the given i_Data to the specifed limit
-       /// </summary>
-       /// <param name="i_Data"></param>
-       /// <param name="limit"></param>
-       /// <returns></returns>
-        public static double[] Normalize(int[] data, double limit)
-        {
-            int hightest = 0;
-            //int maxat = 0;
-            for (int i = 0; i < data.Length; i++)
-            {
-                if (hightest < Math.Abs(data[i]))
-                {
-                    hightest = Math.Abs(data[i]);
-                    //maxat = i;
-                }
-            }
-            double mod = Math.Abs((double)limit / (double)hightest);
-            double[] retval = new double[data.Length];
-            for (int i = 0; i < retval.Length; i++)
-            {
-                retval[i] = data[i] * mod;
-            }
-            return retval;
-        
-        }
-        public void Normalize(double limit)
-        {
-            _truedata = Normalize(_rawdata, limit);
-        }
-
-       /// <summary>
-       /// Return the specified Wavfile´s i_Data as single channel.
+       /// Return the specified Wavfile´s data as single channel.
        /// </summary>
        /// <param name="file"></param>
        /// <returns></returns>
         public static int[] GetSingleChannelData(WavFile file)
         {
+
+
 
             NAudio.Wave.WaveFormat format = new NAudio.Wave.WaveFormat(44100, 16, 1);
             NAudio.Wave.WaveStream stream = new NAudio.Wave.WaveFileReader(new MemoryStream(file.filedata));
@@ -215,7 +204,7 @@ namespace BlessYou
             darr.CopyTo(retval, harr.Length + farr.Length);
 
 
-            //If i_Data needs to be evaluated, use this code
+            //If data needs to be evaluated, use this code
             //int errors = 0;
             /*
             for (int i = 0; i < 44; i++)
@@ -276,16 +265,16 @@ namespace BlessYou
 
             int pointer = 44;
             int limit = filedata.Length;
-            _rawdata = new int[filedata.Length - 44];
+            //_rawdata = new int[filedata.Length - 44];
 
             int index = 0;
 
-            while (pointer < limit) //extract i_Data
-            {
-                _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
-                pointer += 4;
-                index++;
-            }
+            //while (pointer < limit) //extract data
+            //{
+            //    _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
+            //    pointer ++;
+            //    index++;
+            //}
         }
 
        
@@ -294,12 +283,12 @@ namespace BlessYou
        /// Load the specified file and prepare it for use.
        /// </summary>
        /// <param name="filepath"></param>
-       public unsafe void PrepareFile(string filepath,int NormalizationLimit)
+       public unsafe void PrepareFile(string filepath)
         {
 
             LoadFile(filepath);
             _rawdata = WavFile.GetSingleChannelData(this);
-            _truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
+            //_truedata = WavFile.Normalize(_rawdata,NormalizationLimit);
         }
     }
 }

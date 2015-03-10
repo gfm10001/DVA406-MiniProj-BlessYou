@@ -10,7 +10,7 @@ namespace BlessYou
         // ====================================================================
 
         /// <summary>
-        /// CalculateFFT the absolute peak  value among the input i_Data
+        /// Calculate the absolute peak  value among the input data
         /// </summary>
         public static void CalculatePeakColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
         {
@@ -20,7 +20,7 @@ namespace BlessYou
         // ====================================================================
 
         /// <summary>
-        /// CalculateFFT the Mean = average value among the input i_Data
+        /// Calculate the Mean = average value among the input data
         /// </summary>
         public static void CalculateMeanColumn(List<Double> i_WaveDataSamples, int i_FirstListIx, int i_Count, out List<double> o_CalculatedData)
         {
