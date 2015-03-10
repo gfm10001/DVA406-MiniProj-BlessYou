@@ -5,7 +5,7 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-04/GF    DecodeParam: Fixed handling of too short lines.
-//
+// 2015-03-10/GF    DecodeParam: Added handling of comment-lines
 
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace BlessYou
         {
             string samplesFileName;
             string tempStr;
-            string[] tempStrArr;
+
             o_FileNameList = new List<SoundFileClass>();
 
             o_FtrFilePath = "";
@@ -55,9 +55,10 @@ namespace BlessYou
 
             // Decode sampleFilenames (one per row)
             // Format of list file used as P1: one line per .wav­file:
-            string paramStr = System.IO.File.ReadAllText(samplesFileName);
+            string paramListOfFileNamesStr = System.IO.File.ReadAllText(samplesFileName);
             char[] lineFeedSep = { '\n' };
-            tempStrArr = paramStr.Split(lineFeedSep);
+            string[] listOfFileNamesStrArr;
+            listOfFileNamesStrArr = paramListOfFileNamesStr.Split(lineFeedSep);
 
             string tempS1 = Path.GetFullPath(samplesFileName);
             string tempS2 = Path.GetDirectoryName(tempS1);
@@ -66,29 +67,36 @@ namespace BlessYou
             // Decode each sampleFile
             // line = <marker for type of sound> TAB [<path>]<filename of .wav­file>
             char[] tabSep = { '\t' };
-            string[] str;
-            for (int i = 0; i < tempStrArr.Length; ++i)
+            string[] linePartsArr;
+            for (int i = 0; i < listOfFileNamesStrArr.Length; ++i)
             {
                 SoundFileClass soundFileObj = new SoundFileClass();
 
-                str = tempStrArr[i].Split(tabSep);
-
                 // Skip too short lines.
-                if (str.Length < 2)
+                if (listOfFileNamesStrArr[i].Length < 2)
                 {
                     continue;
                 }
 
-                if ("0" == str[0])
+                // Skip any comment lines (starts with ";")
+                if (';' == listOfFileNamesStrArr[i][0])
+                {
+                    continue;
+                }
+
+
+                linePartsArr = listOfFileNamesStrArr[i].Split(tabSep);
+
+                if ("0" == linePartsArr[0])
                 {
                     soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smNoSneeze;
                 }
-                else if ("1" == str[0])
+                else if ("1" == linePartsArr[0])
                 {
                     soundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smSneeze;
                 }
 
-                string s = tempS2 + str[1];
+                string s = tempS2 + linePartsArr[1];
                 soundFileObj.SoundFileName = Path.GetFullPath(s);
 
                 o_FileNameList.Add(soundFileObj);

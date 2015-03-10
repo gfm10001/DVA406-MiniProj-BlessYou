@@ -1,1 +1,13 @@
 1	..\Data\GF\Sneezes\sneeze-1-1.wav
+1	..\Data\GF\Sneezes\sneeze-1-2b.wav
+1	..\Data\GF\Sneezes\sneeze-1-3.wav
+1	..\Data\NS\Sneezes\Sneeze1.wav
+1	..\Data\NS\Sneezes\Sneeze2.wav
+1	..\Data\NS\Sneezes\Sneeze3.wav
+1	..\Data\SP\Sneezes\SP1.wav
+1	..\Data\SP\Sneezes\SP2.wav
+1	..\Data\SP\Sneezes\SP3.wav
+0	..\Data\GF\None-Sneezes\stan-20feb-A-00m08s.wav
+0	..\Data\GF\None-Sneezes\stan-laurel-19feb-A-05m49s.wav
+0	..\Data\GF\None-Sneezes\London-part-1-21feb-A-06m44s.wav
+0	..\Data\GF\None-Sneezes\Don Quixote-1-21feb-A-30m36s.wav

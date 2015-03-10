@@ -1,12 +1,12 @@
 ﻿// WaveFileClass.cs
 //
-// DVA406 Intelligent Systems, Mdh, vt15
+// DVA406 Intelligent Systems, MdH, vt15
 //
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-08/GF    Added: DumpWaveFileContents, moved Normalise o this module.
 // 2015-03-09/GF    AnalyseWaveFileContents: back off after found trigg ("prefetch").
-//
+// 2015-03-10/GF    DumpWaveFileIntervalContents: handle prefetch
 
 using System;
 using System.Collections.Generic;
@@ -197,11 +197,11 @@ namespace BlessYou
             // Dump wave file contents as x, y pairs for use in Excel.
 
             int soundSampleIx;
-            string lines = "";
             double x;
             double y;
             string usedFileName;
             int theUsedEndIx = i_EndIx;
+            int zeroFlag;
 
             if (!FDoWaveDump)
             {
@@ -209,10 +209,11 @@ namespace BlessYou
             }
 
             // ToDo: - only use a part at debug - or too many samples!
-            //if (theUsedEndIx - i_BegIx > 50000)
-            //{
-            //    theUsedEndIx = i_BegIx + 50000;
-            //}
+            if (theUsedEndIx > 1000000)
+            {
+                theUsedEndIx = 1000000; // Max  1,048,576 rows in Excel!
+            }
+
             string[] lineArr = new string[theUsedEndIx - i_BegIx + 2];
 
             usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
@@ -220,24 +221,26 @@ namespace BlessYou
 
             // Scale Excel byte adding two samples with min/max
             y = -100000;
-            x = 0;
+            x = -2;
             lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t" + i_FileNameModifier + "\t" + i_BegIx + "\t" + i_EndIx;
-            lines = lineArr[0] + Environment.NewLine;
+
             y = 100000;
-            x = 1;
+            x = -1;
             lineArr[1] = x.ToString() + " \t " + y.ToString();
-            lines = lines + lineArr[1] + Environment.NewLine;
 
             // Convert the samples to text lines
             for (soundSampleIx = i_BegIx; soundSampleIx < theUsedEndIx; ++soundSampleIx)
             {
-                x = soundSampleIx - i_BegIx;        // / (ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz * 1000.0);
+                x = soundSampleIx - i_BegIx;        
                 y = FWaveFileContents44p1KHz16bitSamples[soundSampleIx];
+                zeroFlag = 0;
+                if (0 == y)
+                {
+                    zeroFlag = 10000;
+                }
+                lineArr[soundSampleIx - i_BegIx + 2] = x.ToString() + " \t " + y.ToString() + "\t" + zeroFlag;
 
-                lineArr[soundSampleIx - i_BegIx + 2] = x.ToString() + " \t " + y.ToString();
-               // lines = lines + x.ToString() + " \t " + y.ToString() + Environment.NewLine;
-
-                if (soundSampleIx % 100000 == 0)
+                if (soundSampleIx % 1000000 == 0)
                 {
                     Console.WriteLine("sample {0}", soundSampleIx);
                 }
@@ -247,7 +250,6 @@ namespace BlessYou
             try
             {
                 Console.WriteLine("saveing: " + usedFileName);
-//                System.IO.File.WriteAllText(usedFileName, lines);
                 System.IO.File.WriteAllLines(usedFileName, lineArr);
                 
             }
@@ -260,9 +262,14 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void DumpWaveFileIntervalContents(int i_TriggerIx, int i_IntervalLengthInSamples)
+        public void DumpWaveFileIntervalContents(int i_StartIx, int i_IntervalLengthInSamples)
         {
             // Dump wave file contents as x, y, interval-nr triplets for use in Excel.
+            // From Excel:
+            //  Excel cannot exceed the limit of 1,048,576 rows and 16,384 columns.
+            // interval-nr  = 0 before start
+            //              = <0 and incremented during prefetch (in C_TRIGGER_PREFETCH_IN_MILLI_SECS)
+            //              = >0 and incremented at each interval at trig
 
             int soundSampleIx;
             double x;
@@ -270,26 +277,32 @@ namespace BlessYou
             string usedFileName;
             int theUsedEndIx = FWaveFileContents44p1KHz16bitSamples.Length;
             int intervalIx;
-            string fileNameModifier = "_Intervals";
+            string fileNameModifier = "Intervals";
+            int realTriggIx = i_StartIx + (int) (ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
 
             if (!FDoWaveDump)
             {
                 return;
             }
 
+            // ToDo: - only use a part at debug - or too many samples!
+            if (theUsedEndIx > 1000000)
+            {
+                theUsedEndIx = 1000000; // Max  1,048,576 rows in Excel!
+            }
 
             string[] lineArr = new string[theUsedEndIx + 2];
 
             usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
-            Console.WriteLine("Dumping: " + usedFileName, ", from " + i_TriggerIx + " to " + theUsedEndIx);
+            Console.WriteLine("Dumping: " + usedFileName, ", from " + i_StartIx + " to " + theUsedEndIx);
 
             // Scale Excel byte adding two samples with min/max
             y = -100000;
-            x = 0;
-            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t0\t0\t" + usedFileName + "\t" + fileNameModifier + "\t" + i_TriggerIx + "\t" + theUsedEndIx;
+            x = -2;
+            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + usedFileName + "\t" + fileNameModifier + "\t" + i_StartIx + "\t" + theUsedEndIx;
             y = 100000;
-            x = 1;
-            lineArr[1] = x.ToString() + " \t " + y.ToString() + "\t0\t0\t";
+            x = -1;
+            lineArr[1] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
             
             // Convert the samples to text lines
             for (soundSampleIx = 0; soundSampleIx < theUsedEndIx; ++soundSampleIx)
@@ -297,18 +310,31 @@ namespace BlessYou
                 x = soundSampleIx;        
                 y = FWaveFileContents44p1KHz16bitSamples[soundSampleIx];
                 intervalIx = 0;
-                if (soundSampleIx > i_TriggerIx)
+                if (soundSampleIx > i_StartIx)
                 {
-                    intervalIx = 1 + (int)(soundSampleIx / i_IntervalLengthInSamples);
+                    intervalIx = 1 + (int)((soundSampleIx - i_StartIx) / i_IntervalLengthInSamples);
+
+                    if (soundSampleIx < realTriggIx)
+                    {
+                        intervalIx = -intervalIx;
+                    }
+                    else
+                    {
+                        if (intervalIx < 0)
+                        {
+                            intervalIx = 0;
+                        }
+                        
+                    }
                 }
                 if (intervalIx > 10)
                 {
-                    intervalIx = 10;
+                    intervalIx = 0;
                 }
                 intervalIx = intervalIx * 10000;
                 lineArr[soundSampleIx + 2] = x.ToString() + " \t " + y.ToString() + " \t " + intervalIx.ToString(); ;
  
-                if (soundSampleIx % 100000 == 0)
+                if (soundSampleIx % 1000000 == 0)
                 {
                     Console.WriteLine("sample {0}", soundSampleIx);
                 }
@@ -317,7 +343,7 @@ namespace BlessYou
 
             try
             {
-                Console.WriteLine("saveing: " + usedFileName);
+                Console.WriteLine("saving: " + usedFileName);
                 System.IO.File.WriteAllLines(usedFileName, lineArr);
 
             }

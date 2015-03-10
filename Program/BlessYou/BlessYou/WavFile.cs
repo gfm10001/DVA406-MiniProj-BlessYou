@@ -1,6 +1,6 @@
 ﻿// WaveFile.cs
 //
-// DVA406 Intelligent Systems, Mdh, vt15
+// DVA406 Intelligent Systems, MdH, vt15
 //
 // History:
 // 2015-02-24       Introduced.
