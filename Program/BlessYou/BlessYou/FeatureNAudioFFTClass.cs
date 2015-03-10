@@ -30,7 +30,8 @@ namespace BlessYou
             int nrOfBins = nrOfSamples / 2;
             Complex[] dataForFFTAnalysis = new Complex[nrOfSamples];
             float[] dataFFTAnalysisDone = new float[nrOfSamples];
-            double[] frequencyArr = new double[nrOfSamples / 2];
+            double[] dataFFTAnalysisDoneInDB = new double[nrOfSamples];
+            double[] frequencyArr = new double[nrOfSamples];
 
             if (i_FirstListIx + nrOfSamples > i_WaveFileContents44p1KHz16bitSamples.Length)
             {
@@ -50,8 +51,11 @@ namespace BlessYou
             FastFourierTransform.FFT(forward, 16, dataForFFTAnalysis);
 
             // remove all imaginary parts
-            for (int ix = 0; ix < nrOfSamples / 4; ++ix)
+            for (int ix = 0; ix < nrOfSamples; ++ix)
             {
+                // Convert power to dB values formula
+                // dB_val = 10.0 * log10(re * re + im * im) + dB_correction
+                dataFFTAnalysisDoneInDB[ix] =  10.0 * Math.Log10((double) (dataForFFTAnalysis[ix].X * dataForFFTAnalysis[ix].X + dataForFFTAnalysis[ix].Y * dataForFFTAnalysis[ix].Y));
                 dataFFTAnalysisDone[ix] = Math.Abs(dataForFFTAnalysis[ix].X);
                 frequencyArr[ix] = Math.Round(ix / (double)nrOfSamples * samplingFrequency);
             } // for ix
@@ -103,9 +107,9 @@ namespace BlessYou
             //}
             //Console.WriteLine("");
 
-            for (int ix = 0; ix < nrOfSamples / 4; ++ix)
+            for (int ix = 0; ix < nrOfSamples / 2; ++ix)
             {
-                Console.WriteLine(dataFFTAnalysisDone[ix] + "\t" + frequencyArr[ix] + "\n");
+                Console.WriteLine(dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\t" + frequencyArr[ix] + "\n");
             }
             Console.WriteLine("");
 

@@ -134,13 +134,17 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
-            FeatureLomontFFTClass featureLomontFFTObj = new FeatureLomontFFTClass();
-            waveFileObj.CalculateFeatureVector(featureLomontFFTObj);
-            FFeatureTypeVector.Add(featureLomontFFTObj);
+            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+            FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            FeatureNAudioFFTClass featureNAudioFFTObj = new FeatureNAudioFFTClass();
-            waveFileObj.CalculateFeatureVector(featureNAudioFFTObj);
-            FFeatureTypeVector.Add(featureNAudioFFTObj);
+            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+            FFeatureTypeVector.Add(featureLomontFFT14Obj);
+
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+            FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
             // At last normalize feature weights
             double sum = 0;

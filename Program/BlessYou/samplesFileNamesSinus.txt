@@ -1,2 +1,2 @@
-0	..\Data\NS\None-Sneezes\100Hz_44100Hz_16bit_30sec.wav
+0	..\Data\NS\None-Sneezes\10kHz_44100Hz_16bit_30sec.wav
 
