@@ -25,7 +25,7 @@ namespace BlessYou
          unsafe public struct fileheader
         {
             public fixed byte sGroupID[4];       //Surprisingly enough, this is always "RIFF"
-            public uint dwFileLength;   //File length in bytes, measured from offset 8
+            public uint dwFileLength;            //File length in bytes, measured from offset 8
             public fixed byte sRiffType[4];      //In wave files, this is always "WAVE"
         }
         unsafe public struct fmtchunk
@@ -131,6 +131,8 @@ namespace BlessYou
        /// <returns></returns>
         public static int[] GetSingleChannelData(WavFile file)
         {
+
+
 
             NAudio.Wave.WaveFormat format = new NAudio.Wave.WaveFormat(44100, 16, 1);
             NAudio.Wave.WaveStream stream = new NAudio.Wave.WaveFileReader(new MemoryStream(file.filedata));
@@ -254,16 +256,16 @@ namespace BlessYou
 
             int pointer = 44;
             int limit = filedata.Length;
-            _rawdata = new int[filedata.Length - 44];
+            //_rawdata = new int[filedata.Length - 44];
 
             int index = 0;
 
-            while (pointer < limit) //extract data
-            {
-                _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
-                pointer += 4;
-                index++;
-            }
+            //while (pointer < limit) //extract data
+            //{
+            //    _rawdata[index] = BitConverter.ToInt16(filedata, pointer);
+            //    pointer ++;
+            //    index++;
+            //}
         }
 
        

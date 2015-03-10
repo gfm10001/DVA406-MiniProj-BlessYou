@@ -20,7 +20,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = true;
+        bool FDoWaveDump = false;
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;

@@ -37,7 +37,7 @@ namespace BlessYou
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
-                theCase.SimilarityValue = currentCase.CalculateRawSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+                theCase.SimilarityValue = currentCase.CalculateDistanceValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
                 similarityCaseList.Add(theCase);
             } // for ix
 
@@ -52,7 +52,7 @@ namespace BlessYou
             {
                 Console.WriteLine("ix: " + ix);
                // Console.WriteLine(o_RetrievedMatches[ix].ToString());
-                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityValue + " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
+                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityValue /*+ " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus */ + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
             } // for ix
            // ToDo throw new System.NotImplementedException();
         } // Retrieve
@@ -85,10 +85,15 @@ namespace BlessYou
             
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
-                countResults[i_RetrievedMatches[i].ProposedStatus]++;
-                distanceResults[i_RetrievedMatches[i].ProposedStatus] = distanceResults[i_RetrievedMatches[i].ProposedStatus] + i_RetrievedMatches[i].SimilarityValue;
+                countResults[i_RetrievedMatches[i].SneezeStatus]++;
+                distanceResults[i_RetrievedMatches[i].SneezeStatus] = distanceResults[i_RetrievedMatches[i].SneezeStatus] + i_RetrievedMatches[i].SimilarityValue;
                 if (i_RetrievedMatches[i].SimilarityValue > BestSimCase.SimilarityValue)
                     BestSimCase = i_RetrievedMatches[i];
+            }
+            foreach (EnumCaseStatus c in Enum.GetValues(typeof(EnumCaseStatus)))
+            {
+                distanceResults[c] /= countResults[c];
+            
             }
 
             //Calculate best match based on number of matches
@@ -117,20 +122,31 @@ namespace BlessYou
             {
                 o_CaseStatus = ConfirmedToPropused(topCountCase);
                 Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+
                 return;
             }
             //If count and similarity does not evaluate to same, determine witch is most reliable
 
-            double countProbability = (double)i_RetrievedMatches.Count / (double)topCountValue;
-            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nSimilarity value:" + BestSimCase.SimilarityValue);
+            double countProbability =  (double)topCountValue / (double)i_RetrievedMatches.Count;
+            double worstDistance = 0.0;
 
-            if (countProbability > bestDistanceValue)
+            foreach (EnumCaseStatus c in distanceResults.Keys)
+            { 
+                if(distanceResults[c] > worstDistance)
+                    worstDistance = distanceResults[c];
+            }
+
+            double DistancePrbability = bestDistanceValue / worstDistance;
+
+            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nDistance value:" + DistancePrbability);
+
+            if (countProbability > DistancePrbability)
             {
                 o_CaseStatus = ConfirmedToPropused(topCountCase);
                 Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
                 return;
             }
-            else if (countProbability < bestDistanceValue)
+            else if (countProbability < DistancePrbability)
             {
                 o_CaseStatus = ConfirmedToPropused(bestDistanceCase);
                 Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");

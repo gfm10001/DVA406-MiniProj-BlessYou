@@ -150,7 +150,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public double CalculateRawSimilarityValue(CaseClass i_NewCase)
+        public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
@@ -159,7 +159,7 @@ namespace BlessYou
                 {
                     sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
                 } // for ix
-                sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
+                //sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
                 sum = sum * FFeatureTypeVector[jx].FeatureWeight;
             } // for jx
             return sum;
