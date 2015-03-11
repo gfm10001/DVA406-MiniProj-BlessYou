@@ -7,6 +7,11 @@
 // 2015-03-08/GF    Added: DumpWaveFileContents, moved Normalise o this module.
 // 2015-03-09/GF    AnalyseWaveFileContents: back off after found trigg ("prefetch").
 // 2015-03-10/GF    DumpWaveFileIntervalContents: handle prefetch
+// 2015-03-11/GF    Display of trig position corrected.
+//                  FTrigPositionIx, WaveFileIntervalBegAtMilliSecs: added
+//                  DumpWaveFileContents, DumpWaveFileIntervalContents: corrected
+//                  AnalyseWaveFileContents: Add display of interval length in samples.
+//
 
 using System;
 using System.Collections.Generic;
@@ -20,10 +25,11 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = false;
+        bool FDoWaveDump = true;
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
+        int FTrigPositionIx;
         int FNrOfIntevals;
         int FIntervalSampleCount;
         int FNumberOfChannelsInOrgininalWaveFile;
@@ -41,13 +47,20 @@ namespace BlessYou
         {
             get { return FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
         } // WaveFileLengthInMilliSecs
-        
+
         // ====================================================================
 
         public double WaveFileTrigAtMilliSecs
         {
             get { return FStartOfFirstIntervalIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
         } // WaveFileTrigAtMilliSecs
+
+        // ====================================================================        
+
+        public double WaveFileIntervalBegAtMilliSecs
+        {
+            get { return FStartOfFirstIntervalIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz; }
+        } // WaveFileIntervalBegAtMilliSecs
 
         // ====================================================================
 
@@ -133,9 +146,8 @@ namespace BlessYou
             double triggerOnLevel = (ConfigurationStatClass.C_TRIGGER_LEVEL_IN_PERCENT / 100.0) * ConfigurationStatClass.C_MAX_POSSIBLE_VALUE;
             double triggerOffLevel = (ConfigurationStatClass.C_TRIGGER_OFF_LEVEL_IN_PERCENT / 100.0) * ConfigurationStatClass.C_MAX_POSSIBLE_VALUE;
             int sampleCountOfTriggerOffDuration = (int)Math.Round(ConfigurationStatClass.C_TRIGGER_OFF_DURATION_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
-            int triggerOffIx;
             int nrOfSamplesBelowTriggerOff;
-
+            int triggerOffIx;
 
 
             // 1. Analyze sample data and calculate 
@@ -145,13 +157,14 @@ namespace BlessYou
             // 4. FIntervalSampleCount = (FWaveFileContents44p1KHz16bitSamples.Count - FStartOfFirstIntervalIx) / FNrOfIntevals
 
             FStartOfFirstIntervalIx = 0;
-            triggerOffIx = 0;
+            FTrigPositionIx = 0;
             for (int ix = 0; ix < FWaveFileContents44p1KHz16bitSamples.Length; ++ix)
             {
                 // ToDo filter with more samples?
                 if (Math.Abs(FWaveFileContents44p1KHz16bitSamples[ix]) > triggerOnLevel)
                 {
-                    FStartOfFirstIntervalIx = ix - (int)(ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
+                    FTrigPositionIx = ix;
+                    FStartOfFirstIntervalIx = FTrigPositionIx - (int)(ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
                     if (FStartOfFirstIntervalIx < 0)
                     {
                         FStartOfFirstIntervalIx = 0;
@@ -162,7 +175,7 @@ namespace BlessYou
 
 
             nrOfSamplesBelowTriggerOff = 0;
-            triggerOffIx = FStartOfFirstIntervalIx + 1;
+            triggerOffIx = FTrigPositionIx + 1;
             for (int ix = FStartOfFirstIntervalIx + 1; ix < FWaveFileContents44p1KHz16bitSamples.Length; ++ix)
             {
                 nrOfSamplesBelowTriggerOff++;
@@ -182,14 +195,16 @@ namespace BlessYou
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
-            Console.WriteLine("{0,-40} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}%",
+            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IntervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms triggOff: {4, 6:0}ms Int: {5, 6:0}ms {6, 6:0} = {6, 6:0}%",
                               System.IO.Path.GetFileName(FWaveFileName), WaveFileLengthInMilliSecs,
-                              WaveFileTrigAtMilliSecs,
+                              FStartOfFirstIntervalIx,
+                              FTrigPositionIx,
                               triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              "(" + FIntervalSampleCount + ")",
                               100.00 * WaveFileIntervalLengthInMilliSecs / FWaveFileContents44p1KHz16bitSamples.Length);
 
-            //// Dump each interval as a seperate file.
+            //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
             //{
             //    DumpWaveFileContents("Interval_" + ix.ToString(), FStartOfFirstIntervalIx + ix * FIntervalSampleCount, FStartOfFirstIntervalIx + (ix + 1) * FIntervalSampleCount - 1);
@@ -233,6 +248,7 @@ namespace BlessYou
             string usedFileName;
             int theUsedEndIx = i_EndIx;
             int zeroFlag;
+            int currLineIx;
 
             if (!FDoWaveDump)
             {
@@ -245,19 +261,27 @@ namespace BlessYou
                 theUsedEndIx = 1000000; // Max  1,048,576 rows in Excel!
             }
 
-            string[] lineArr = new string[theUsedEndIx - i_BegIx + 2];
+            string[] lineArr = new string[theUsedEndIx - i_BegIx + 3];
 
             usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_BegIx + " to " + i_EndIx);
 
+            currLineIx = 0;
+
+            // Start with colum captions
+            lineArr[currLineIx] = "x" + " \t " + "y" + "\tZeroFlag\t" + "fileNameModifier" + "\t" + "i_BegIx" + "\t" + "i_EndIx";
+            currLineIx++;
+
             // Scale Excel byte adding two samples with min/max
             y = -100000;
             x = -2;
-            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t" + i_FileNameModifier + "\t" + i_BegIx + "\t" + i_EndIx;
-
+            lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + "\t0\t" + i_FileNameModifier + "\t" + i_BegIx + "\t" + i_EndIx;
+            currLineIx++;
             y = 100000;
             x = -1;
-            lineArr[1] = x.ToString() + " \t " + y.ToString();
+            lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + "\t0";
+            currLineIx++;
+
 
             // Convert the samples to text lines
             for (soundSampleIx = i_BegIx; soundSampleIx < theUsedEndIx; ++soundSampleIx)
@@ -269,11 +293,15 @@ namespace BlessYou
                 {
                     zeroFlag = 10000;
                 }
-                lineArr[soundSampleIx - i_BegIx + 2] = x.ToString() + " \t " + y.ToString() + "\t" + zeroFlag;
+                lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + "\t" + zeroFlag;
+                currLineIx++;
 
                 if (soundSampleIx % 1000000 == 0)
                 {
-                    Console.WriteLine("sample {0}", soundSampleIx);
+                    if (soundSampleIx > 0)
+                    {
+                        Console.WriteLine("sample {0}", soundSampleIx);
+                    }
                 }
             } // for soundSampleIx
 
@@ -309,7 +337,7 @@ namespace BlessYou
             int theUsedEndIx = FWaveFileContents44p1KHz16bitSamples.Length;
             int intervalIx;
             string fileNameModifier = "Intervals";
-            int realTriggIx = i_StartIx + (int) (ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz);
+            int currLineIx;
 
             if (!FDoWaveDump)
             {
@@ -322,19 +350,27 @@ namespace BlessYou
                 theUsedEndIx = 1000000; // Max  1,048,576 rows in Excel!
             }
 
-            string[] lineArr = new string[theUsedEndIx + 2];
+            string[] lineArr = new string[theUsedEndIx + 3];
 
             usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_StartIx + " to " + theUsedEndIx);
 
+            currLineIx = 0;
+
+            // Start with colum captions
+            lineArr[currLineIx] = "x"+ " \t " + "y"+ "\tInterval\t\t" + "File Name" + "\t" + "fileNameModifier" + "\t" + "i_StartIx" + "\t" + "theUsedEndIx";
+            currLineIx++;
+
             // Scale Excel byte adding two samples with min/max
             y = -100000;
             x = -2;
-            lineArr[0] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + usedFileName + "\t" + fileNameModifier + "\t" + i_StartIx + "\t" + theUsedEndIx;
+            lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + usedFileName + "\t" + fileNameModifier + "\t" + i_StartIx + "\t" + theUsedEndIx;
+            currLineIx++;
             y = 100000;
             x = -1;
-            lineArr[1] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
-            
+            lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + "\t0\t\t" + ConfigurationStatClass.C_TRIGGER_PREFETCH_IN_MILLI_SECS * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
+            currLineIx++;
+
             // Convert the samples to text lines
             for (soundSampleIx = 0; soundSampleIx < theUsedEndIx; ++soundSampleIx)
             {
@@ -345,11 +381,11 @@ namespace BlessYou
                 {
                     intervalIx = 1 + (int)((soundSampleIx - i_StartIx) / i_IntervalLengthInSamples);
 
-                    if (soundSampleIx < realTriggIx)
+                    if (soundSampleIx < FTrigPositionIx)
                     {
                         intervalIx = -intervalIx;
                     }
-                    else
+                    else 
                     {
                         if (intervalIx < 0)
                         {
@@ -362,12 +398,25 @@ namespace BlessYou
                 {
                     intervalIx = 0;
                 }
-                intervalIx = intervalIx * 10000;
-                lineArr[soundSampleIx + 2] = x.ToString() + " \t " + y.ToString() + " \t " + intervalIx.ToString(); ;
- 
+
+                if (soundSampleIx == FTrigPositionIx)
+                {
+                    // Mark trigg position
+                    intervalIx = (int)ConfigurationStatClass.C_MAX_POSSIBLE_VALUE;
+                }
+                else
+                {
+                    intervalIx = intervalIx * 10000;
+                }
+                lineArr[currLineIx] = x.ToString() + " \t " + y.ToString() + " \t " + intervalIx.ToString(); ;
+                currLineIx++;
+
                 if (soundSampleIx % 1000000 == 0)
                 {
-                    Console.WriteLine("sample {0}", soundSampleIx);
+                    if (soundSampleIx > 0)
+                    {
+                        Console.WriteLine("sample {0}", soundSampleIx);
+                    }
                 }
             } // for soundSampleIx
 

@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.4(GF) of 2015-03-10";
+            const string C_THIS_VERSION = "Bless You v.0.4/1 of 2015-03-11";
 
             //Usage:
             //BlessYou P1 P2 [P3] where
@@ -161,10 +161,10 @@ namespace BlessYou
             // 6. Optionally dump case info
             if (1 == 1)
             {
-                Console.WriteLine("Dump case library report to file...");
+                Console.WriteLine("Dump case library report to file '{0}'...", ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME);
                 List<string> classReportStringList;
                 caseLibraryObj.GenerateReportOfAllCases(out classReportStringList);
-                System.IO.File.WriteAllLines("ClassLibraryReport.txt", classReportStringList);
+                System.IO.File.WriteAllLines(ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME, classReportStringList);
             } // if
 
             // 7. Finish.

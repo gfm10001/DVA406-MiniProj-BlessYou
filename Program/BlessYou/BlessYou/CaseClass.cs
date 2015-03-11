@@ -7,6 +7,8 @@
 // 2015-03-05/GF    FeatureTypeToString: merged to single line
 // 2015-03-08/GF    Added dump of wave contents
 // 2015-03-08/GF    AnalyseParamsToString: added
+// 2015-03-11/GF    Correction: Trigg Position display was incorrect
+//                  Addition: AnalyseParamsToString display also index
 
 using System;
 using System.Collections.Generic;
@@ -21,6 +23,7 @@ namespace BlessYou
     {
         string _WavFile_FullPathAndFileNameStr;
         double FWaveFileLengthInMilliSecs;
+        double FWaveFileIntervalBegPositionInMilliSecs;
         double FWaveFileTriggPositionInMilliSecs;
         double FWaveFileIntervallLengthInMilliSecs;
         int FNumberOfChannelsInOrgininalWaveFile;
@@ -121,6 +124,7 @@ namespace BlessYou
             waveFileObj.AnalyseWaveFileContents();
 
             FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;
+            FWaveFileIntervalBegPositionInMilliSecs = waveFileObj.WaveFileIntervalBegAtMilliSecs;
             FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
             FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
             FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
@@ -289,21 +293,20 @@ namespace BlessYou
             string resStr = "";
 
 
-            resStr = String.Format("{0,-50} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}% (was {6} channels)",
+            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms intervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms intervalEnd: {4, 6:0}ms Int: {5, 5:0}ms {6, 6:0} = {7, 6:0}% (was {8} channel(s))",
                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
                                     FWaveFileLengthInMilliSecs,
+                                    FWaveFileIntervalBegPositionInMilliSecs,
                                     FWaveFileTriggPositionInMilliSecs,
-                                    FWaveFileTriggPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
+                                    FWaveFileIntervalBegPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
                                     FWaveFileIntervallLengthInMilliSecs,
+                                    "(" + (int)FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz + ")",
                                     100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                     FNumberOfChannelsInOrgininalWaveFile);
             return resStr;
         } // AnalyseParamsToString
 
         // ====================================================================
-
-
-
 
     } // CaseClass
 }

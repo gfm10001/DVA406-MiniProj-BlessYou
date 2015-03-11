@@ -49,6 +49,8 @@ namespace BlessYou
         public double C_M_NAUDIO_FFT_FEATURE_WEIGHT = C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT;
 
         public static double C_EPSILON = 0.000001;
+
+        public static string C_CLASS_LIBRARY_REPORT_FILE_NAME = "ClassLibraryReport.txt";
 		// ToDo add missing consts
     } // ConfigurationClass
 }
