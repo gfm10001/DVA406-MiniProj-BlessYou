@@ -16,6 +16,12 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
+        public FeaturePeakClass(ConfigurationStatClass i_config) :
+            base("Peak")
+        {
+            base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
+        } // FeaturePeakClass
+
         //=====================================================================
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)

@@ -54,6 +54,13 @@ namespace BlessYou
             FFeatureName = i_FeatureName;
         } // FeatureBaseClass
 
+
+        public FeatureBaseClass(string i_FeatureName,ConfigurationStatClass i_config)
+        {
+            FFeatureValueVector = new List<double>();
+            FFeatureName = i_FeatureName;
+        } // FeatureBaseClass
+
         //=====================================================================
 
         public abstract void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound);

@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.4(GF) of 2015-03-10";
+            const string C_THIS_VERSION = "Bless You v.0.4/1 of 2015-03-11";
 
             //Usage:
             //BlessYou P1 P2 [P3] where
@@ -37,7 +37,8 @@ namespace BlessYou
             Console.WriteLine(C_THIS_VERSION);
             Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
 
-            CBRSystemClass cbrSystemObj = new CBRSystemClass();
+            CBRSystemClass CBRSystemClass = new CBRSystemClass();
+            ConfigurationStatClass config =null;// = CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -53,7 +54,7 @@ namespace BlessYou
 
             
             // 2. Create CASE-library
-            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList);
+            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList,config);
 
 
             // Display calculated features
@@ -72,6 +73,8 @@ namespace BlessYou
             } // foreach FeatureBaseClass
             Console.WriteLine();
 
+            //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+
  
             // 3. Evaluate cases
             if ("" != newProblemFileName)
@@ -83,15 +86,15 @@ namespace BlessYou
                     newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
 
                     CaseClass newProblemObj = new CaseClass();
-                    newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj);
+                    newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj,config);
 
                     List<CaseClass> caseList = new List<CaseClass>();
                     caseList.AddRange(caseLibraryObj.ListOfCases);
-                    cbrSystemObj.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus;
-                    cbrSystemObj.Reuse(retrievedMatchesList, out caseStatus);
+                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                 //}
             } // if
             else
@@ -105,6 +108,7 @@ namespace BlessYou
                 {
 
                     selectedProblemObj = caseLibraryObj.ListOfCases[ix];
+                    Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
                     List<CaseClass> caseMinusOneList = new List<CaseClass>();
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
@@ -113,11 +117,11 @@ namespace BlessYou
                             caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
                         }
                     } // for jx
-                    cbrSystemObj.Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    CBRSystemClass.Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
                     
                     //4. Start reuse function
                     EnumCaseStatus caseStatus;
-                    cbrSystemObj.Reuse(retrievedMatchesList, out caseStatus);
+                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                     if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
                         correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
@@ -130,17 +134,20 @@ namespace BlessYou
                     }
                     else
                     {
+                        //System.Diagnostics.Debugger.Break();
                         wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                         wrong++;
+                        Console.WriteLine("GUESSED WRONG HERE!");
                     }
                 }
-                Console.WriteLine("\nNumber of correct guesses:" + correct);// for ix
-                Console.WriteLine("Number of wrong guesses:" + wrong + "\n");
+                Console.WriteLine();
+                Console.WriteLine("Number of correct guesses:  {0, 4:0} = {1, 3:0.0}%", correct, ((double)correct / (double)(correct + wrong)) * 100.0);
+                Console.WriteLine("Number of wrong guesses:    {0, 4:0} = {1, 3:0.0}%", wrong, ((double)wrong / (double)(wrong + correct)) * 100.0);
                 System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                 // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                 //ToDo throw new System.NotImplementedException();
-            }
+            } // for ix
 
              
 
@@ -155,10 +162,12 @@ namespace BlessYou
             // 6. Optionally dump case info
             if (1 == 1)
             {
-                Console.WriteLine("Dump case library report to file...");
+                Console.WriteLine("Dump configuratiion report to file '{0}'...", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
+                ConfigurationStatClass.DumpConfiguration("Main", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
+                Console.WriteLine("Dump case library report to file '{0}'...", ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME);
                 List<string> classReportStringList;
                 caseLibraryObj.GenerateReportOfAllCases(out classReportStringList);
-                System.IO.File.WriteAllLines("ClassLibraryReport.txt", classReportStringList);
+                System.IO.File.WriteAllLines(ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME, classReportStringList);
             } // if
 
             // 7. Finish.

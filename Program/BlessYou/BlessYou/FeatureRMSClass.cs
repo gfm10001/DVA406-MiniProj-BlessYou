@@ -16,6 +16,12 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
+        public FeatureRMSClass(ConfigurationStatClass i_config) :
+            base("RMS")
+        {
+            base.FFeatureWeight = i_config.C_M_RMS_FEATURE_WEIGHT;
+        } // FeaturePeakClass
+
         //=====================================================================
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
