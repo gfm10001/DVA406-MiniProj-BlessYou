@@ -34,6 +34,10 @@ namespace BlessYou
         public static double C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
 
+
+        public static int C_STARTING_FFT_ANALYSIS_FREQUENCY = 1000;
+        public static int C_ENDING_FFT_ANALYSIS_FREQUENCY = 5000;
+
         public static double C_EPSILON = 0.000001;
 		// ToDo add missing consts
     } // ConfigurationClass
