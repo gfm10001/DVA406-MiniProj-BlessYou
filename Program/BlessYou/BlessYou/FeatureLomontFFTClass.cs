@@ -8,6 +8,9 @@ namespace BlessYou
     public class FeatureLomontFFTClass : FeatureBaseClass
     {
         private double FNumberOfSamplesAsValuePowerOfTwo;
+        private double[] FDataFFTAnalysisDone;
+        private double[] FDataFFTAnalysisDoneInDB;
+        private double[] FFrequencyArr;
 
         //=====================================================================
 
@@ -25,6 +28,34 @@ namespace BlessYou
 
         //=====================================================================
 
+        public double[] DataFFTAnalysisDoneInDB
+        {
+            get
+            {
+                return FDataFFTAnalysisDoneInDB;
+            }
+            set
+            {
+                FDataFFTAnalysisDoneInDB = value;
+            }
+        } // DataFFTAnalysisDoneInDB
+
+        //=====================================================================
+
+        public double[] FrequencyArr
+        {
+            get
+            {
+                return FFrequencyArr;
+            }
+            set
+            {
+                FFrequencyArr = value;
+            }
+        } // FrequencyArr
+
+        //=====================================================================
+
         public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo) :
             base("LomontFFT - " + i_NumberOfSamplesAsValuePowerOfTwo)
         {
@@ -38,23 +69,31 @@ namespace BlessYou
         {
             int samplingFrequency = 1000 * (int) ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
             int maxNrOfSamples = 65536; // 2^16
-
+         
             LomontFFTClass LFFTObj = new LomontFFTClass();
             bool forward = true;
+            
             int nrOfMaxDescendingFrequencies = 10;
 
             int nrOfSamples = (int)Math.Pow(2, NumberOfSamplesAsValuePowerOfTwo);
             int nrOfBins = nrOfSamples / 2;
             double[] dataForFFTAnalysis = new double[maxNrOfSamples];
-            double[] dataFFTAnalysisDone = new double[maxNrOfSamples / 2];
-            double[] dataFFTAnalysisDoneInDB = new double[maxNrOfSamples / 2];
-            double[] frequencyArr = new double[maxNrOfSamples / 2];
+            FDataFFTAnalysisDoneInDB = new double[maxNrOfSamples / 2];
+            FDataFFTAnalysisDone = new double[maxNrOfSamples / 2];
+            FFrequencyArr = new double[maxNrOfSamples / 2];
 
+
+            int firstListIx = i_FirstListIx;
             if (i_FirstListIx + nrOfSamples > i_WaveFileContents44p1KHz16bitSamples.Length)
             {
-                i_FirstListIx = i_WaveFileContents44p1KHz16bitSamples.Length - nrOfSamples - 1;
+                firstListIx = i_WaveFileContents44p1KHz16bitSamples.Length - nrOfSamples - 1;
             }
 
+            if (firstListIx < 0)
+            {
+                FFeatureValueVector.Add(0.0);
+                return;
+            }
             // Pad input as needed
             int modfactor = (int)(Math.Pow(2, (16 - (int)NumberOfSamplesAsValuePowerOfTwo)));
             for (int ix = 0; ix < nrOfSamples; ++ix)
@@ -65,11 +104,11 @@ namespace BlessYou
                 } // if
                 else if (NumberOfSamplesAsValuePowerOfTwo == 16.0)
                 {
-                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[i_FirstListIx + ix];
+                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[firstListIx + ix];
                 } // else if
                 else
                 {
-                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[i_FirstListIx + ix / modfactor];
+                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[firstListIx + ix / modfactor];
                 }
             } // for ix
 
@@ -83,49 +122,49 @@ namespace BlessYou
             for (int ix = 0; ix < nrOfSamples; ix += 2)
             {
                 // Amplitude
-                dataFFTAnalysisDone[ix / 2] = dataForFFTAnalysis[ix];
+                FDataFFTAnalysisDone[ix / 2] = dataForFFTAnalysis[ix];
                 
                 // Convert amplitude to dB values formula
                 // dB_val = 10.0 * log10(re * re + im * im) + dB_correction
-                dataFFTAnalysisDoneInDB[ix / 2] = 10 * Math.Log10(dataForFFTAnalysis[ix] * dataForFFTAnalysis[ix] + dataForFFTAnalysis[ix + 1] * dataForFFTAnalysis[ix + 1]);
+                FDataFFTAnalysisDoneInDB[ix / 2] = 10 * Math.Log10(dataForFFTAnalysis[ix] * dataForFFTAnalysis[ix] + dataForFFTAnalysis[ix + 1] * dataForFFTAnalysis[ix + 1]);
 
                 // retrieve frequencies
-                frequencyArr[ix / 2] = ix / (double)nrOfSamples / 2 * samplingFrequency;
+                FFrequencyArr[ix / 2] = ix / (double)nrOfSamples / 2 * samplingFrequency;
             } // for ix
 
 
             // Calulate the nrOfDominantFrequencies
-            int bin = dataFFTAnalysisDoneInDB.ToList().IndexOf(dataFFTAnalysisDoneInDB.ToList().Max());
-            int[] binArray = new int[nrOfMaxDescendingFrequencies];
-            binArray = dataFFTAnalysisDoneInDB.Select((value, index) => new { value, index })
-                    .OrderByDescending(item => item.value)
-                    .Take(nrOfMaxDescendingFrequencies)
-                    .Select(item => item.index)
-                    .ToArray();
-            double[] frequencyArray = new double[nrOfMaxDescendingFrequencies];
-            int jx = 0; 
-            foreach (var x in binArray)
-            {
-                frequencyArray[jx] = x / (double)maxNrOfSamples * samplingFrequency;
-                jx++;
-            }
+            int bin = FDataFFTAnalysisDoneInDB.ToList().IndexOf(FDataFFTAnalysisDoneInDB.ToList().Max());
+            //int[] binArray = new int[nrOfMaxDescendingFrequencies];
+            //binArray = FDataFFTAnalysisDoneInDB.Select((value, index) => new { value, index })
+            //        .OrderByDescending(item => item.value)
+            //        .Take(nrOfMaxDescendingFrequencies)
+            //        .Select(item => item.index)
+            //        .ToArray();
+            //double[] frequencyArray = new double[nrOfMaxDescendingFrequencies];
+            //int jx = 0; 
+            //foreach (var x in binArray)
+            //{
+            //    frequencyArray[jx] = x / (double)maxNrOfSamples * samplingFrequency;
+            //    jx++;
+            //}
 
             //Console.Write("Lomont===============================================samples= " + NumberOfSamplesAsValuePowerOfTwo);
-            //Console.WriteLine("\nDominant bin: " + bin + " Dominant Frequency: " + frequencyArr[bin]);
+            //Console.WriteLine("\nDominant bin: " + bin + " Dominant Frequency: " + FFrequencyArr[bin]);
             //Console.Write("Data: ");
 
             string[] strArr = new string[100000];
             for (int ix = 0; ix < nrOfSamples / 2; ++ix)
             {
                 //Console.WriteLine(frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n");
-                strArr[ix] = frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n";
+                strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix] + "\n";
             }
-            System.IO.File.WriteAllLines("FFToutput" + NumberOfSamplesAsValuePowerOfTwo + ".xls", strArr);
+            //System.IO.File.WriteAllLines("FFToutput" + NumberOfSamplesAsValuePowerOfTwo + ".xls", strArr);
 
-            Console.WriteLine("");
+            //Console.WriteLine("");
 
 
-            FFeatureValueVector.Add(frequencyArray.Max());
+            FFeatureValueVector.Add(FFrequencyArr[bin]);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
