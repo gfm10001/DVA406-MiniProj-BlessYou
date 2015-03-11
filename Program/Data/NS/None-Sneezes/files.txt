@@ -1,0 +1,31 @@
+ Volume in drive C is OSDisk
+ Volume Serial Number is 7C38-1711
+
+ Directory of C:\Users\sns10001\Documents\GitHub\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes
+
+2015-03-11  10:06    <DIR>          .
+2015-03-11  10:06    <DIR>          ..
+2015-03-11  08:52         2ÿ646ÿ044 100Hz_44100Hz_16bit_30sec.wav
+2015-03-11  08:52         2ÿ646ÿ044 10kHz_44100Hz_16bit_30sec.wav
+2015-03-11  08:52         2ÿ646ÿ044 1kHz_44100Hz_16bit_30sec.wav
+2015-03-11  08:52         2ÿ649ÿ494 250Hz_44100Hz_16bit_30sec.wav
+2015-03-11  08:52         2ÿ649ÿ524 440Hz_44100Hz_16bit_30sec.wav
+2015-03-10  21:39           425ÿ700 Cough_10.wav
+2015-03-10  21:39           386ÿ104 Cough_11.wav
+2015-03-10  21:40           351ÿ460 Cough_12.wav
+2015-03-10  21:40           430ÿ656 Cough_13.wav
+2015-03-10  21:40           467ÿ772 Cough_14.wav
+2015-03-10  21:41           363ÿ832 Cough_15.wav
+2015-03-10  21:41           460ÿ348 Cough_16.wav
+2015-03-10  21:42           668ÿ748 Cough_17.wav
+2015-03-10  21:43           623ÿ892 Cough_18.wav
+2015-03-10  21:43           680ÿ976 Cough_19.wav
+2015-03-10  21:44           530ÿ112 Cough_20.wav
+2015-03-10  21:45         1ÿ348ÿ732 Cough_21.wav
+2015-03-11  10:07                 0 files.txt
+2015-03-10  22:18         1ÿ010ÿ494 Sound_21.wav
+2015-03-10  22:22           267ÿ708 Sound_22.wav
+2015-03-10  22:37           523ÿ332 Sound_23.wav
+2015-03-10  22:38           524ÿ436 Sound_24.wav
+              22 File(s)     22ÿ301ÿ452 bytes
+               2 Dir(s)  319ÿ200ÿ141ÿ312 bytes free

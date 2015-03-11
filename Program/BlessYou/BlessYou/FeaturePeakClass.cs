@@ -24,7 +24,7 @@ namespace BlessYou
 
         //=====================================================================
 
-        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
+        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
             int startIx = i_FirstListIx;
             double peak = -1.0;

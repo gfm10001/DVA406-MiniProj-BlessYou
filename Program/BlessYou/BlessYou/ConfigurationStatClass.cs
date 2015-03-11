@@ -48,6 +48,9 @@ namespace BlessYou
         public double C_M_LOMONT_FFT_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
         public double C_M_NAUDIO_FFT_FEATURE_WEIGHT = C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT;
 
+        public static int C_STARTING_FFT_ANALYSIS_FREQUENCY = 1000;
+        public static int C_ENDING_FFT_ANALYSIS_FREQUENCY = 5000;
+
         public static double C_EPSILON = 0.000001;
 
         public static string C_CONFIGURATION_REPORT_FILE_NAME = "ConfigurationReport.txt";

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace BlessYou
 {
@@ -11,6 +12,7 @@ namespace BlessYou
         private double[] FDataFFTAnalysisDone;
         private double[] FDataFFTAnalysisDoneInDB;
         private double[] FFrequencyArr;
+        string FFilePathAndName;
 
         //=====================================================================
 
@@ -56,11 +58,19 @@ namespace BlessYou
 
         //=====================================================================
 
-        public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo) :
+        public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo, string i_FilePathAndName) :
             base("LomontFFT - " + i_NumberOfSamplesAsValuePowerOfTwo)
         {
             NumberOfSamplesAsValuePowerOfTwo = i_NumberOfSamplesAsValuePowerOfTwo;
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
+            FFilePathAndName = i_FilePathAndName;
+        } // FeaturePeakClass
+
+        public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo,ConfigurationStatClass i_config) :
+            base("LomontFFT - " + i_NumberOfSamplesAsValuePowerOfTwo)
+        {
+            NumberOfSamplesAsValuePowerOfTwo = i_NumberOfSamplesAsValuePowerOfTwo;
+            base.FFeatureWeight = i_config.C_M_LOMONT_FFT_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo,ConfigurationStatClass i_config) :
@@ -72,22 +82,25 @@ namespace BlessYou
 
         //=====================================================================
 
-        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
+        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
+            bool sendRawDataTOFile = false; // true
+
             int samplingFrequency = 1000 * (int) ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
             int maxNrOfSamples = 65536; // 2^16
          
             LomontFFTClass LFFTObj = new LomontFFTClass();
             bool forward = true;
-            
-            int nrOfMaxDescendingFrequencies = 10;
+            int analysisStartIndex = 0;
+            int analysisEndIndex = 0;
 
             int nrOfSamples = (int)Math.Pow(2, NumberOfSamplesAsValuePowerOfTwo);
             int nrOfBins = nrOfSamples / 2;
             double[] dataForFFTAnalysis = new double[maxNrOfSamples];
-            FDataFFTAnalysisDoneInDB = new double[maxNrOfSamples / 2];
-            FDataFFTAnalysisDone = new double[maxNrOfSamples / 2];
-            FFrequencyArr = new double[maxNrOfSamples / 2];
+            FDataFFTAnalysisDone = new double[nrOfSamples / 2];
+            FDataFFTAnalysisDoneInDB = new double[nrOfSamples / 2];
+            FFrequencyArr = new double[nrOfSamples / 2];
+
 
 
             int firstListIx = i_FirstListIx;
@@ -137,6 +150,17 @@ namespace BlessYou
 
                 // retrieve frequencies
                 FFrequencyArr[ix / 2] = ix / (double)nrOfSamples / 2 * samplingFrequency;
+
+                // Retrieve startindex corresponding to C_STARTING_FFT_ANALYSIS_FREQUENCY
+                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
+                {
+                    analysisStartIndex = ix / 2;
+                } // if
+                // Retrieve startindex corresponding to C_ENDING_FFT_ANALYSIS_FREQUENCY
+                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
+                {
+                    analysisEndIndex = ix / 2;
+                } // if
             } // for ix
 
 
@@ -164,14 +188,18 @@ namespace BlessYou
             for (int ix = 0; ix < nrOfSamples / 2; ++ix)
             {
                 //Console.WriteLine(frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n");
-                strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix] + "\n";
+                strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix];
             }
-            //System.IO.File.WriteAllLines("FFToutput" + NumberOfSamplesAsValuePowerOfTwo + ".xls", strArr);
 
-            //Console.WriteLine("");
+            string fileName = Path.GetFileName(FFilePathAndName);
+            if (sendRawDataTOFile)
+            {
+                System.IO.File.WriteAllLines("FFToutput_" + fileName + "_S_" + NumberOfSamplesAsValuePowerOfTwo + "_R_" + i_CurrentRound + ".xls", strArr);
+            } // if
 
-
-            FFeatureValueVector.Add(FFrequencyArr[bin]);
+            // Setup the Feature Value and return it to the vector
+            double featureValue = FDataFFTAnalysisDoneInDB.ToList().GetRange(analysisStartIndex, analysisEndIndex - analysisStartIndex).Average();
+            FFeatureValueVector.Add(featureValue);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
