@@ -158,8 +158,8 @@ namespace BlessYou
             }
 
             double DistancePrbability = bestDistanceValue / totalAVGdistance;
-            if (DistancePrbability < 0.70)
-                System.Diagnostics.Debugger.Break();
+            //if (DistancePrbability < 0.70)
+            //    System.Diagnostics.Debugger.Break();
 
             Console.WriteLine("Uncertianty in finding solution.\nCount value:" + countProbability + "\nDistance value:" + DistancePrbability);
 

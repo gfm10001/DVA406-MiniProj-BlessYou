@@ -220,7 +220,7 @@ namespace BlessYou
             //} // for ix
 
             // DumpWaveFileContents split into intervalls.
-            DumpWaveFileIntervalContents(FStartOfFirstIntervalIx, FIntervalSampleCount);
+            //DumpWaveFileIntervalContents(FStartOfFirstIntervalIx, FIntervalSampleCount);
         
         } // AnalyseWaveFileContents
 

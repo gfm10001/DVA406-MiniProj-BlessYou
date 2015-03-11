@@ -137,7 +137,7 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featureAverageObj);
             FFeatureTypeVector.Add(featureAverageObj);
 
-            FeatureRMSClass featureRMSObj = new FeatureRMSClass();
+            FeatureRMSClass featureRMSObj = new FeatureRMSClass(i_config);
             waveFileObj.CalculateFeatureVector(featureRMSObj);
             FFeatureTypeVector.Add(featureRMSObj);
 
@@ -154,17 +154,17 @@ namespace BlessYou
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
             //ToDo Evaluationfunctions to be developed
-            //FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
-            //waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
-            //FFeatureTypeVector.Add(featureLomontFFT16Obj);
+            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr, i_config);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+            FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            //FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
-            //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
-            //FFeatureTypeVector.Add(featureLomontFFT14Obj);
+            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr, i_config);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+            FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
-            //FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12, i_config);
-            //waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
-            //FFeatureTypeVector.Add(featureLomontFFT12Obj);
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
+            waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+            FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
             // At last normalize feature weights
             double sum = 0;
@@ -209,13 +209,13 @@ namespace BlessYou
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
             //ToDo Evaluationfunctions to be developed
-            //FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
+            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr, i_config);
             //waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
-            //FFeatureTypeVector.Add(featureLomontFFT16Obj);
+            FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            //FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
+            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr, i_config);
             //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
-            //FFeatureTypeVector.Add(featureLomontFFT14Obj);
+            FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
             FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
             //waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
