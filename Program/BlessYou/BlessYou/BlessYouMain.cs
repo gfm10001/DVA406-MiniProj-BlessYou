@@ -63,12 +63,16 @@ namespace BlessYou
             int featureTypeIx = 0;
             foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
             {
+                List<string> dumpListOfFeatures = new List<string>();
+
                 Console.WriteLine("\nfeatureTypeIx = {0} = '{1}'\n", featureTypeIx, fbc.FeatureName);
                 foreach (CaseClass caseObj in caseLibraryObj.ListOfCases)
                 {
                     string s = caseObj.FeatureTypeToString(featureTypeIx);
-                    Console.WriteLine(s);
+                    dumpListOfFeatures.Add(s);
+                   // Console.WriteLine(s);
                 } // foreach CaseClass
+                System.IO.File.WriteAllLines(fbc.FeatureName + ".xls", dumpListOfFeatures);
                 featureTypeIx++;
             } // foreach FeatureBaseClass
             Console.WriteLine();

@@ -281,7 +281,7 @@ namespace BlessYou
 
             for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
             {
-                resStr = resStr + " " + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
             } // for
             return resStr;
         } // FeatureTypeToString

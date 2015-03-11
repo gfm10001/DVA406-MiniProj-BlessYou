@@ -65,7 +65,7 @@ namespace BlessYou
 
         public static void DumpConfiguration(string i_Banner, string i_FileName)
         {
-            // Kan reflection användas???
+            // ToDo: Kan reflection användas här?
             string totText = "";
 
             totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
