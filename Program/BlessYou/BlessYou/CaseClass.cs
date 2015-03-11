@@ -7,6 +7,8 @@
 // 2015-03-05/GF    FeatureTypeToString: merged to single line
 // 2015-03-08/GF    Added dump of wave contents
 // 2015-03-08/GF    AnalyseParamsToString: added
+// 2015-03-11/GF    Correction: Trigg Position display was incorrect
+//                  Addition: AnalyseParamsToString display also index
 
 using System;
 using System.Collections.Generic;
@@ -161,7 +163,6 @@ namespace BlessYou
             //FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
             FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12,i_config);
-			FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr);
             waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
             FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
