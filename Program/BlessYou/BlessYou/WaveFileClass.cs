@@ -195,14 +195,15 @@ namespace BlessYou
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
 
-            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IntervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms triggOff: {4, 6:0}ms Int: {5, 6:0}ms {6, 6:0} = {6, 6:0}%",
-                              System.IO.Path.GetFileName(FWaveFileName), WaveFileLengthInMilliSecs,
+            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IntervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms triggOff: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 6:0}%",
+                              System.IO.Path.GetFileName(FWaveFileName),
+                              WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,
                               FTrigPositionIx,
                               triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
                               "(" + FIntervalSampleCount + ")",
-                              100.00 * WaveFileIntervalLengthInMilliSecs / FWaveFileContents44p1KHz16bitSamples.Length);
+                              100.00 * (WaveFileIntervalLengthInMilliSecs / FWaveFileContents44p1KHz16bitSamples.Length));
 
             //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
