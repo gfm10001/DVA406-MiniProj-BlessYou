@@ -21,6 +21,7 @@ namespace BlessYou
     {
         string _WavFile_FullPathAndFileNameStr;
         double FWaveFileLengthInMilliSecs;
+        double FWaveFileIntervalBegPositionInMilliSecs;
         double FWaveFileTriggPositionInMilliSecs;
         double FWaveFileIntervallLengthInMilliSecs;
         int FNumberOfChannelsInOrgininalWaveFile;
@@ -89,8 +90,11 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj)
+        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj, ConfigurationStatClass i_config = null)
         {
+
+            if (i_config == null)
+                i_config = new ConfigurationStatClass();
            
             WaveFileClass waveFileObj = new WaveFileClass();
             switch (i_SoundFileObj.SoundFileSneezeMarker)
@@ -118,15 +122,16 @@ namespace BlessYou
             waveFileObj.AnalyseWaveFileContents();
 
             FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;
+            FWaveFileIntervalBegPositionInMilliSecs = waveFileObj.WaveFileIntervalBegAtMilliSecs;
             FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
             FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
             FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
 
-            FeaturePeakClass featurePeakObj = new FeaturePeakClass();
+            FeaturePeakClass featurePeakObj = new FeaturePeakClass(i_config);
             waveFileObj.CalculateFeatureVector(featurePeakObj);
             FFeatureTypeVector.Add(featurePeakObj);
 
-            FeatureAverageClass featureAverageObj = new FeatureAverageClass();
+            FeatureAverageClass featureAverageObj = new FeatureAverageClass(i_config);
             waveFileObj.CalculateFeatureVector(featureAverageObj);
             FFeatureTypeVector.Add(featureAverageObj);
 
@@ -134,28 +139,29 @@ namespace BlessYou
             waveFileObj.CalculateFeatureVector(featureRMSObj);
             FFeatureTypeVector.Add(featureRMSObj);
 
-            FeaturePeak2PeakClass featurePeak2PeakObj = new FeaturePeak2PeakClass();
+            FeaturePeak2PeakClass featurePeak2PeakObj = new FeaturePeak2PeakClass(i_config);
             waveFileObj.CalculateFeatureVector(featurePeak2PeakObj);
             FFeatureTypeVector.Add(featurePeak2PeakObj);
 
-            FeatureCrestFactorClass featureCrestFactorObj = new FeatureCrestFactorClass();
+            FeatureCrestFactorClass featureCrestFactorObj = new FeatureCrestFactorClass(i_config);
             waveFileObj.CalculateFeatureVector(featureCrestFactorObj);
             FFeatureTypeVector.Add(featureCrestFactorObj);
 
-            FeaturePassingZeroClass featurePassingZeroObj = new FeaturePassingZeroClass();
+            FeaturePassingZeroClass featurePassingZeroObj = new FeaturePassingZeroClass(i_config);
             waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
             //ToDo Evaluationfunctions to be developed
-            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
-            FFeatureTypeVector.Add(featureLomontFFT16Obj);
+            //FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+            //FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
-            FFeatureTypeVector.Add(featureLomontFFT14Obj);
+            //FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+            //FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
-            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr);
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12,i_config);
+			FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr);
             waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
             FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
@@ -172,6 +178,60 @@ namespace BlessYou
 
             // ToDo    throw new System.NotImplementedException();
         } // ExtractWavFileFeatures
+
+        public void UpdateFeatureVectors(ConfigurationStatClass i_config)
+        {
+            FFeatureTypeVector.Clear();
+
+            FeaturePeakClass featurePeakObj = new FeaturePeakClass(i_config);
+            //waveFileObj.CalculateFeatureVector(featurePeakObj);
+            FFeatureTypeVector.Add(featurePeakObj);
+
+            FeatureAverageClass featureAverageObj = new FeatureAverageClass(i_config);
+            //waveFileObj.CalculateFeatureVector(featureAverageObj);
+            FFeatureTypeVector.Add(featureAverageObj);
+
+            FeatureRMSClass featureRMSObj = new FeatureRMSClass();
+            //waveFileObj.CalculateFeatureVector(featureRMSObj);
+            FFeatureTypeVector.Add(featureRMSObj);
+
+            FeaturePeak2PeakClass featurePeak2PeakObj = new FeaturePeak2PeakClass(i_config);
+            //waveFileObj.CalculateFeatureVector(featurePeak2PeakObj);
+            FFeatureTypeVector.Add(featurePeak2PeakObj);
+
+            FeatureCrestFactorClass featureCrestFactorObj = new FeatureCrestFactorClass(i_config);
+            //waveFileObj.CalculateFeatureVector(featureCrestFactorObj);
+            FFeatureTypeVector.Add(featureCrestFactorObj);
+
+            FeaturePassingZeroClass featurePassingZeroObj = new FeaturePassingZeroClass(i_config);
+            //waveFileObj.CalculateFeatureVector(featurePassingZeroObj);
+            FFeatureTypeVector.Add(featurePassingZeroObj);
+
+            //ToDo Evaluationfunctions to be developed
+            //FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+            //FFeatureTypeVector.Add(featureLomontFFT16Obj);
+
+            //FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+            //FFeatureTypeVector.Add(featureLomontFFT14Obj);
+
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12, i_config);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+            FFeatureTypeVector.Add(featureLomontFFT12Obj);
+
+            // At last normalize feature weights
+            double sum = 0;
+            foreach (FeatureBaseClass fbc in FFeatureTypeVector)
+            {
+                sum = sum + fbc.FeatureWeight;
+            }
+            foreach (FeatureBaseClass fbc in FFeatureTypeVector)
+            {
+                fbc.FeatureWeight = fbc.FeatureWeight / sum;
+            }
+        
+        }
 
         // ====================================================================
 
@@ -232,21 +292,21 @@ namespace BlessYou
             string resStr = "";
 
 
-            resStr = String.Format("{0,-50} - Tot: {1, 6:0}ms triggOn: {2, 6:0}ms triggOff: {3, 6:0}ms Int: {4, 6:0}ms = {5, 6:0}% (was {6} channels)",
+            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s))",
                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
                                     FWaveFileLengthInMilliSecs,
+                                    FWaveFileIntervalBegPositionInMilliSecs,
                                     FWaveFileTriggPositionInMilliSecs,
-                                    FWaveFileTriggPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
+                                    FWaveFileIntervalBegPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
                                     FWaveFileIntervallLengthInMilliSecs,
+                                    "(" + (int)(FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz) + ")",
                                     100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
+                                    100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                     FNumberOfChannelsInOrgininalWaveFile);
             return resStr;
         } // AnalyseParamsToString
 
         // ====================================================================
-
-
-
 
     } // CaseClass
 }
