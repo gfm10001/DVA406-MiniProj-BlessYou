@@ -217,7 +217,7 @@ namespace BlessYou
             //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
             //FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
-            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12, i_config);
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
             //waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
             FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
