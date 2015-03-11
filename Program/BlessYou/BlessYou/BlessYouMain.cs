@@ -140,13 +140,14 @@ namespace BlessYou
                         Console.WriteLine("GUESSED WRONG HERE!");
                     }
                 }
-                Console.WriteLine("\nNumber of correct guesses: " + correct + " / " + (correct/(double)(correct+wrong))*100+"%");// for ix
-                Console.WriteLine("Number of wrong guesses: " + wrong + " / " + (wrong/(double)(wrong+correct))*100 +"%\n");
+                Console.WriteLine();
+                Console.WriteLine("Number of correct guesses:  {0, 4:0} = {1, 3:0.0}%", correct, ((double)correct / (double)(correct + wrong)) * 100.0);
+                Console.WriteLine("Number of wrong guesses:    {0, 4:0} = {1, 3:0.0}%", wrong, ((double)wrong / (double)(wrong + correct)) * 100.0);
                 System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                 // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                 //ToDo throw new System.NotImplementedException();
-            }
+            } // for ix
 
              
 
@@ -161,6 +162,8 @@ namespace BlessYou
             // 6. Optionally dump case info
             if (1 == 1)
             {
+                Console.WriteLine("Dump configuratiion report to file '{0}'...", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
+                ConfigurationStatClass.DumpConfiguration("Main", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
                 Console.WriteLine("Dump case library report to file '{0}'...", ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME);
                 List<string> classReportStringList;
                 caseLibraryObj.GenerateReportOfAllCases(out classReportStringList);

@@ -100,7 +100,7 @@ namespace BlessYou
 
             FNumberOfChannelsInOrgininalWaveFile = _wavFile.NumberOfChannelsInWaveFile;
 
-            DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+       //     DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 
         } // ReadWaveFile
 
@@ -194,15 +194,17 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IntervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms triggOff: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 2:0}%",
+            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%",
                               System.IO.Path.GetFileName(FWaveFileName),
                               WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,
                               FTrigPositionIx,
                               triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
-                              FIntervalSampleCount / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                              ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs,
+                              WaveFileIntervalLengthInMilliSecs,
                               "(" + FIntervalSampleCount + ")",
-                              100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)));
+                              100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
+                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)));
 
             //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
@@ -308,13 +310,11 @@ namespace BlessYou
 
             try
             {
-                Console.WriteLine("saveing: " + usedFileName);
                 System.IO.File.WriteAllLines(usedFileName, lineArr);
-                
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpWaveFileContents - ERR: " + ex.Message);
+                Console.WriteLine("DumpWaveFileContents to {0} - ERR: " + ex.Message, usedFileName);
             }
 
         } // DumpWaveFileContents
@@ -423,13 +423,12 @@ namespace BlessYou
 
             try
             {
-                Console.WriteLine("saving: " + usedFileName);
                 System.IO.File.WriteAllLines(usedFileName, lineArr);
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpWaveFileIntervalContents - ERR: " + ex.Message);
+                Console.WriteLine("DumpWaveFileIntervalContents to {0}- ERR: " + ex.Message, usedFileName);
             }
 
         } // DumpWaveFileIntervalContents
