@@ -30,7 +30,7 @@ namespace BlessYou
 
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
-        
+
         //=====================================================================
 
         public string WavFile_FullPathAndFileNameStr
@@ -97,7 +97,7 @@ namespace BlessYou
 
             if (i_config == null)
                 i_config = new ConfigurationStatClass();
-           
+
             WaveFileClass waveFileObj = new WaveFileClass();
             switch (i_SoundFileObj.SoundFileSneezeMarker)
             {
@@ -162,9 +162,9 @@ namespace BlessYou
             //waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
             //FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
-            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12,i_config);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
-            FFeatureTypeVector.Add(featureLomontFFT12Obj);
+            //FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12, i_config);
+            //waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+            //FFeatureTypeVector.Add(featureLomontFFT12Obj);
 
             // At last normalize feature weights
             double sum = 0;
@@ -231,7 +231,7 @@ namespace BlessYou
             {
                 fbc.FeatureWeight = fbc.FeatureWeight / sum;
             }
-        
+
         }
 
         // ====================================================================
@@ -292,21 +292,18 @@ namespace BlessYou
         {
             string resStr = "";
 
-           resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) Sneeze: {10}",
-
-            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s))",
-                                    System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
-                                    FWaveFileLengthInMilliSecs,
-                                    FWaveFileIntervalBegPositionInMilliSecs,
-                                    FWaveFileTriggPositionInMilliSecs,
-                                    FWaveFileIntervalBegPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
-                                    FWaveFileIntervallLengthInMilliSecs,
-                                    "(" + (int)(FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz) + ")",
-                                    100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
-                                    100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
-									FNumberOfChannelsInOrgininalWaveFile);
-									
-                                    _SneezeStatus);
+            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) Sneeze: {10}",
+                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr),
+                                     FWaveFileLengthInMilliSecs,
+                                     FWaveFileIntervalBegPositionInMilliSecs,
+                                     FWaveFileTriggPositionInMilliSecs,
+                                     FWaveFileIntervalBegPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
+                                     FWaveFileIntervallLengthInMilliSecs,
+                                     "(" + (int)(FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz) + ")",
+                                     100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
+                                     100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
+                                     FNumberOfChannelsInOrgininalWaveFile,
+                                     _SneezeStatus);
             return resStr;
         } // AnalyseParamsToString
 
