@@ -42,6 +42,26 @@ namespace BlessYou
 
         // ====================================================================
 
+        public void CountNrOfDifferentCases(out int o_NrOfSneeze, out int o_NrOfNoneSneezes)
+        {
+            o_NrOfSneeze = 0;
+            o_NrOfNoneSneezes = 0;
+            foreach (CaseClass cObj in FListOfCases)
+            {
+                if (cObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    o_NrOfSneeze++;
+                }
+                if (cObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    o_NrOfNoneSneezes++;
+                }
+            } // foreach
+
+        } // CountNrOfDifferentCases
+
+        // ====================================================================
+
         public void GenerateReportOfAllCases(out List<string> o_ClassReportStringList)
         {
             o_ClassReportStringList = new List<string>();
