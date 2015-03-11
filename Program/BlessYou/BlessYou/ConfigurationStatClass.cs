@@ -35,8 +35,11 @@ namespace BlessYou
         public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
 
 
-        public static int C_STARTING_FFT_ANALYSIS_FREQUENCY = 1000;
-        public static int C_ENDING_FFT_ANALYSIS_FREQUENCY = 5000;
+        public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
+        public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
+        public static int C_NR_OF_SAMPLES_2_POWER_12 = 12;
+        public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;
+        public static int C_NR_OF_SAMPLES_2_POWER_16 = 16;
 
         public static double C_EPSILON = 0.000001;
 		// ToDo add missing consts

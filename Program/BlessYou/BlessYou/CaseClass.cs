@@ -147,15 +147,15 @@ namespace BlessYou
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
             //ToDo Evaluationfunctions to be developed
-            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(16, _WavFile_FullPathAndFileNameStr);
+            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr);
             waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
             FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(14, _WavFile_FullPathAndFileNameStr);
+            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr);
             waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
             FFeatureTypeVector.Add(featureLomontFFT14Obj);
 
-            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(12, _WavFile_FullPathAndFileNameStr);
+            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr);
             waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
             FFeatureTypeVector.Add(featureLomontFFT12Obj);
 

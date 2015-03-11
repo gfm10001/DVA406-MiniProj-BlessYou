@@ -68,7 +68,7 @@ namespace BlessYou
 
         //=====================================================================
 
-        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)
+        public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
             bool sendRawDataTOFile = false; // true
 
@@ -83,6 +83,9 @@ namespace BlessYou
             int nrOfSamples = (int)Math.Pow(2, NumberOfSamplesAsValuePowerOfTwo);
             int nrOfBins = nrOfSamples / 2;
             double[] dataForFFTAnalysis = new double[maxNrOfSamples];
+            FDataFFTAnalysisDone = new double[nrOfSamples / 2];
+            FDataFFTAnalysisDoneInDB = new double[nrOfSamples / 2];
+            FFrequencyArr = new double[nrOfSamples / 2];
 
 
 
@@ -135,12 +138,12 @@ namespace BlessYou
                 FFrequencyArr[ix / 2] = ix / (double)nrOfSamples / 2 * samplingFrequency;
 
                 // Retrieve startindex corresponding to C_STARTING_FFT_ANALYSIS_FREQUENCY
-                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_STARTING_FFT_ANALYSIS_FREQUENCY)
+                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
                 {
                     analysisStartIndex = ix / 2;
                 } // if
                 // Retrieve startindex corresponding to C_ENDING_FFT_ANALYSIS_FREQUENCY
-                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_ENDING_FFT_ANALYSIS_FREQUENCY)
+                if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
                 {
                     analysisEndIndex = ix / 2;
                 } // if
@@ -177,10 +180,10 @@ namespace BlessYou
             string fileName = Path.GetFileName(FFilePathAndName);
             if (sendRawDataTOFile)
             {
-                System.IO.File.WriteAllLines("FFToutput_" + fileName + "_" + NumberOfSamplesAsValuePowerOfTwo + ".xls", strArr);
+                System.IO.File.WriteAllLines("FFToutput_" + fileName + "_S_" + NumberOfSamplesAsValuePowerOfTwo + "_R_" + i_CurrentRound + ".xls", strArr);
             } // if
 
-            // setup the Feature Value and return it
+            // Setup the Feature Value and return it to the vector
             double featureValue = FDataFFTAnalysisDoneInDB.ToList().GetRange(analysisStartIndex, analysisEndIndex - analysisStartIndex).Average();
             FFeatureValueVector.Add(featureValue);
         } // calculateFeatureValuesFromSamples

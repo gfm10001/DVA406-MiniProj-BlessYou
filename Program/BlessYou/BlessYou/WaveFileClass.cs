@@ -210,15 +210,14 @@ namespace BlessYou
             // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
             int soundSampleIx;
 
-
+            int round = 0;
             soundSampleIx = FStartOfFirstIntervalIx;
             for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
             {
-                i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount);
+                i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount, round);
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;
+                round++;
             } // for intervalIx
-
-
         } // CalculateFeatureVector
 
         // ====================================================================
