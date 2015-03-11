@@ -38,7 +38,7 @@ namespace BlessYou
             Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config =null;// = CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationStatClass config = null;// = CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -52,9 +52,9 @@ namespace BlessYou
             DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
 
 
-            
+
             // 2. Create CASE-library
-            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList,config);
+            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
 
 
             // Display calculated features
@@ -75,32 +75,39 @@ namespace BlessYou
 
             //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
- 
+
             // 3. Evaluate cases
             if ("" != newProblemFileName)
             {
                 //foreach (SoundFileClass sfc in soundfileObjList)
                 //{
-                    SoundFileClass newProblemSoundFileObj = new SoundFileClass();
-                    newProblemSoundFileObj.SoundFileName = newProblemFileName;
-                    newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
+                SoundFileClass newProblemSoundFileObj = new SoundFileClass();
+                newProblemSoundFileObj.SoundFileName = newProblemFileName;
+                newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
 
-                    CaseClass newProblemObj = new CaseClass();
-                    newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj,config);
+                CaseClass newProblemObj = new CaseClass();
+                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, config);
 
-                    List<CaseClass> caseList = new List<CaseClass>();
-                    caseList.AddRange(caseLibraryObj.ListOfCases);
-                    CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                List<CaseClass> caseList = new List<CaseClass>();
+                caseList.AddRange(caseLibraryObj.ListOfCases);
+                CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
 
-                    //4. Start reuse function
-                    EnumCaseStatus caseStatus;
-                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
+                //4. Start reuse function
+                EnumCaseStatus caseStatus;
+                CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                 //}
             } // if
             else
             {
-                int correct =0, wrong = 0;
+                int nrOfConfirmedSneezes;
+                int nrOfConfiremedNoneSneezes;
+                int correctSneezes = 0;
+                int inCorrectSneezes = 0;
+                int correctNoneSneezes = 0;
+                int inCorrectNoneSneezes = 0;
+
                 List<string> correctList = new List<string>();
+
                 List<string> wronglist = new List<string>();
 
                 CaseClass selectedProblemObj = new CaseClass();
@@ -109,54 +116,76 @@ namespace BlessYou
 
                     selectedProblemObj = caseLibraryObj.ListOfCases[ix];
                     Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                    List<CaseClass> caseMinusOneList = new List<CaseClass>();
+                    List<CaseClass> caseLibaryMinusOneCaseList = new List<CaseClass>();
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
                         if (jx != ix)
                         {
-                            caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
+                            caseLibaryMinusOneCaseList.Add(caseLibraryObj.ListOfCases[jx]);
                         }
                     } // for jx
-                    CBRSystemClass.Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
-                    
+                    CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+
                     //4. Start reuse function
                     EnumCaseStatus caseStatus;
                     CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
-                    if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
-                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                        correct++;
+                        if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
+                        {
+                            correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                            correctSneezes++;
+                        }
+                        else
+                        {
+                            wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                            inCorrectSneezes++;
+                            Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
+                        }
                     }
-                    else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                     {
-                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                        correct++;
+                        if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze)
+                        {
+                            correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                            correctNoneSneezes++;
+                        }
+                        else
+                        {
+                            //System.Diagnostics.Debugger.Break();
+                            wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                            inCorrectNoneSneezes++;
+                            Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
+                        }
                     }
-                    else
-                    {
-                        //System.Diagnostics.Debugger.Break();
-                        wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                        wrong++;
-                        Console.WriteLine("GUESSED WRONG HERE!");
-                    }
-                }
+
+                } // for ix
+
+                double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
+
+                caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfiremedNoneSneezes);
+
                 Console.WriteLine();
-                Console.WriteLine("Number of correct guesses:  {0, 4:0} = {1, 3:0.0}%", correct, ((double)correct / (double)(correct + wrong)) * 100.0);
-                Console.WriteLine("Number of wrong guesses:    {0, 4:0} = {1, 3:0.0}%", wrong, ((double)wrong / (double)(wrong + correct)) * 100.0);
+                Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
+                Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfiremedNoneSneezes);
+                Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
+                Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
+                Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
+                Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
                 System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                 // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                 //ToDo throw new System.NotImplementedException();
-            } // for ix
+            } // else
 
-             
+
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
             for (int ix = 0; ix < retrievedMatchesList.Count; ++ix)
             {
                 //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
-                
+
             } // for ix
 
             // 6. Optionally dump case info
@@ -174,7 +203,7 @@ namespace BlessYou
             Console.Write("\nPress any key to exit! ");
             Console.ReadKey();
 
-           // throw new System.NotImplementedException();
+            // throw new System.NotImplementedException();
         } // Main
 
         // ====================================================================

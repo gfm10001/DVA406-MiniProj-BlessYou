@@ -293,7 +293,7 @@ namespace BlessYou
             string resStr = "";
 
 
-            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s))",
+            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) Sneeze: {10}",
                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
                                     FWaveFileLengthInMilliSecs,
                                     FWaveFileIntervalBegPositionInMilliSecs,
@@ -303,7 +303,8 @@ namespace BlessYou
                                     "(" + (int)(FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz) + ")",
                                     100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                     100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
-                                    FNumberOfChannelsInOrgininalWaveFile);
+                                    FNumberOfChannelsInOrgininalWaveFile,
+                                    _SneezeStatus);
             return resStr;
         } // AnalyseParamsToString
 
