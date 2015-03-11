@@ -293,14 +293,14 @@ namespace BlessYou
             string resStr = "";
 
 
-            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms intervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms intervalEnd: {4, 6:0}ms Int: {5, 5:0}ms {6, 6:0} = {7, 6:0}% (was {8} channel(s))",
+            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms intervalBeg: {2, 6:0}ms triggOn: {3, 6:0}ms intervalEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}% (was {8} channel(s))",
                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr), 
                                     FWaveFileLengthInMilliSecs,
                                     FWaveFileIntervalBegPositionInMilliSecs,
                                     FWaveFileTriggPositionInMilliSecs,
                                     FWaveFileIntervalBegPositionInMilliSecs + FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_NR_OF_INTERVALS,
                                     FWaveFileIntervallLengthInMilliSecs,
-                                    "(" + (int)FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz + ")",
+                                    "(" + (int)(FWaveFileIntervallLengthInMilliSecs * ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz) + ")",
                                     100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                     FNumberOfChannelsInOrgininalWaveFile);
             return resStr;
