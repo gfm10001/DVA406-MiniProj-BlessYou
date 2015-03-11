@@ -17,6 +17,12 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
+        public FeatureNAudioFFTClass(ConfigurationStatClass i_config) :
+            base("NAudioFFT")
+        {
+            base.FFeatureWeight = i_config.C_M_LOMONT_FFT_FEATURE_WEIGHT;
+        } // FeaturePeakClass
+
         //=====================================================================
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)

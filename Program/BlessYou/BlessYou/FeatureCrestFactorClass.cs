@@ -16,6 +16,13 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_CREST_FACTOR_WEIGHT;
         } // FeaturePeakClass
 
+        public FeatureCrestFactorClass(ConfigurationStatClass i_stats)
+            : base("CF")
+        {
+            base.FFeatureWeight = i_stats.C_M_CREST_FACTOR_WEIGHT;
+        
+        }
+
         //=====================================================================
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count)

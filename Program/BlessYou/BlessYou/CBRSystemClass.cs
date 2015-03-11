@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
+
 
 namespace BlessYou
 {
@@ -24,7 +26,7 @@ namespace BlessYou
         /// </summary>
         /// 
 
-        public void Retrieve(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, int i_MaxRetrievedMatchesCount, out List<RetrievedCaseClass> o_RetrievedMatches)
+        public static void Retrieve(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, int i_MaxRetrievedMatchesCount, out List<RetrievedCaseClass> o_RetrievedMatches)
         {
             // 1. För varje case i case library:
             //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
@@ -52,7 +54,7 @@ namespace BlessYou
             for (int ix = 0; ix < CaseConsiderationLimit; ix++)
             {
                 o_RetrievedMatches.Add(sortedCaseList[ix]);
-            
+
             }
 
             for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
@@ -62,11 +64,11 @@ namespace BlessYou
 
             for (int ix = 0; ix < o_RetrievedMatches.Count; ++ix)
             {
-                Console.WriteLine("ix: " + ix);
-               // Console.WriteLine(o_RetrievedMatches[ix].ToString());
-                Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityDistance /*+ " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus */ + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
+                //Console.WriteLine("ix: " + ix);
+                // Console.WriteLine(o_RetrievedMatches[ix].ToString());
+                //Console.WriteLine("SimilarityValue: " + o_RetrievedMatches[ix].SimilarityDistance /*+ " Proposed Sneeze: " + o_RetrievedMatches[ix].ProposedStatus */ + " Sneeze: " + o_RetrievedMatches[ix].SneezeStatus);
             } // for ix
-           // ToDo throw new System.NotImplementedException();
+            // ToDo throw new System.NotImplementedException();
         } // Retrieve
 
         // ====================================================================
@@ -76,7 +78,7 @@ namespace BlessYou
         /// </summary>
         /// 
 
-        public void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
+        public static void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
             if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
@@ -94,7 +96,7 @@ namespace BlessYou
                 countResults[ecs] = 0;
                 distanceResults[ecs] = 0.0;
             }
-            
+
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
                 countResults[i_RetrievedMatches[i].SneezeStatus]++;
@@ -105,7 +107,7 @@ namespace BlessYou
             foreach (EnumCaseStatus c in Enum.GetValues(typeof(EnumCaseStatus)))
             {
                 distanceResults[c] /= countResults[c];
-            
+
             }
 
             //Calculate best match based on number of matches
@@ -129,49 +131,51 @@ namespace BlessYou
                 {
                     bestDistanceValue = c.SimilarityDistance;
                     bestDistanceCase = c.SneezeStatus;
-                    
+
                 }
             }
             totalAVGdistance /= i_RetrievedMatches.Count;
 
-            Console.WriteLine("\nCount:" + topCountCase + " got most matches with " + topCountValue + "/" + i_RetrievedMatches.Count);
-            Console.WriteLine("\nDistance:" + bestDistanceCase + " was closest with a value of " + bestDistanceValue);
+            Console.WriteLine("Count:" + topCountCase + " got most matches with " + topCountValue + "/" + i_RetrievedMatches.Count);
+            Console.WriteLine("Distance:" + bestDistanceCase + " was closest with a value of " + bestDistanceValue);
 
             if (topCountCase == bestDistanceCase) //If both cases evaluate to the same, propose as solution
             {
                 o_CaseStatus = ConfirmedToPropused(topCountCase);
-                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                Console.WriteLine("Proposing " + o_CaseStatus + " as solution.");
 
                 return;
             }
             //If count and similarity does not evaluate to same, determine witch is most reliable
 
-            double countProbability =  (double)topCountValue / (double)i_RetrievedMatches.Count;
+            double countProbability = (double)topCountValue / (double)i_RetrievedMatches.Count;
             double worstDistance = 0.0;
 
             foreach (EnumCaseStatus c in distanceResults.Keys)
-            { 
-                if(distanceResults[c] > worstDistance)
+            {
+                if (distanceResults[c] > worstDistance)
                     worstDistance = distanceResults[c];
             }
 
-            double DistancePrbability = 1 - bestDistanceValue / totalAVGdistance;
+            double DistancePrbability = bestDistanceValue / totalAVGdistance;
+            if (DistancePrbability < 0.70)
+                System.Diagnostics.Debugger.Break();
 
-            Console.WriteLine("Uncertianty in finding solution.\nCount value:"+countProbability +"\nDistance value:" + DistancePrbability);
+            Console.WriteLine("Uncertianty in finding solution.\nCount value:" + countProbability + "\nDistance value:" + DistancePrbability);
 
             if (countProbability > DistancePrbability)
             {
                 o_CaseStatus = ConfirmedToPropused(topCountCase);
-                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                Console.WriteLine("Proposing " + o_CaseStatus + " as solution.");
                 return;
             }
             else if (countProbability < DistancePrbability)
             {
                 o_CaseStatus = ConfirmedToPropused(bestDistanceCase);
-                Console.WriteLine("\nProposing " + o_CaseStatus + " as solution.");
+                Console.WriteLine("Proposing " + o_CaseStatus + " as solution.");
                 return;
             }
-            Console.WriteLine("\nFailed to determine case, all hope is lost!");
+            Console.WriteLine("Failed to determine case, all hope is lost!");
             o_CaseStatus = EnumCaseStatus.csUnknown;
             return;
 
@@ -202,8 +206,95 @@ namespace BlessYou
             throw new System.NotImplementedException();
         } // Retain
 
+        public static ConfigurationStatClass GenerateRandomConfig(double toplimit)
+        {
+            ConfigurationStatClass config = new ConfigurationStatClass();
 
-        // ====================================================================
+            Type t = config.GetType();
+            FieldInfo[] fio = t.GetFields();
+            Random random = new Random();
+            foreach (FieldInfo f in fio)
+            {
+                if (f.IsStatic)
+                    continue;
+                f.SetValue(config, random.NextDouble() * toplimit);
+            }
 
-    } // CBRSystem
+            return config;
+
+        }
+        public static void EvaluateFeatureOneByOne(CaseLibraryClass caseLibraryObj)
+        {
+            ConfigurationStatClass config = new ConfigurationStatClass();
+            Type t = config.GetType();
+            FieldInfo[] fionfo = t.GetFields();
+
+            foreach (FieldInfo f in fionfo)
+            {
+                if (f.IsStatic)
+                    continue;
+
+                foreach (FieldInfo e in fionfo)
+                {
+                    if (e == f)
+                        f.SetValue(config, 1.0);
+                    else
+                        f.SetValue(config, 0.0);    
+                }
+                foreach (CaseClass c in caseLibraryObj.ListOfCases)
+                {
+                    c.UpdateFeatureVectors(config);
+                }
+
+                int correct = 0, wrong = 0;
+                List<string> correctList = new List<string>();
+                List<string> wronglist = new List<string>();
+
+                CaseClass selectedProblemObj = new CaseClass();
+                for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
+                {
+                    selectedProblemObj = caseLibraryObj.ListOfCases[ix];
+                    Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                    List<CaseClass> caseMinusOneList = new List<CaseClass>();
+                    for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
+                    {
+                        if (jx != ix)
+                        {
+                            caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
+                        }
+                    } // for jx
+
+                    List<RetrievedCaseClass> retrievedMatchesList;
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+
+                    //4. Start reuse function
+                    EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
+                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
+                    if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    {
+                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        correct++;
+                    }
+                    else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    {
+                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        correct++;
+                    }
+                    else
+                    {
+                        //System.Diagnostics.Debugger.Break();
+                        wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        wrong++;
+                        Console.WriteLine("GUESSED WRONG HERE!");
+                    }
+                }
+                Console.WriteLine("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");// for ix
+                Console.WriteLine("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
+                System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
+                System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
+            }
+            // ====================================================================
+
+        } // CBRSystem
+    }
 }

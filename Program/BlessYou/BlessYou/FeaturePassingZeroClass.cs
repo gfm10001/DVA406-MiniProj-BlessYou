@@ -16,6 +16,12 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
         } // FeaturePeakClass
 
+        public FeaturePassingZeroClass(ConfigurationStatClass i_config) :
+            base("PassingZero")
+        {
+            base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
+        } 
+
         private bool _IsPositive(double value)
         {
             return value > 0; 
