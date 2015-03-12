@@ -241,12 +241,23 @@ namespace BlessYou
             double sum = 0;
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
             {
-                for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
                 {
-                    sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
-                } // for ix
-                //sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
-                sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                    {
+                        sum = sum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]), 2.0);
+                    } // for ix
+                    sum = Math.Sqrt(sum);
+                    sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                }
+                else
+                {
+                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                    {
+                        sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                    } // for ix
+                    sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                }
             } // for jx
             return sum;
         } // calculateSimilarityFunction

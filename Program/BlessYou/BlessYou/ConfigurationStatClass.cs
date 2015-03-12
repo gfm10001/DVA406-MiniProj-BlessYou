@@ -55,6 +55,8 @@ namespace BlessYou
         public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
         public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
 
+        public static bool USE_EUCLID_SUMMATION = true;
+
         public static double C_EPSILON = 0.000001;
 
         public static string C_CONFIGURATION_REPORT_FILE_NAME = "ConfigurationReport.txt";
