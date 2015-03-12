@@ -133,7 +133,7 @@ namespace BlessYou
 
                         //4. Start reuse function
                         EnumCaseStatus caseStatus;
-                        
+
                         // Alternative functioncall using similarity value
                         //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                         CBRSystemClass.ReuseUsingSimilarityValue(retrievedMatchesList, numberofCases, out caseStatus);
@@ -171,33 +171,24 @@ namespace BlessYou
 
                     double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
 
-                    caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfiremedNoneSneezes);
+                    caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
                     Console.WriteLine();
                     Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
-                    Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfiremedNoneSneezes);
+                    Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
 
-                    Console.WriteLine("Number of correct guesses:                           {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
+                    Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
 
+                    Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
+                    Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
+                    Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
+                    Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
 
-                caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
-
-                Console.WriteLine();
-				Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
-                Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
-
-                Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
-                
-                Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
-                Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
-                Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
-                Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
-                
-				System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
-                System.IO.File.WriteAllLines("./Corrects.txt", correctList);
-                // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                //ToDo throw new System.NotImplementedException();
-
+                    System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
+                    System.IO.File.WriteAllLines("./Corrects.txt", correctList);
+                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
+                    //ToDo throw new System.NotImplementedException();
+                } // while
             } // else
 
 
