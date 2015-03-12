@@ -214,7 +214,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void ReuseUsingSimilarityValue(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse, out EnumCaseStatus o_CaseStatus)
+        public static void ReuseUsingSimilarityValue(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
             if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
@@ -224,7 +224,7 @@ namespace BlessYou
             }
             int numberOfSneezes = 0;
             int numberOfNonSneezes = 0;
-            for (int ix = 0; ix < i_RetrievedMatches.Count && ix < i_NumberOfCasesToUse; ++ix)
+            for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix)
             {
                 if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {

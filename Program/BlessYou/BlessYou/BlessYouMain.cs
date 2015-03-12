@@ -135,7 +135,7 @@ namespace BlessYou
                         List<CaseClass> caseLibaryMinusOneCaseList = new List<CaseClass>();
                         for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                         {
-                            //if (jx != ix)
+                            if (jx != ix)
                             {
                                 caseLibaryMinusOneCaseList.Add(caseLibraryObj.ListOfCases[jx]);
                             }
