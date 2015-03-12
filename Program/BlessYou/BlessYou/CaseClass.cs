@@ -9,6 +9,8 @@
 // 2015-03-08/GF    AnalyseParamsToString: added
 // 2015-03-11/GF    Correction: Trigg Position display was incorrect
 //                  Addition: AnalyseParamsToString display also index
+// 2015-03-12/GF    Added FOrderNr for dump display
+
 
 using System;
 using System.Collections.Generic;
@@ -27,9 +29,18 @@ namespace BlessYou
         double FWaveFileTriggPositionInMilliSecs;
         double FWaveFileIntervallLengthInMilliSecs;
         int FNumberOfChannelsInOrgininalWaveFile;
+        int FOrderNr; // Used at dump display
 
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
+
+
+        //=====================================================================
+
+        public int OrderNr
+        {
+            get { return FOrderNr; }
+        } // OrderNr
 
         //=====================================================================
 
@@ -128,6 +139,7 @@ namespace BlessYou
             FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
             FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
             FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
+            FOrderNr = waveFileObj.OrderNr;
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass(i_config);
             waveFileObj.CalculateFeatureVector(featurePeakObj);
@@ -255,6 +267,7 @@ namespace BlessYou
                 }
                 else
                 {
+
                     for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
                     {
                         intervalSum = intervalSum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
@@ -293,30 +306,54 @@ namespace BlessYou
 
         // ====================================================================
 
-        public string FeatureTypeToString(int i_FeatureTypeIx)
+        public string GetAllValuesOfThisFeatureTypeToString(int i_FeatureTypeIx, double i_ScaleFactor)
         {
             string resStr = "";
             FeatureBaseClass fbc;
 
             fbc = FFeatureTypeVector[i_FeatureTypeIx];
 
-            resStr = String.Format("{0,-40}", System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
 
             for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
             {
-                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix] * i_ScaleFactor);
             } // for
             return resStr;
-        } // FeatureTypeToString
+        } // GetAllValuesOfThisFeatureTypeToString
 
+        // ====================================================================
+
+        public double GetMaxFeatureValueOfThisFeature(int i_FeatureTypeIx)
+        {
+            double resDouble = 0.0;
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+
+            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            {
+                if (fbc.FeatureValueVector[ix] < 0)
+                {
+                    throw new System.NotImplementedException("GetMaxFeatureValueOfThisFeature, i_FeatureTypeIx=" + i_FeatureTypeIx + " ERROR < 0 at ix=" + ix + "!!!");
+                }
+
+                if (resDouble < fbc.FeatureValueVector[ix])
+                {
+                    resDouble = fbc.FeatureValueVector[ix];
+                }
+            } // for
+            return resDouble;
+        } // GetMaxFeatureValueOfThisFeature
+        
         // ====================================================================
 
         public string AnalyseParamsToString()
         {
             string resStr = "";
 
-            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) Sneeze: {10}",
-                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr),
+            resStr = String.Format("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) {10} - {11}",
+                                     FOrderNr,
                                      FWaveFileLengthInMilliSecs,
                                      FWaveFileIntervalBegPositionInMilliSecs,
                                      FWaveFileTriggPositionInMilliSecs,
@@ -326,7 +363,8 @@ namespace BlessYou
                                      100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                      100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                      FNumberOfChannelsInOrgininalWaveFile,
-                                     _SneezeStatus);
+                                     _SneezeStatus,
+                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
             return resStr;
         } // AnalyseParamsToString
 

@@ -1,9 +1,2 @@
-0	..\Data\SP\None-Sneezes\animated-object2.wav
-0	..\Data\SP\None-Sneezes\animated-object1.wav
-0	..\Data\SP\None-Sneezes\bow.wav
-0	..\Data\SP\None-Sneezes\horse.wav
-0	..\Data\GF\None-Sneezes\stan-20feb-A-00m08s.wav
-1	..\Data\NS\Sneezes\Sneeze28.wav
-0	..\Data\SP\None-Sneezes\giant-bee.wav
-
+1	..\Data\NS\Sneezes\Sneeze5.wav
 

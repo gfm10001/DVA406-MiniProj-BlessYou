@@ -1,4 +1,13 @@
-﻿using System;
+﻿// FeatureLomontFFTClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-03-09/NS    Introduced.
+// 2015-03-12/GF    calculateFeatureValuesFromSamples: chanhged to abs-value instead of dB-value (as the latter may be < 0!)
+//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -128,7 +137,7 @@ namespace BlessYou
             for (int ix = 0; ix < nrOfSamples; ix += 2)
             {
                 // Amplitude
-                FDataFFTAnalysisDone[ix / 2] = dataForFFTAnalysis[ix];
+                FDataFFTAnalysisDone[ix / 2] = Math.Sqrt(dataForFFTAnalysis[ix] * dataForFFTAnalysis[ix] + dataForFFTAnalysis[ix + 1] * dataForFFTAnalysis[ix + 1]);
                 
                 // Convert amplitude to dB values formula
                 // dB_val = 10.0 * log10(re * re + im * im) + dB_correction
@@ -151,7 +160,7 @@ namespace BlessYou
 
 
             // Calulate the nrOfDominantFrequencies
-            int bin = FDataFFTAnalysisDoneInDB.ToList().IndexOf(FDataFFTAnalysisDoneInDB.ToList().Max());
+            int bin = FDataFFTAnalysisDone.ToList().IndexOf(FDataFFTAnalysisDone.ToList().Max());
             //int[] binArray = new int[nrOfMaxDescendingFrequencies];
             //binArray = FDataFFTAnalysisDoneInDB.Select((value, index) => new { value, index })
             //        .OrderByDescending(item => item.value)
@@ -184,7 +193,7 @@ namespace BlessYou
             } // if
 
             // Setup the Feature Value and return it to the vector
-            double featureValue = FDataFFTAnalysisDoneInDB.ToList().GetRange(analysisStartIndex, analysisEndIndex - analysisStartIndex).Average();
+            double featureValue = FDataFFTAnalysisDone.ToList().GetRange(analysisStartIndex, analysisEndIndex - analysisStartIndex).Average();
             FFeatureValueVector.Add(featureValue);
         } // calculateFeatureValuesFromSamples
 

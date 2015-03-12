@@ -9,9 +9,9 @@
 // Mini project "Bless You" - a CASE-Based Sneeze Detector
 //
 // History:
-// 2015-02-24   Introduced.
+// 2015-02-24       Introduced.
+// 2015-03-12/GF    Refactored file dump of feature sto CaseLibraryClass
 //
-
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.5/0 of 2015-03-12";
+            const string C_THIS_VERSION = "Bless You v.0.6/0 of 2015-03-12";
 
             //Usage:
             //BlessYou P1 P2 [P3] where
@@ -57,24 +57,10 @@ namespace BlessYou
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
 
 
-            // Display calculated features
-            CaseClass dummyCaseObj = caseLibraryObj.ListOfCases[0];
+            // Dump calculated features 
+            Console.Write("Dump all features to files... ");
+            caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
 
-            int featureTypeIx = 0;
-            foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
-            {
-                List<string> dumpListOfFeatures = new List<string>();
-
-                Console.WriteLine("\nfeatureTypeIx = {0} = '{1}'\n", featureTypeIx, fbc.FeatureName);
-                foreach (CaseClass caseObj in caseLibraryObj.ListOfCases)
-                {
-                    string s = caseObj.FeatureTypeToString(featureTypeIx);
-                    dumpListOfFeatures.Add(s);
-                    // Console.WriteLine(s);
-                } // foreach CaseClass
-                System.IO.File.WriteAllLines(fbc.FeatureName + ".xls", dumpListOfFeatures);
-                featureTypeIx++;
-            } // foreach FeatureBaseClass
             Console.WriteLine();
 
             //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
@@ -104,7 +90,7 @@ namespace BlessYou
             else
             {
                 int nrOfConfirmedSneezes;
-                int nrOfConfiremedNoneSneezes;
+                int nrOfConfirmedNoneSneezes;
                 int correctSneezes = 0;
                 int inCorrectSneezes = 0;
                 int correctNoneSneezes = 0;
@@ -193,18 +179,25 @@ namespace BlessYou
 
                     Console.WriteLine("Number of correct guesses:                           {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
 
-                    Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
-                    Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
-                    Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
-                    Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
 
-                    System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
-                    System.IO.File.WriteAllLines("./Corrects.txt", correctList);
-                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                    //ToDo throw new System.NotImplementedException();
+                caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
-                    numberofCases += 2;
-                } // while
+                Console.WriteLine();
+				Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
+                Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
+
+                Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
+                
+                Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
+                Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
+                Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
+                Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
+                
+				System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
+                System.IO.File.WriteAllLines("./Corrects.txt", correctList);
+                // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
+                //ToDo throw new System.NotImplementedException();
+
             } // else
 
 
@@ -220,9 +213,9 @@ namespace BlessYou
             // 6. Optionally dump case info
             if (1 == 1)
             {
-                Console.WriteLine("Dump configuratiion report to file '{0}'...", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
-                ConfigurationStatClass.DumpConfiguration("Main", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
-                Console.WriteLine("Dump case library report to file '{0}'...", ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME);
+                Console.WriteLine("Dump configuration report to file '{0}'...", ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
+                ConfigurationStatClass.DumpConfiguration(C_THIS_VERSION, ConfigurationStatClass.C_CONFIGURATION_REPORT_FILE_NAME);
+                Console.WriteLine("Dump case library report to file  '{0}'...", ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME);
                 List<string> classReportStringList;
                 caseLibraryObj.GenerateReportOfAllCases(out classReportStringList);
                 System.IO.File.WriteAllLines(ConfigurationStatClass.C_CLASS_LIBRARY_REPORT_FILE_NAME, classReportStringList);
