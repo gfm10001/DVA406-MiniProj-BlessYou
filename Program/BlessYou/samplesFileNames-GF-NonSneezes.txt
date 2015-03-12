@@ -1,0 +1,13 @@
+0	..\Data\GF\None-Sneezes\stan-20feb-A-00m08s.wav
+0	..\Data\GF\None-Sneezes\stan-20feb-A-04m14s.wav
+0	..\Data\GF\None-Sneezes\stan-20feb-A-09m14s.wav
+0	..\Data\GF\None-Sneezes\stan-laurel-19feb-A-05m49s.wav
+0	..\Data\GF\None-Sneezes\stan-laurel-19feb-A28m02s.wav
+0	..\Data\GF\None-Sneezes\London-part-1-21feb-A-06m44s.wav
+0	..\Data\GF\None-Sneezes\London-part-1-21feb-A-09m14s.wav
+0	..\Data\GF\None-Sneezes\London-part-1-21feb-A-19m15s.wav
+0	..\Data\GF\None-Sneezes\London-part-1-21feb-A-29m46s.wav
+0	..\Data\GF\None-Sneezes\Don Quixote-1-21feb-A-06m00s.wav
+0	..\Data\GF\None-Sneezes\Don Quixote-1-21feb-A-19m29s.wav
+0	..\Data\GF\None-Sneezes\Don Quixote-1-21feb-A-30m36s.wav
+
