@@ -25,7 +25,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = true; // Use DoWaveDump to control dumps
+        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -95,6 +95,10 @@ namespace BlessYou
             //      Mono:   läs integer 16 bit och placera som double i FWaveFileContents 
             //      Stereo: läs 2 (L, R)  integer 16 bit, konvertera till double och medelvärdesbilda, placera som double i FWaveFileContents44p1KHz16bitSamples 
             // 4. Utvärdera ev. fel kasta exception om fel
+
+            //string s = System.IO.Directory.GetCurrentDirectory();
+            //Console.WriteLine("cd='" + s + "'");
+            
 
             FWaveFileName = i_WaveFileName;
             WavFile _wavFile = new WavFile(FWaveFileName);
