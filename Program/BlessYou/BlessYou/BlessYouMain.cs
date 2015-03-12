@@ -38,7 +38,7 @@ namespace BlessYou
             Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config = null;// = CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationStatClass config = CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -77,7 +77,7 @@ namespace BlessYou
             } // foreach FeatureBaseClass
             Console.WriteLine();
 
-            //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+            CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
 
             // 3. Evaluate cases

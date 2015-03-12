@@ -87,21 +87,24 @@ namespace BlessYou
                 return;
             }
 
-            Dictionary<EnumCaseStatus, int> countResults = new Dictionary<EnumCaseStatus, int>();
-            Dictionary<EnumCaseStatus, double> distanceResults = new Dictionary<EnumCaseStatus, double>();
-            RetrievedCaseClass BestSimCase = i_RetrievedMatches[0];
+            Dictionary<EnumCaseStatus, int> countResults = new Dictionary<EnumCaseStatus, int>(); //saves hits per case
+            Dictionary<EnumCaseStatus, double> distanceResults = new Dictionary<EnumCaseStatus, double>(); //saves average distance per case
+            RetrievedCaseClass BestSimCase = i_RetrievedMatches[0]; //Closest distance case found
 
+
+            //Initial the dictinaories so we know they are in the set
             foreach (EnumCaseStatus ecs in Enum.GetValues(typeof(EnumCaseStatus)))
             {
                 countResults[ecs] = 0;
                 distanceResults[ecs] = 0.0;
             }
 
+            //Count how many we got of each case and calculate distance values
             for (int i = 0; i < i_RetrievedMatches.Count; i++)
             {
                 countResults[i_RetrievedMatches[i].SneezeStatus]++;
                 distanceResults[i_RetrievedMatches[i].SneezeStatus] = distanceResults[i_RetrievedMatches[i].SneezeStatus] + i_RetrievedMatches[i].SimilarityDistance;
-                if (i_RetrievedMatches[i].SimilarityDistance > BestSimCase.SimilarityDistance)
+                if (i_RetrievedMatches[i].SimilarityDistance > BestSimCase.SimilarityDistance) //Find closest match
                     BestSimCase = i_RetrievedMatches[i];
             }
             foreach (EnumCaseStatus c in Enum.GetValues(typeof(EnumCaseStatus)))
@@ -110,12 +113,13 @@ namespace BlessYou
 
             }
 
-            //Calculate best match based on number of matches
+            //Find best match based on the count and distance respecivley
             EnumCaseStatus topCountCase = EnumCaseStatus.csUnknown;
             int topCountValue = 0;
             EnumCaseStatus bestDistanceCase = EnumCaseStatus.csUnknown;
             double bestDistanceValue = double.MaxValue;
             double totalAVGdistance = 0;
+            
             foreach (EnumCaseStatus c in countResults.Keys)
             {
                 if (countResults[c] > topCountValue)
@@ -146,7 +150,8 @@ namespace BlessYou
 
                 return;
             }
-            //If count and similarity does not evaluate to same, determine witch is most reliable
+            //If count and similarity does not evaluate to same, determine witch is most reliable.
+            //We do this by calculating the probability, higher is better with 1.0 being a perfect match.
 
             double countProbability = (double)topCountValue / (double)i_RetrievedMatches.Count;
             double worstDistance = 0.0;
@@ -236,10 +241,12 @@ namespace BlessYou
 
                 foreach (FieldInfo e in fionfo)
                 {
+                    if (e.IsStatic)
+                        continue;
                     if (e == f)
-                        f.SetValue(config, 1.0);
+                        e.SetValue(config, 1.0);
                     else
-                        f.SetValue(config, 0.0);    
+                        e.SetValue(config, 0.0);    
                 }
                 foreach (CaseClass c in caseLibraryObj.ListOfCases)
                 {
@@ -290,6 +297,7 @@ namespace BlessYou
                 }
                 Console.WriteLine("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");// for ix
                 Console.WriteLine("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
+                Console.WriteLine("Feature name:" + f.Name);
                 System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
             }

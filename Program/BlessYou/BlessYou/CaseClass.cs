@@ -192,7 +192,7 @@ namespace BlessYou
             //waveFileObj.CalculateFeatureVector(featureAverageObj);
             FFeatureTypeVector.Add(featureAverageObj);
 
-            FeatureRMSClass featureRMSObj = new FeatureRMSClass();
+            FeatureRMSClass featureRMSObj = new FeatureRMSClass(i_config);
             //waveFileObj.CalculateFeatureVector(featureRMSObj);
             FFeatureTypeVector.Add(featureRMSObj);
 
