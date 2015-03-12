@@ -260,7 +260,16 @@ namespace BlessYou
                 }
             } // for jx
             return sum;
-        } // calculateSimilarityFunction
+        } // CalculateDistanceValue
+
+
+        // ====================================================================
+
+        public double CalculateSimilarityValue(CaseClass i_NewCase)
+        {
+            double distance = CalculateDistanceValue(i_NewCase);
+            return 1 - (1 / distance);
+        } // CalculateSimilarityValue     
 
         // ====================================================================
 

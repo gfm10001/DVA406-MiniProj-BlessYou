@@ -36,7 +36,7 @@ namespace BlessYou
             List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
 
 
-
+            // Cal
             for (int ix = 0; ix < i_CaseLibraryList.Count; ++ix)
             {
                 CaseClass currentCase;
@@ -70,6 +70,38 @@ namespace BlessYou
             } // for ix
             // ToDo throw new System.NotImplementedException();
         } // Retrieve
+
+        // ====================================================================
+
+        public static void RetrieveUsingSimilarityfunction(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, int i_MaxRetrievedMatchesCount, out List<RetrievedCaseClass> o_RetrievedMatches)
+        {
+            // 1. För varje case i case library:
+            //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
+            // 2. Sort the list descending order to get top max in Similarity
+            // 3. Transfer the i_MaxRetrievedMatchesCount cases to the output 
+            o_RetrievedMatches = new List<RetrievedCaseClass>();
+            List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
+
+
+            // Calculate indvidual similarityvalues
+            for (int ix = 0; ix < i_CaseLibraryList.Count; ++ix)
+            {
+                CaseClass currentCase;
+                currentCase = i_CaseLibraryList[ix];
+                RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
+                theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+                similarityCaseList.Add(theCase);
+            } // for ix
+
+            // Sort the values best similarity case last
+            List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
+
+            // Send best similarity case in reverse order 
+            for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
+            {
+                o_RetrievedMatches.Add(sortedCaseList[jx]);
+            } // for ix
+        } // RetrieveUsingSimilarityfunction
 
         // ====================================================================
 
@@ -178,9 +210,48 @@ namespace BlessYou
             Console.WriteLine("Failed to determine case, all hope is lost!");
             o_CaseStatus = EnumCaseStatus.csUnknown;
             return;
-
         } // Reuse
 
+        // ====================================================================
+
+        public static void ReuseUsingSimilarityValue(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse, out EnumCaseStatus o_CaseStatus)
+        {
+            //Verify list
+            if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
+            {
+                o_CaseStatus = EnumCaseStatus.csNone;
+                return;
+            }
+            int numberOfSneezes = 0;
+            int numberOfNonSneezes = 0;
+            for (int ix = 0; ix < i_RetrievedMatches.Count && ix < i_NumberOfCasesToUse; ++ix)
+            {
+                if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    numberOfSneezes++;
+                }
+                else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    numberOfNonSneezes++;
+                }
+                else
+                {
+                    Console.WriteLine("ERROR case have no sneezestatus");
+                    o_CaseStatus = EnumCaseStatus.csNone;
+                    return;
+                }
+            } // for ix
+
+            if (numberOfSneezes >= numberOfNonSneezes)
+            {
+                o_CaseStatus = EnumCaseStatus.csIsProposedSneeze;
+            } // if 
+            else
+            {
+                o_CaseStatus = EnumCaseStatus.csIsProposedNoneSneeze;
+            }
+        } // ReuseUsingSimilarityValue
+        
         // ====================================================================
 
         public static EnumCaseStatus ConfirmedToPropused(EnumCaseStatus state)
