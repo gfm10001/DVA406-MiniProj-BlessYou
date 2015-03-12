@@ -19,7 +19,7 @@ namespace BlessYou
         List<CaseClass> FListOfCases;
 
         // ====================================================================
-        
+
         public List<CaseClass> ListOfCases
         {
             get
@@ -29,21 +29,21 @@ namespace BlessYou
         } // ListOfCases
 
         // ====================================================================
-        
+
         public CaseLibraryClass()
         {
             FListOfCases = new List<CaseClass>();
         } // CaseLibraryClass
 
         // ====================================================================
-        
+
         public void AddCase(CaseClass i_NewCase)
         {
             FListOfCases.Add(i_NewCase);
         } // AddCase
 
         // ====================================================================
-        
+
         public void RemoveCase(CaseClass i_Case)
         {
             FListOfCases.Remove(i_Case);
@@ -95,12 +95,12 @@ namespace BlessYou
             foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
             {
                 List<string> dumpListOfFeatures = new List<string>();
-                
+
                 // Dump raw values of this feature
                 dumpListOfFeatures.Add("File Name: \t Feature " + fbc.FeatureName + " raw values:");
                 foreach (CaseClass caseObj in ListOfCases)
                 {
-                    string s = caseObj.FeatureTypeToString(featureTypeIx, 1.0);
+                    string s = caseObj.GetAllValuesOfThisFeatureTypeToString(featureTypeIx, 1.0);
                     dumpListOfFeatures.Add(s);
                 } // foreach CaseClass
 
@@ -112,8 +112,18 @@ namespace BlessYou
                 dumpListOfFeatures.Add("File Name: \t Feature " + fbc.FeatureName + " normalized values:");
                 foreach (CaseClass caseObj in ListOfCases)
                 {
+                    string s = "?";
                     double maxValueOfThisFeature = caseObj.GetMaxFeatureValueOfThisFeature(featureTypeIx);
-                   // dumpListOfFeatures.Add(s);
+                    if (ConfigurationStatClass.C_EPSILON > maxValueOfThisFeature)
+                    {
+                        // Too small scale vcalue ??? 
+                        s = caseObj.GetAllValuesOfThisFeatureTypeToString(featureTypeIx, 1.0) + "???? Not Scalable???";
+                    }
+                    else
+                    {
+                        s = caseObj.GetAllValuesOfThisFeatureTypeToString(featureTypeIx, 1.0 / maxValueOfThisFeature);
+                    }
+                    dumpListOfFeatures.Add(s);
                 } // foreach CaseClass
 
                 System.IO.File.WriteAllLines(i_BaseFileName + "_" + fbc.FeatureName + ".xls", dumpListOfFeatures);

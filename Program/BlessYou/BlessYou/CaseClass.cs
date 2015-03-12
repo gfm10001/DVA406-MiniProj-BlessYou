@@ -296,7 +296,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public string FeatureTypeToString(int i_FeatureTypeIx, double i_ScaleFactor)
+        public string GetAllValuesOfThisFeatureTypeToString(int i_FeatureTypeIx, double i_ScaleFactor)
         {
             string resStr = "";
             FeatureBaseClass fbc;
@@ -310,7 +310,7 @@ namespace BlessYou
                 resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix] * i_ScaleFactor);
             } // for
             return resStr;
-        } // FeatureTypeToString
+        } // GetAllValuesOfThisFeatureTypeToString
 
         // ====================================================================
 
@@ -323,7 +323,12 @@ namespace BlessYou
 
             for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
             {
-                if (resDouble > fbc.FeatureValueVector[ix])
+                if (fbc.FeatureValueVector[ix] < 0)
+                {
+                    throw new System.NotImplementedException("GetMaxFeatureValueOfThisFeature, i_FeatureTypeIx=" + i_FeatureTypeIx + " ERROR < 0 at ix=" + ix + "!!!");
+                }
+
+                if (resDouble < fbc.FeatureValueVector[ix])
                 {
                     resDouble = fbc.FeatureValueVector[ix];
                 }
