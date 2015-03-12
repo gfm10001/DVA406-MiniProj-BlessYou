@@ -45,6 +45,9 @@ namespace BlessYou
             FFeatureValueVector.Add(changes);
         }
         //=====================================================================
-
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
+        }
     } // FeatureCrestFactorClass
 }

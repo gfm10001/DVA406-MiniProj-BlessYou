@@ -39,6 +39,11 @@ namespace BlessYou
             FFeatureValueVector.Add(average);
         } // calculateFeatureValues
 
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FeatureWeight = i_config.C_M_AVERAGE_FEATURE_WEIGHT;
+        }
+
         //=====================================================================
 
     } // FeatureAverageClass

@@ -38,7 +38,7 @@ namespace BlessYou
             Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config = CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationStatClass config = new ConfigurationStatClass();// CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;

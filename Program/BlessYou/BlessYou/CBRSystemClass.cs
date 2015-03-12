@@ -17,7 +17,7 @@ namespace BlessYou
 {
     public class CBRSystemClass
     {
-        public static int CaseConsiderationLimit = 10;
+        //public const int CaseConsiderationLimit = 3;
 
         // ====================================================================
 
@@ -48,18 +48,16 @@ namespace BlessYou
 
             List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityDistance).ToList();
 
-            if (o_RetrievedMatches.Count < CaseConsiderationLimit)
-                CaseConsiderationLimit = o_RetrievedMatches.Count;
 
-            for (int ix = 0; ix < CaseConsiderationLimit; ix++)
+            //for (int ix = 0; ix < sortedCaseList.Count; ix++)
+            //{
+            //    o_RetrievedMatches.Add(sortedCaseList[ix]);
+
+            //}
+
+            for (int ix = 0; ix < i_MaxRetrievedMatchesCount && ix<sortedCaseList.Count; ix++)
             {
                 o_RetrievedMatches.Add(sortedCaseList[ix]);
-
-            }
-
-            for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
-            {
-                o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
 
             for (int ix = 0; ix < o_RetrievedMatches.Count; ++ix)
@@ -104,7 +102,7 @@ namespace BlessYou
             {
                 countResults[i_RetrievedMatches[i].SneezeStatus]++;
                 distanceResults[i_RetrievedMatches[i].SneezeStatus] = distanceResults[i_RetrievedMatches[i].SneezeStatus] + i_RetrievedMatches[i].SimilarityDistance;
-                if (i_RetrievedMatches[i].SimilarityDistance > BestSimCase.SimilarityDistance) //Find closest match
+                if (i_RetrievedMatches[i].SimilarityDistance < BestSimCase.SimilarityDistance) //Find closest match
                     BestSimCase = i_RetrievedMatches[i];
             }
             foreach (EnumCaseStatus c in Enum.GetValues(typeof(EnumCaseStatus)))
@@ -116,7 +114,7 @@ namespace BlessYou
             //Find best match based on the count and distance respecivley
             EnumCaseStatus topCountCase = EnumCaseStatus.csUnknown;
             int topCountValue = 0;
-            EnumCaseStatus bestDistanceCase = EnumCaseStatus.csUnknown;
+            EnumCaseStatus bestAvgDistanceCase = EnumCaseStatus.csUnknown;
             double bestDistanceValue = double.MaxValue;
             double totalAVGdistance = 0;
             
@@ -134,16 +132,16 @@ namespace BlessYou
                 if (bestDistanceValue > c.SimilarityDistance)
                 {
                     bestDistanceValue = c.SimilarityDistance;
-                    bestDistanceCase = c.SneezeStatus;
+                    bestAvgDistanceCase = c.SneezeStatus;
 
                 }
             }
             totalAVGdistance /= i_RetrievedMatches.Count;
 
             Console.WriteLine("Count:" + topCountCase + " got most matches with " + topCountValue + "/" + i_RetrievedMatches.Count);
-            Console.WriteLine("Distance:" + bestDistanceCase + " was closest with a value of " + bestDistanceValue);
+            Console.WriteLine("Distance:" + BestSimCase.SneezeStatus + " was closest with a value of " + BestSimCase.SimilarityDistance);
 
-            if (topCountCase == bestDistanceCase) //If both cases evaluate to the same, propose as solution
+            if (topCountCase == BestSimCase.SneezeStatus) //If both cases evaluate to the same, propose as solution
             {
                 o_CaseStatus = ConfirmedToPropused(topCountCase);
                 Console.WriteLine("Proposing " + o_CaseStatus + " as solution.");
@@ -162,7 +160,7 @@ namespace BlessYou
                     worstDistance = distanceResults[c];
             }
 
-            double DistancePrbability = bestDistanceValue / totalAVGdistance;
+            double DistancePrbability = 1 - bestDistanceValue / totalAVGdistance;
             //if (DistancePrbability < 0.70)
             //    System.Diagnostics.Debugger.Break();
 
@@ -176,7 +174,7 @@ namespace BlessYou
             }
             else if (countProbability < DistancePrbability)
             {
-                o_CaseStatus = ConfirmedToPropused(bestDistanceCase);
+                o_CaseStatus = ConfirmedToPropused(bestAvgDistanceCase);
                 Console.WriteLine("Proposing " + o_CaseStatus + " as solution.");
                 return;
             }
@@ -211,7 +209,7 @@ namespace BlessYou
             throw new System.NotImplementedException();
         } // Retain
 
-        public static ConfigurationStatClass GenerateRandomConfig(double toplimit)
+        public static ConfigurationStatClass GenerateRandomConfig(double toplimit =1.0)
         {
             ConfigurationStatClass config = new ConfigurationStatClass();
 
@@ -233,6 +231,7 @@ namespace BlessYou
             ConfigurationStatClass config = new ConfigurationStatClass();
             Type t = config.GetType();
             FieldInfo[] fionfo = t.GetFields();
+            //List<List<RetrievedCaseClass>> debuglist = new List<List<RetrievedCaseClass>>();
 
             foreach (FieldInfo f in fionfo)
             {
@@ -248,10 +247,12 @@ namespace BlessYou
                     else
                         e.SetValue(config, 0.0);    
                 }
-                foreach (CaseClass c in caseLibraryObj.ListOfCases)
-                {
-                    c.UpdateFeatureVectors(config);
-                }
+                //foreach (CaseClass c in caseLibraryObj.ListOfCases)
+                //{
+                //    c.UpdateFeatureVectors(config);
+                //    c.ca
+                  
+                //}
 
                 int correct = 0, wrong = 0;
                 List<string> correctList = new List<string>();
@@ -265,7 +266,8 @@ namespace BlessYou
                     List<CaseClass> caseMinusOneList = new List<CaseClass>();
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
-                        if (jx != ix)
+                        caseLibraryObj.ListOfCases[jx].UpdateFeatureVectors(config);
+                       if (jx != ix)
                         {
                             caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
                         }
@@ -273,6 +275,7 @@ namespace BlessYou
 
                     List<RetrievedCaseClass> retrievedMatchesList;
                     Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
@@ -298,11 +301,14 @@ namespace BlessYou
                 Console.WriteLine("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");// for ix
                 Console.WriteLine("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
                 Console.WriteLine("Feature name:" + f.Name);
+                correctList.Add("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");
+                wronglist.Add("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
                 System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
             }
             // ====================================================================
-
-        } // CBRSystem
+        }
+        
+        // CBRSystem
     }
 }
