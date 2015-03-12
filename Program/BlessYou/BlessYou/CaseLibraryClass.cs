@@ -70,7 +70,7 @@ namespace BlessYou
             foreach (CaseClass cObj in FListOfCases)
             {
                 string s;
-                s = String.Format("{0, 4}", ix) + " - " + cObj.AnalyseParamsToString();
+                s = cObj.AnalyseParamsToString();
                 o_ClassReportStringList.Add(s);
                 ++ix;
             } // foreach

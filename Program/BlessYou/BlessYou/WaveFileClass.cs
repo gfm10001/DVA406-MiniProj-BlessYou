@@ -11,6 +11,7 @@
 //                  FTrigPositionIx, WaveFileIntervalBegAtMilliSecs: added
 //                  DumpWaveFileContents, DumpWaveFileIntervalContents: corrected
 //                  AnalyseWaveFileContents: Add display of interval length in samples.
+// 2015-03-12/GF    Added FOrderNr for dump display
 //
 
 using System;
@@ -25,7 +26,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
+        bool FDoWaveDump = true; // Use DoWaveDump to control dumps
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -33,6 +34,8 @@ namespace BlessYou
         int FNrOfIntevals;
         int FIntervalSampleCount;
         int FNumberOfChannelsInOrgininalWaveFile;
+        static int statLastUsedOrderNr; // Used hold latest nr
+        int FOrderNr; // Used to simplify display
 
         // ====================================================================
 
@@ -46,7 +49,16 @@ namespace BlessYou
         public WaveFileClass()
         {
             FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
+            FOrderNr = statLastUsedOrderNr;
+            statLastUsedOrderNr++;
         } // WaveFileClass
+
+        //=====================================================================
+
+        public int OrderNr
+        {
+            get { return FOrderNr; }
+        } // OrderNr
 
         //=====================================================================
 
@@ -205,8 +217,8 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%",
-                              System.IO.Path.GetFileName(FWaveFileName),
+            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%, {10}",
+                              FOrderNr,
                               WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,
                               FTrigPositionIx,
@@ -215,7 +227,9 @@ namespace BlessYou
                               WaveFileIntervalLengthInMilliSecs,
                               "(" + FIntervalSampleCount + ")",
                               100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
-                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)));
+                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
+                              System.IO.Path.GetFileName(FWaveFileName)
+                              );
 
             //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
@@ -362,7 +376,7 @@ namespace BlessYou
 
             string[] lineArr = new string[theUsedEndIx + 3];
 
-            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
+            usedFileName = FOrderNr + "_" + System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_StartIx + " to " + theUsedEndIx);
 
             currLineIx = 0;
