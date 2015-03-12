@@ -251,24 +251,27 @@ namespace BlessYou
         public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
+            double intervalSum = 0.0; 
+            
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
             {
                 if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
                 {
                     for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
                     {
-                        sum = sum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]), 2.0);
+                        intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]), 2.0);
                     } // for ix
-                    sum = Math.Sqrt(sum);
-                    sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                    intervalSum = Math.Sqrt(intervalSum);
+                    sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
                 }
                 else
                 {
+
                     for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
                     {
-                        sum = sum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                        intervalSum = intervalSum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
                     } // for ix
-                    sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                    sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
                 }
             } // for jx
             return sum;
@@ -293,7 +296,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public string FeatureTypeToString(int i_FeatureTypeIx)
+        public string FeatureTypeToString(int i_FeatureTypeIx, double i_ScaleFactor)
         {
             string resStr = "";
             FeatureBaseClass fbc;
@@ -304,11 +307,30 @@ namespace BlessYou
 
             for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
             {
-                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix] * i_ScaleFactor);
             } // for
             return resStr;
         } // FeatureTypeToString
 
+        // ====================================================================
+
+        public double GetMaxFeatureValueOfThisFeature(int i_FeatureTypeIx)
+        {
+            double resDouble = 0.0;
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+
+            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            {
+                if (resDouble > fbc.FeatureValueVector[ix])
+                {
+                    resDouble = fbc.FeatureValueVector[ix];
+                }
+            } // for
+            return resDouble;
+        } // GetMaxFeatureValueOfThisFeature
+        
         // ====================================================================
 
         public string AnalyseParamsToString()

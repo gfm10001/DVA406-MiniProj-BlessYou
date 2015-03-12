@@ -95,11 +95,27 @@ namespace BlessYou
             foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
             {
                 List<string> dumpListOfFeatures = new List<string>();
+                
+                // Dump raw values of this feature
+                dumpListOfFeatures.Add("File Name: \t Feature " + fbc.FeatureName + " raw values:");
                 foreach (CaseClass caseObj in ListOfCases)
                 {
-                    string s = caseObj.FeatureTypeToString(featureTypeIx);
+                    string s = caseObj.FeatureTypeToString(featureTypeIx, 1.0);
                     dumpListOfFeatures.Add(s);
                 } // foreach CaseClass
+
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+
+                // Dump normalized DumpAllFeatureValuesOfAllCasesToFiles of this feature
+                dumpListOfFeatures.Add("File Name: \t Feature " + fbc.FeatureName + " normalized values:");
+                foreach (CaseClass caseObj in ListOfCases)
+                {
+                    double maxValueOfThisFeature = caseObj.GetMaxFeatureValueOfThisFeature(featureTypeIx);
+                   // dumpListOfFeatures.Add(s);
+                } // foreach CaseClass
+
                 System.IO.File.WriteAllLines(i_BaseFileName + "_" + fbc.FeatureName + ".xls", dumpListOfFeatures);
                 featureTypeIx++;
             } // foreach FeatureBaseClass
