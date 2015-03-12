@@ -16,7 +16,9 @@ namespace BlessYou
     public class RetrievedCaseClass : CaseClass
     {
         double FDistanceValue;
+        double FSimilarityValue; 
         EnumCaseStatus FProposedStatus;
+
 
         //=====================================================================
 
@@ -27,7 +29,7 @@ namespace BlessYou
 
             set { FProposedStatus = value; }
         
-        }
+        } // ProposedStatus
 
         //=====================================================================
 
@@ -41,7 +43,21 @@ namespace BlessYou
             {
                 FDistanceValue = value;
             }
-        } // FeatureName
+        } // SimilarityDistance
+
+        //=====================================================================
+
+        public double SimilarityValue
+        {
+            get
+            {
+                return FSimilarityValue;
+            }
+            set
+            {
+                FSimilarityValue = value;
+            }
+        } // SimilarityValue
         #endregion
 
         //=====================================================================
@@ -69,10 +85,10 @@ namespace BlessYou
                                 + " Actual: " + base.SneezeStatus.ToString();
         }
 
-        void CalculateSimilarityValue(CaseClass i_NewCase)
-        {
+        //void CalculateSimilarityValue(CaseClass i_NewCase)
+        //{
 
-        } // CalculateSimilarityValue
+        //} // CalculateSimilarityValue
     } // RetrievedCaseClass
 
 }

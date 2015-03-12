@@ -60,6 +60,7 @@ namespace BlessYou
             // Dump calculated features 
             Console.Write("Dump all features to files... ");
             caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
+
             Console.WriteLine();
 
             //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
@@ -100,75 +101,94 @@ namespace BlessYou
                 List<string> wronglist = new List<string>();
 
                 CaseClass selectedProblemObj = new CaseClass();
-                for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
+
+
+                // Alternative for using similarityvalue
+                int numberofCases = 1;
+                while (numberofCases <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_REUSE)
                 {
+                    Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCases);
+                    correctSneezes = 0;
+                    inCorrectSneezes = 0;
+                    correctNoneSneezes = 0;
+                    inCorrectNoneSneezes = 0;
 
-                    selectedProblemObj = caseLibraryObj.ListOfCases[ix];
-                    Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                    List<CaseClass> caseLibaryMinusOneCaseList = new List<CaseClass>();
-                    for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
+                    for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                     {
-                        if (jx != ix)
+
+                        selectedProblemObj = caseLibraryObj.ListOfCases[ix];
+                        //Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        List<CaseClass> caseLibaryMinusOneCaseList = new List<CaseClass>();
+                        for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                         {
-                            caseLibaryMinusOneCaseList.Add(caseLibraryObj.ListOfCases[jx]);
-                        }
-                    } // for jx
-                    CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                            if (jx != ix)
+                            {
+                                caseLibaryMinusOneCaseList.Add(caseLibraryObj.ListOfCases[jx]);
+                            }
+                        } // for jx
 
-                    //4. Start reuse function
-                    EnumCaseStatus caseStatus;
-                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
-                    if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
-                    {
-                        if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
+                        // Alternative functioncall using similarity value
+                        // CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                        CBRSystemClass.RetrieveUsingSimilarityfunction(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+
+                        //4. Start reuse function
+                        EnumCaseStatus caseStatus;
+
+                        // Alternative functioncall using similarity value
+                        //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
+                        CBRSystemClass.ReuseUsingSimilarityValue(retrievedMatchesList, numberofCases, out caseStatus);
+                        if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                         {
-                            correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                            correctSneezes++;
+                            if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
+                            {
+                                correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                                correctSneezes++;
+                            }
+                            else
+                            {
+                                wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                                inCorrectSneezes++;
+                                //Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
+                            }
                         }
-                        else
+                        if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                         {
-                            wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                            inCorrectSneezes++;
-                            Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
+                            if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze)
+                            {
+                                correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                                correctNoneSneezes++;
+                            }
+                            else
+                            {
+                                //System.Diagnostics.Debugger.Break();
+                                wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                                inCorrectNoneSneezes++;
+                                //Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
+                            }
                         }
-                    }
-                    if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
-                    {
-                        if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze)
-                        {
-                            correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                            correctNoneSneezes++;
-                        }
-                        else
-                        {
-                            //System.Diagnostics.Debugger.Break();
-                            wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
-                            inCorrectNoneSneezes++;
-                            Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
-                        }
-                    }
+                    } // for ix
 
-                } // for ix
 
-                double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
+                    double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
 
-                caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
+                    caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
-                Console.WriteLine();
-				Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
-                Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
+                    Console.WriteLine();
+                    Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
+                    Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
 
-                Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
-                
-                Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
-                Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
-                Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
-                Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
-                
-				System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
-                System.IO.File.WriteAllLines("./Corrects.txt", correctList);
-                // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                //ToDo throw new System.NotImplementedException();
+                    Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
+
+                    Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
+                    Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
+                    Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
+                    Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
+
+                    System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
+                    System.IO.File.WriteAllLines("./Corrects.txt", correctList);
+                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
+                    //ToDo throw new System.NotImplementedException();
+                } // while
             } // else
 
 

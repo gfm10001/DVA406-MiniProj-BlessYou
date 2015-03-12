@@ -251,10 +251,11 @@ namespace BlessYou
         public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
-            double intervalSum = 0.0; 
-            
+            double intervalSum = 0.0;
+
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
             {
+                intervalSum = 0.0;
                 if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
                 {
                     for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
@@ -276,6 +277,15 @@ namespace BlessYou
             } // for jx
             return sum;
         } // calculateSimilarityFunction
+
+
+        // ====================================================================
+
+        public double CalculateSimilarityValue(CaseClass i_NewCase)
+        {
+            double distance = CalculateDistanceValue(i_NewCase);
+            return 1 / (1 + distance);
+        } // CalculateSimilarityValue     
 
         // ====================================================================
 
