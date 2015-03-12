@@ -1,4 +1,13 @@
-﻿using System;
+﻿// CaseLibraryClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+// 2015-03-12/GF    Addition: DumpAllFeatureValuesOfAllCasesToFiles
+//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -76,6 +85,26 @@ namespace BlessYou
             } // foreach
 
         } // GenerateReportOfAllCases
+
+        // ====================================================================
+
+        public void DumpAllFeatureValuesOfAllCasesToFiles(string i_BaseFileName)
+        {
+            CaseClass dummyCaseObj = ListOfCases[0];
+            int featureTypeIx = 0;
+            foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
+            {
+                List<string> dumpListOfFeatures = new List<string>();
+                foreach (CaseClass caseObj in ListOfCases)
+                {
+                    string s = caseObj.FeatureTypeToString(featureTypeIx);
+                    dumpListOfFeatures.Add(s);
+                } // foreach CaseClass
+                System.IO.File.WriteAllLines(i_BaseFileName + "_" + fbc.FeatureName + ".xls", dumpListOfFeatures);
+                featureTypeIx++;
+            } // foreach FeatureBaseClass
+
+        } // DumpAllFeatureValuesOfAllCasesToFiles
 
     } // CaseLibraryClass
 }

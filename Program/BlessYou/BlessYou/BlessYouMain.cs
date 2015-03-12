@@ -9,9 +9,9 @@
 // Mini project "Bless You" - a CASE-Based Sneeze Detector
 //
 // History:
-// 2015-02-24   Introduced.
+// 2015-02-24       Introduced.
+// 2015-03-12/GF    Refactored file dump of feature sto CaseLibraryClass
 //
-
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.5/0 of 2015-03-12";
+            const string C_THIS_VERSION = "Bless You v.0.6/0 of 2015-03-12";
 
             //Usage:
             //BlessYou P1 P2 [P3] where
@@ -57,24 +57,9 @@ namespace BlessYou
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
 
 
-            // Display calculated features
-            CaseClass dummyCaseObj = caseLibraryObj.ListOfCases[0];
-
-            int featureTypeIx = 0;
-            foreach (FeatureBaseClass fbc in dummyCaseObj.FeatureTypeVector)
-            {
-                List<string> dumpListOfFeatures = new List<string>();
-
-                Console.WriteLine("\nfeatureTypeIx = {0} = '{1}'\n", featureTypeIx, fbc.FeatureName);
-                foreach (CaseClass caseObj in caseLibraryObj.ListOfCases)
-                {
-                    string s = caseObj.FeatureTypeToString(featureTypeIx);
-                    dumpListOfFeatures.Add(s);
-                   // Console.WriteLine(s);
-                } // foreach CaseClass
-                System.IO.File.WriteAllLines(fbc.FeatureName + ".xls", dumpListOfFeatures);
-                featureTypeIx++;
-            } // foreach FeatureBaseClass
+            // Dump calculated features 
+            Console.Write("Dump all features to files... ");
+            caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
             Console.WriteLine();
 
             //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
