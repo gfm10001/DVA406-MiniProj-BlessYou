@@ -26,7 +26,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
+        bool FDoWaveDump = true; // Use DoWaveDump to control dumps
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
