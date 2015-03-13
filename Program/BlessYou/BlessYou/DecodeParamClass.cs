@@ -6,7 +6,8 @@
 // 2015-02-24       Introduced.
 // 2015-03-04/GF    DecodeParam: Fixed handling of too short lines.
 // 2015-03-10/GF    DecodeParam: Added handling of comment-lines
-
+// 2015-03-13/GF    DecodeParam: Added check that list file exists
+//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,7 +137,7 @@ namespace BlessYou
                 throw new System.Exception(tempStr);                // Set i Project Properties -> Debug: command line params.
                                                                     // Typical examples as below:
                                                                     //    ..\..\..\samplesFileNames.txt all 
-                                                                    //    ..\..\..\samplesFileNames-15-sneeses.txt all 
+                                                                    //    ..\..\..\samplesFileNames-15-sneezes.txt all 
                                                                     //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
                                                                     //    ..\..\..\samplesFileNames-all.txt all (For all samples)
             }
@@ -148,7 +149,17 @@ namespace BlessYou
 
             // Decode sampleFilenames (one per row)
             // Format of list file used as P1: one line per .wav­file:
-            string paramListOfFileNamesStr = System.IO.File.ReadAllText(samplesFileName);
+            string paramListOfFileNamesStr = "";
+            try
+            {
+                paramListOfFileNamesStr = System.IO.File.ReadAllText(samplesFileName);
+            }
+            catch (Exception ex)
+            {
+                tempStr = "ERR " + ex.Message + " - Cannot access file '" + samplesFileName + "' - check name and path!";
+                throw new System.Exception(tempStr);
+            }
+
             char[] lineFeedSep = { '\n' };
             string[] listOfFileNamesStrArr;
             listOfFileNamesStrArr = paramListOfFileNamesStr.Split(lineFeedSep);

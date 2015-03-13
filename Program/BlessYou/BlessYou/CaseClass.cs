@@ -9,8 +9,9 @@
 // 2015-03-08/GF    AnalyseParamsToString: added
 // 2015-03-11/GF    Correction: Trigg Position display was incorrect
 //                  Addition: AnalyseParamsToString display also index
-// 2015-03-12/GF    Added FOrderNr for dump display
-
+// 2015-03-12/GF    Added: FOrderNr for dump display
+// 2015-03-13/GF    Added: GetChangesOfAllValuesOfThisFeatureTypeToString, GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString, 
+//                         CalculateSimilarityValueExt, CalculateSimilarityFunctionOfThisFeature
 
 using System;
 using System.Collections.Generic;
@@ -248,36 +249,53 @@ namespace BlessYou
 
         // ====================================================================
 
+        public double CalculateDistanceToNewCaseForThisFeature(CaseClass i_NewCase, int i_FeatureIx)
+        {
+            double intervalSum = 0.0;
+
+            intervalSum = 0.0;
+            if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
+            {
+                for (int ix = 0; ix < FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector.Count; ++ix)
+                {
+                    intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[i_FeatureIx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix]), 2.0);
+                } // for ix
+                intervalSum = Math.Sqrt(intervalSum);
+            }
+            else
+            {
+                for (int ix = 0; ix < FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector.Count; ++ix)
+                {
+                    intervalSum = intervalSum + 
+                                    FFeatureTypeVector[i_FeatureIx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix]);
+                } // for ix
+            }
+
+            // ToDo: divide ??
+            // intervalSum = intervalSum / ConfigurationStatClass.C_NR_OF_INTERVALS;
+            return intervalSum;
+        } // CalculateDistanceToNewCaseForThisFeature
+
+        // ====================================================================
+
+        public double CalculateSimilarityFunctionOfNewCaseForThisFeature(CaseClass i_NewCase, int i_FeatureIx)
+        {
+            double distance = CalculateDistanceToNewCaseForThisFeature(i_NewCase, i_FeatureIx);
+            return 1 / (1 + distance);
+        } // CalculateSimilarityFunctionOfNewCaseForThisFeature
+
+        // ====================================================================
+
         public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
-            double intervalSum = 0.0;
 
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
             {
-                intervalSum = 0.0;
-                if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
-                {
-                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueNormlizedVector.Count; ++ix)
-                    {
-                        intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix]), 2.0);
-                    } // for ix
-                    intervalSum = Math.Sqrt(intervalSum);
-                    sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
-                }
-                else
-                {
-
-                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueNormlizedVector.Count; ++ix)
-                    {
-                        intervalSum = intervalSum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix]);
-                    } // for ix
-                    sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
-                }
+                sum = sum + FFeatureTypeVector[jx].FeatureWeight * CalculateDistanceToNewCaseForThisFeature(i_NewCase, jx);
             } // for jx
             return sum;
-        } // calculateSimilarityFunction
-
+        } // CalculateDistanceValue
 
         // ====================================================================
 
@@ -287,6 +305,19 @@ namespace BlessYou
             return 1 / (1 + distance);
         } // CalculateSimilarityValue     
 
+        // ====================================================================
+
+        public double CalculateSimilarityValueExt(CaseClass i_NewCase)
+        {
+            double simularity = 0;
+
+            for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
+            {
+                simularity = simularity + FFeatureTypeVector[jx].FeatureWeight * CalculateSimilarityFunctionOfNewCaseForThisFeature(i_NewCase, jx);
+            } // for jx
+            return simularity;
+        } // CalculateSimilarityValueExt       
+        
         // ====================================================================
 
         public override string ToString()
@@ -321,6 +352,63 @@ namespace BlessYou
             } // for
             return resStr;
         } // GetAllValuesOfThisFeatureTypeToString
+
+        // ====================================================================
+
+        public string GetChangesOfAllValuesOfThisFeatureTypeToString(int i_FeatureTypeIx)
+        {
+            string resStr = "";
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
+            {
+                // Even out the diffs into both sides intervalls.
+                if (0 == ix)
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix + 1] - fbc.FeatureValueRawVector[ix]) / 2.0);
+                }
+                else if (fbc.FeatureValueRawVector.Count - 1 == ix)
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix] - fbc.FeatureValueRawVector[ix - 1]) / 2.0);
+                }
+                else
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix - 1] - fbc.FeatureValueRawVector[ix]) / 2.0 
+                                                                             + 
+                                                                            (fbc.FeatureValueRawVector[ix + 1] - fbc.FeatureValueRawVector[ix]) / 2.0);
+                }
+
+            } // for
+            return resStr;
+        } // GetChangesOfAllValuesOfThisFeatureTypeToString
+
+        // ====================================================================
+
+        public string GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString(int i_FirstFeatureTypeIx, int i_SecondFeatureTypeIx, List<CaseClass> i_TheCaseList)
+        {
+            // Return string with coordinate pairs: "x, y", x = similarity in first feature, y = similarity in second feature
+            string resStr = "";
+
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+
+            for (int otherCaseIx = 0; otherCaseIx < i_TheCaseList.Count; ++otherCaseIx)
+            {
+                resStr = resStr + "\t f:" + String.Format("{0, 4:0}", i_TheCaseList[otherCaseIx].OrderNr);
+
+                double firstFeatureSimilarityValue = CalculateSimilarityFunctionOfNewCaseForThisFeature(i_TheCaseList[otherCaseIx], i_FirstFeatureTypeIx);
+                double secondFeatureSimilarityValue = CalculateSimilarityFunctionOfNewCaseForThisFeature(i_TheCaseList[otherCaseIx], i_SecondFeatureTypeIx);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000} \t {1, 10:0.000}",
+                                                        firstFeatureSimilarityValue,      // "x"
+                                                        secondFeatureSimilarityValue);    // "y"
+                resStr = resStr + Environment.NewLine;
+
+            } // for otherCaseIx
+            return resStr;
+        } // GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString
 
         // ====================================================================
 

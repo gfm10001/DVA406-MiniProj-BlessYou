@@ -126,6 +126,45 @@ namespace BlessYou
                     dumpListOfFeatures.Add(s);
                 } // foreach CaseClass
 
+
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+
+
+                // Dump difference betweeen one case and the others in this and another varying dimension
+                int secondFeatureTypeIx = 0;
+                foreach (FeatureBaseClass secondFbc in dummyCaseObj.FeatureTypeVector)
+                {
+                    if (featureTypeIx != secondFeatureTypeIx)
+                    {
+                        dumpListOfFeatures.Add("File Name: \t 2ndFeature " + secondFbc.FeatureName + " diffs one - to one:");
+                        foreach (CaseClass caseSelectedObj in ListOfCases)
+                        {
+                            // Compare selected case to all others
+                            string s = caseSelectedObj.GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString(featureTypeIx, secondFeatureTypeIx, ListOfCases);
+                            dumpListOfFeatures.Add(s);
+
+                        } // foreach CaseClass
+                        dumpListOfFeatures.Add("");
+                    }
+                    secondFeatureTypeIx++;
+                } // foreach    
+
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+                dumpListOfFeatures.Add("");
+
+                // Dump Derivative (derivata...)
+                dumpListOfFeatures.Add("File Name: \t Feature " + fbc.FeatureName + " changes:");
+                foreach (CaseClass caseObj in ListOfCases)
+                {
+                    string s = "?";
+                    s = caseObj.GetChangesOfAllValuesOfThisFeatureTypeToString(featureTypeIx);
+                    dumpListOfFeatures.Add(s);
+                } // foreach CaseClass
+
+                // Save list to disk...
                 System.IO.File.WriteAllLines(i_BaseFileName + "_" + fbc.FeatureName + ".xls", dumpListOfFeatures);
                 featureTypeIx++;
             } // foreach FeatureBaseClass

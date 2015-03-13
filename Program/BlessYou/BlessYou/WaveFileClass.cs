@@ -26,7 +26,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
+        bool FDoWaveDump = true; // Use DoWaveDump to control dumps
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -123,7 +123,7 @@ namespace BlessYou
 
             FNumberOfChannelsInOrgininalWaveFile = _wavFile.NumberOfChannelsInWaveFile;
 
-       //     DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 
         } // ReadWaveFile
 
@@ -157,7 +157,7 @@ namespace BlessYou
                 FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor;
             }
 
-          //  DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 
         } // NormalizeWaveFileContents
 
