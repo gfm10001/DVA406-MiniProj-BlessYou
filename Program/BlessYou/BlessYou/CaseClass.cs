@@ -258,9 +258,9 @@ namespace BlessYou
                 intervalSum = 0.0;
                 if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
                 {
-                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueNormlizedVector.Count; ++ix)
                     {
-                        intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]), 2.0);
+                        intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix]), 2.0);
                     } // for ix
                     intervalSum = Math.Sqrt(intervalSum);
                     sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
@@ -268,9 +268,9 @@ namespace BlessYou
                 else
                 {
 
-                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                    for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueNormlizedVector.Count; ++ix)
                     {
-                        intervalSum = intervalSum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                        intervalSum = intervalSum + FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[jx].FeatureValueNormlizedVector[ix]);
                     } // for ix
                     sum = sum + intervalSum * FFeatureTypeVector[jx].FeatureWeight;
                 }
@@ -295,9 +295,9 @@ namespace BlessYou
             foreach (FeatureBaseClass fbc in FFeatureTypeVector)
             {
                 resStr = resStr + "Feature Type = " + fbc.FeatureName + "\n";
-                for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+                for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
                 {
-                    resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueVector[ix]);
+                    resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueRawVector[ix]);
                 } // for
                 resStr = resStr + "\n";
             }
@@ -315,9 +315,9 @@ namespace BlessYou
 
             resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
 
-            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
             {
-                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix] * i_ScaleFactor);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueRawVector[ix] * i_ScaleFactor);
             } // for
             return resStr;
         } // GetAllValuesOfThisFeatureTypeToString
@@ -331,16 +331,16 @@ namespace BlessYou
 
             fbc = FFeatureTypeVector[i_FeatureTypeIx];
 
-            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
             {
-                if (fbc.FeatureValueVector[ix] < 0)
+                if (fbc.FeatureValueRawVector[ix] < 0)
                 {
                     throw new System.NotImplementedException("GetMaxFeatureValueOfThisFeature, i_FeatureTypeIx=" + i_FeatureTypeIx + " ERROR < 0 at ix=" + ix + "!!!");
                 }
 
-                if (resDouble < fbc.FeatureValueVector[ix])
+                if (resDouble < fbc.FeatureValueRawVector[ix])
                 {
-                    resDouble = fbc.FeatureValueVector[ix];
+                    resDouble = fbc.FeatureValueRawVector[ix];
                 }
             } // for
             return resDouble;

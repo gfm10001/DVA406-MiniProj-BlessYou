@@ -120,7 +120,7 @@ namespace BlessYou
             Console.WriteLine("");
 
 
-            FFeatureValueVector.Add(frequencyArray.Max());
+            FFeatureValueRawVector.Add(frequencyArray.Max());
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================

@@ -10,7 +10,7 @@
 //
 // History:
 // 2015-02-24       Introduced.
-// 2015-03-12/GF    Refactored file dump of feature sto CaseLibraryClass
+// 2015-03-12/GF    Refactored file dump of features to CaseLibraryClass
 //
 
 using System;
@@ -26,7 +26,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.6/0 of 2015-03-12";
+            const string C_THIS_VERSION = "Bless You v.0.6/1 of 2015-03-13";
 
             //Usage:
             //BlessYou P1 P2 [P3] where

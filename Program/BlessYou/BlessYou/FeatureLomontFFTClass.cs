@@ -106,7 +106,7 @@ namespace BlessYou
 
             if (firstListIx < 0)
             {
-                FFeatureValueVector.Add(0.0);
+                FFeatureValueRawVector.Add(0.0);
                 return;
             }
             // Pad input as needed
@@ -194,7 +194,7 @@ namespace BlessYou
 
             // Setup the Feature Value and return it to the vector
             double featureValue = FDataFFTAnalysisDone.ToList().GetRange(analysisStartIndex, analysisEndIndex - analysisStartIndex).Average();
-            FFeatureValueVector.Add(featureValue);
+            FFeatureValueRawVector.Add(featureValue);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
