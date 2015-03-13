@@ -82,6 +82,8 @@ namespace BlessYou
             o_RetrievedMatches = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
 
+            //List<string> dumpSimilarityValues = new List<string>();
+
 
             // Calculate indvidual similarityvalues
             for (int ix = 0; ix < i_CaseLibraryList.Count; ++ix)
@@ -90,8 +92,13 @@ namespace BlessYou
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
                 theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+                //string str = GetSimilarityValuesToString(i_NewCase, theCase);
+                //dumpSimilarityValues.Add(str);
                 similarityCaseList.Add(theCase);
             } // for ix
+
+
+            // System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", dumpSimilarityValues);
 
             // Sort the values best similarity case last
             List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
@@ -101,6 +108,34 @@ namespace BlessYou
             {
                 o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
+
+
+            // Debug prints
+            string correctAnswer;
+            if (o_RetrievedMatches[0].SneezeStatus == i_NewCase.SneezeStatus)
+            {
+                correctAnswer = "Correct";
+            }
+            else
+            {
+
+                correctAnswer = "Wrong";
+            }
+            string sFLargeStr;
+            if (o_RetrievedMatches[0].SimilarityValue > 0.7)
+            {
+                sFLargeStr = ">0.70";
+            }
+            else
+            {
+                sFLargeStr = "";
+            }
+            // Write all SF numbers to file
+            //List<string> resultString;
+            //GetAllSimilarityValuesToString(i_NewCase, sortedCaseList, out resultString);
+            //System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", resultString);
+            Console.WriteLine("SF={0:0.000000} between current {1,-50} and {2,-50} {3} {4}", o_RetrievedMatches[0].SimilarityValue, System.IO.Path.GetFileName(o_RetrievedMatches[0].WavFile_FullPathAndFileNameStr),
+                                                                           System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr), correctAnswer, sFLargeStr);
         } // RetrieveUsingSimilarityfunction
 
         // ====================================================================
@@ -251,7 +286,7 @@ namespace BlessYou
                 o_CaseStatus = EnumCaseStatus.csIsProposedNoneSneeze;
             }
         } // ReuseUsingSimilarityValue
-        
+
         // ====================================================================
 
         public static EnumCaseStatus ConfirmedToPropused(EnumCaseStatus state)
@@ -277,6 +312,8 @@ namespace BlessYou
             throw new System.NotImplementedException();
         } // Retain
 
+        // ====================================================================
+
         public static ConfigurationStatClass GenerateRandomConfig(double toplimit)
         {
             ConfigurationStatClass config = new ConfigurationStatClass();
@@ -294,6 +331,9 @@ namespace BlessYou
             return config;
 
         }
+
+        // ====================================================================
+
         public static void EvaluateFeatureOneByOne(CaseLibraryClass caseLibraryObj)
         {
             ConfigurationStatClass config = new ConfigurationStatClass();
@@ -310,7 +350,7 @@ namespace BlessYou
                     if (e == f)
                         f.SetValue(config, 1.0);
                     else
-                        f.SetValue(config, 0.0);    
+                        f.SetValue(config, 0.0);
                 }
                 foreach (CaseClass c in caseLibraryObj.ListOfCases)
                 {
@@ -364,8 +404,33 @@ namespace BlessYou
                 System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
                 System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
             }
-            // ====================================================================
+        }
+        // ====================================================================
 
-        } // CBRSystem
-    }
+        public static string GetSimilarityValuesToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)
+        {
+            string resStr = "";
+
+            resStr = String.Format("SF={0:0.000000} between current {1,-20} and {2,-20}", i_CurrentCase.SimilarityValue, System.IO.Path.GetFileName(i_CurrentCase.WavFile_FullPathAndFileNameStr),
+                                                                           System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr));
+
+            return resStr;
+        } // GetSimilarityValuesToString
+
+        // ====================================================================
+
+        public static void GetAllSimilarityValuesToString(CaseClass i_NewCase, List<RetrievedCaseClass> i_SortedList, out List<string> o_ResultString)
+        {
+            string resStr = "";
+            o_ResultString = new List<string>();
+            for (int ix = 0; ix < i_SortedList.Count; ++ix)
+            {
+                resStr = GetSimilarityValuesToString(i_NewCase, i_SortedList[ix]);
+                o_ResultString.Add(resStr);
+            }
+        } // GetAllSimilarityValuesToString
+
+        // ====================================================================
+
+    } // CBRSystem
 }

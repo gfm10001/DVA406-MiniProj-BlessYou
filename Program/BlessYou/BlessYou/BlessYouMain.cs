@@ -112,6 +112,10 @@ namespace BlessYou
                     inCorrectSneezes = 0;
                     correctNoneSneezes = 0;
                     inCorrectNoneSneezes = 0;
+                    double lowestCorrect = 1;
+                    double lowestWrong = 1;
+                    double highestCorrect = 0;
+                    double highestWrong = 0;
 
                     for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                     {
@@ -145,11 +149,27 @@ namespace BlessYou
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
                             {
+                                    if (lowestCorrect > retrievedMatchesList[0].SimilarityValue)
+                                    {
+                                        lowestCorrect = retrievedMatchesList[0].SimilarityValue;
+                                    }
+                                    if (highestCorrect < retrievedMatchesList[0].SimilarityValue)
+                                    {
+                                        highestCorrect = retrievedMatchesList[0].SimilarityValue;
+                                    }
                                 correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 correctSneezes++;
                             }
                             else
                             {
+                                if (lowestWrong > retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    lowestWrong = retrievedMatchesList[0].SimilarityValue;
+                                }
+                                if (highestWrong < retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    highestWrong = retrievedMatchesList[0].SimilarityValue;
+                                }
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectSneezes++;
                                 //Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
@@ -159,11 +179,27 @@ namespace BlessYou
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze)
                             {
+                                if (lowestCorrect > retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    lowestCorrect = retrievedMatchesList[0].SimilarityValue;
+                                }
+                                if (highestCorrect < retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    highestCorrect = retrievedMatchesList[0].SimilarityValue;
+                                }
                                 correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 correctNoneSneezes++;
                             }
                             else
                             {
+                                if (lowestWrong > retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    lowestWrong = retrievedMatchesList[0].SimilarityValue;
+                                }
+                                if (highestWrong < retrievedMatchesList[0].SimilarityValue)
+                                {
+                                    highestWrong = retrievedMatchesList[0].SimilarityValue;
+                                }
                                 //System.Diagnostics.Debugger.Break();
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectNoneSneezes++;
@@ -177,6 +213,9 @@ namespace BlessYou
 
                     caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
+                    Console.WriteLine();
+                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", highestCorrect, lowestCorrect);
+                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", highestWrong, lowestWrong);
                     Console.WriteLine();
                     Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
                     Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
