@@ -188,6 +188,7 @@ namespace BlessYou
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
+                    numberofCases += 2;
                 } // while
             } // else
 
