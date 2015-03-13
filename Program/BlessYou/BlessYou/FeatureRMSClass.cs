@@ -37,7 +37,7 @@ namespace BlessYou
             } // for ix
             rms = Math.Sqrt(rms / i_Count);
 
-            FFeatureValueVector.Add(rms);
+            FFeatureValueRawVector.Add(rms);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================

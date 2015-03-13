@@ -131,13 +131,14 @@ namespace BlessYou
                 tempStr = "Usage:\n" +
                                  "BlessYou P1 P2 [P3] where\n" +
                                  "P1 = name of text file with names of all .wav­files to be examined\n" +
-                                 "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" + 
+                                 "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" +
                                  "P3 = path to directory for created .ftr­files (optional)\n";
-                throw new System.Exception(tempStr);              // Set i Project Properties -> Debug: command line params.
-                                                                  // Typical examples as below:
-                                                                  //    ..\..\..\samplesFileNames.txt all 
-                                                                  //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
-                                                                  //    ..\..\..\samplesFileNames-all.txt all (For all samples)
+                throw new System.Exception(tempStr);                // Set i Project Properties -> Debug: command line params.
+                                                                    // Typical examples as below:
+                                                                    //    ..\..\..\samplesFileNames.txt all 
+                                                                    //    ..\..\..\samplesFileNames-15-sneeses.txt all 
+                                                                    //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
+                                                                    //    ..\..\..\samplesFileNames-all.txt all (For all samples)
             }
 
             if ("all" == o_NewProblemFileName.ToLower())

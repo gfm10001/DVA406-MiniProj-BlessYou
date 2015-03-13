@@ -45,7 +45,7 @@ namespace BlessYou
                 }
             } // for ix
             p2p = Math.Abs(xmin) + Math.Abs(xmax);
-            FFeatureValueVector.Add(p2p);
+            FFeatureValueRawVector.Add(p2p);
         } // calculateFeatureValues
 
         //=====================================================================

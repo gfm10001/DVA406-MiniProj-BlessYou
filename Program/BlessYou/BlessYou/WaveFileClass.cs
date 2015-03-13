@@ -12,7 +12,7 @@
 //                  DumpWaveFileContents, DumpWaveFileIntervalContents: corrected
 //                  AnalyseWaveFileContents: Add display of interval length in samples.
 // 2015-03-12/GF    Added FOrderNr for dump display
-//
+// 2015-03-13/GF    CalculateFeatureVector: Added normalize of feature vector values in 2nd vector.
 
 using System;
 using System.Collections.Generic;
@@ -251,15 +251,35 @@ namespace BlessYou
             // 2. Type of feature depends on i_FeatureObj
             // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
             int soundSampleIx;
-
+            double maxValueOfThisFeature = 0;
             int round = 0;
             soundSampleIx = FStartOfFirstIntervalIx;
             for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
             {
                 i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount, round);
+                if (i_FeatureObj.FeatureValueRawVector[intervalIx] > maxValueOfThisFeature)
+                {
+                    maxValueOfThisFeature = i_FeatureObj.FeatureValueRawVector[intervalIx];
+                }
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;
                 round++;
             } // for intervalIx
+
+            // All intervals have data! Normalize...
+            for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
+            {
+                if (ConfigurationStatClass.C_EPSILON > maxValueOfThisFeature)
+                {
+                    // Too small scale vcalue ??? 
+                    i_FeatureObj.FeatureValueNormlizedVector.Add(i_FeatureObj.FeatureValueRawVector[intervalIx]); // ???? Not Scalable???
+                }
+                else
+                {
+                    i_FeatureObj.FeatureValueNormlizedVector.Add(i_FeatureObj.FeatureValueRawVector[intervalIx] / maxValueOfThisFeature);
+                }
+            } // for intervalIx
+
+
         } // CalculateFeatureVector
 
         // ====================================================================

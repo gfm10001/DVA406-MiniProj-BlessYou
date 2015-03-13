@@ -1,4 +1,12 @@
-﻿using System;
+﻿// FeatureBaseClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+// 2015-03-13/GF    Added normalized vector (all values 0.0..1.0)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +16,8 @@ namespace BlessYou
     public abstract class FeatureBaseClass
     {
         protected string FFeatureName;
-        protected List<double> FFeatureValueVector;
+        protected List<double> FFeatureValueRawVector;
+        protected List<double> FFeatureValueNormlizedVector;
         protected double FFeatureWeight;
 
         //=====================================================================
@@ -23,14 +32,23 @@ namespace BlessYou
 
         //=====================================================================
 
-        public List<double> FeatureValueVector
+        public List<double> FeatureValueRawVector
         {
             get
             {
-                return FFeatureValueVector;
+                return FFeatureValueRawVector;
             }
-        } // FeatureValueVector
+        } // FeatureValueRawVector
 
+        //=====================================================================
+
+        public List<double> FeatureValueNormlizedVector
+        {
+            get
+            {
+                return FFeatureValueNormlizedVector;
+            }
+        } // FeatureValueNormlizedVector
 
         //=====================================================================
 
@@ -50,14 +68,16 @@ namespace BlessYou
 
         public FeatureBaseClass(string i_FeatureName)
         {
-            FFeatureValueVector = new List<double>();
+            FFeatureValueRawVector = new List<double>();
+            FFeatureValueNormlizedVector = new List<double>();
             FFeatureName = i_FeatureName;
         } // FeatureBaseClass
 
 
         public FeatureBaseClass(string i_FeatureName,ConfigurationStatClass i_config)
         {
-            FFeatureValueVector = new List<double>();
+            FFeatureValueRawVector = new List<double>();
+            FFeatureValueNormlizedVector = new List<double>();
             FFeatureName = i_FeatureName;
         } // FeatureBaseClass
 

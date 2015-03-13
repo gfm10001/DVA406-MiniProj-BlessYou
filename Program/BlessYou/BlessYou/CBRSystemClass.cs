@@ -214,7 +214,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void ReuseUsingSimilarityValue(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, out EnumCaseStatus o_CaseStatus)
+        public static void ReuseUsingMajorityVote(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
             if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
