@@ -79,12 +79,12 @@ namespace BlessYou
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
-            bool sendRawDataTOFile = false; // true
+            bool sendRawDataToFile = false; // true
 
-            int samplingFrequency = 1000 * (int) ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
+            int samplingFrequency = 1000 * (int)ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
             int maxNrOfSamples = 65536; // 2^16
-         
-            LomontFFTClass LFFTObj = new LomontFFTClass();
+
+            LomontFFTClass LomontFFTObj = new LomontFFTClass();
             bool forward = true;
             int analysisStartIndex = 0;
             int analysisEndIndex = 0;
@@ -104,41 +104,43 @@ namespace BlessYou
                 firstListIx = i_WaveFileContents44p1KHz16bitSamples.Length - nrOfSamples - 1;
             }
 
+            // Meaning the complete wave file is shorter than the sample length
+            // Add missing samples from the start of the wave file
             if (firstListIx < 0)
             {
-                FFeatureValueVector.Add(0.0);
-                return;
+                firstListIx = 0;
             }
-            // Pad input as needed
+            // Pad input as needed to keep the frequency resolution
             int modfactor = (int)(Math.Pow(2, (16 - (int)NumberOfSamplesAsValuePowerOfTwo)));
             for (int ix = 0; ix < nrOfSamples; ++ix)
             {
+
                 if (NumberOfSamplesAsValuePowerOfTwo != 16.0 && (ix % modfactor) != 0)
                 {
                     dataForFFTAnalysis[ix] = 0.0;
                 } // if
                 else if (NumberOfSamplesAsValuePowerOfTwo == 16.0)
                 {
-                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[firstListIx + ix];
+                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[(firstListIx + ix) % i_WaveFileContents44p1KHz16bitSamples.Length];
                 } // else if
                 else
                 {
-                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[firstListIx + ix / modfactor];
-                }
+                    dataForFFTAnalysis[ix] = i_WaveFileContents44p1KHz16bitSamples[(firstListIx + ix / modfactor) % i_WaveFileContents44p1KHz16bitSamples.Length];
+                } // else
             } // for ix
 
-            // The Lomont FFT has the following parameters
+            // The Lomont RealFFT has the following parameters
             // data: real values of wave file data
-            // Length of the data must be a power of 2, chosen 66536
+            // Length of the data must be a power of 2, chosen 66536, 16384 and 4096
             // forward: a bool  that is set to true (forward is done)
-            LFFTObj.RealFFT(dataForFFTAnalysis, forward);
+            LomontFFTObj.RealFFT(dataForFFTAnalysis, forward);
 
-            // remove all imaginary parts and set up output
+            // Set up output amplitude and frequencies
             for (int ix = 0; ix < nrOfSamples; ix += 2)
             {
                 // Amplitude
                 FDataFFTAnalysisDone[ix / 2] = Math.Sqrt(dataForFFTAnalysis[ix] * dataForFFTAnalysis[ix] + dataForFFTAnalysis[ix + 1] * dataForFFTAnalysis[ix + 1]);
-                
+
                 // Convert amplitude to dB values formula
                 // dB_val = 10.0 * log10(re * re + im * im) + dB_correction
                 FDataFFTAnalysisDoneInDB[ix / 2] = 10 * Math.Log10(dataForFFTAnalysis[ix] * dataForFFTAnalysis[ix] + dataForFFTAnalysis[ix + 1] * dataForFFTAnalysis[ix + 1]);
@@ -187,7 +189,7 @@ namespace BlessYou
             }
 
             string fileName = Path.GetFileName(FFilePathAndName);
-            if (sendRawDataTOFile)
+            if (sendRawDataToFile)
             {
                 System.IO.File.WriteAllLines("FFToutput_" + fileName + "_S_" + NumberOfSamplesAsValuePowerOfTwo + "_R_" + i_CurrentRound + ".xls", strArr);
             } // if

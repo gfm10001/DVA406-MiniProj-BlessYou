@@ -103,7 +103,7 @@ namespace BlessYou
                 CaseClass selectedProblemObj = new CaseClass();
 
 
-                // Alternative for using similarityvalue
+                // While loop introduced as an alternative for using similarityvalue and majority vote
                 int numberofCases = 1;
                 while (numberofCases <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_REUSE)
                 {
@@ -128,15 +128,19 @@ namespace BlessYou
                         } // for jx
 
                         // Alternative functioncall using similarity value
+                        // Original:
                         // CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                        // Alternative:
                         CBRSystemClass.RetrieveUsingSimilarityfunction(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
 
                         //4. Start reuse function
                         EnumCaseStatus caseStatus;
 
-                        // Alternative functioncall using similarity value
+                        // Alternative functioncall using majority vote
+                        // Original:
                         //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
-                        CBRSystemClass.ReuseUsingSimilarityValue(retrievedMatchesList, numberofCases, out caseStatus);
+                        // Alternative:
+                        CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, numberofCases, out caseStatus);
                         if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
@@ -189,7 +193,7 @@ namespace BlessYou
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
                     numberofCases += 2;
-                } // while
+                } // While loop introduced as an alternative for using similarityvalue and majority vote
             } // else
 
 
