@@ -36,7 +36,7 @@ namespace BlessYou
                     peak = Math.Abs(i_WaveFileContents44p1KHz16bitSamples[ix]);
                 }
             } // for ix
-            FFeatureValueVector.Add(peak);
+            FFeatureValueRawVector.Add(peak);
         } // calculateFeatureValuesFromSamples
 
         public override void UpdateFeatureWeight(ConfigurationStatClass i_config)

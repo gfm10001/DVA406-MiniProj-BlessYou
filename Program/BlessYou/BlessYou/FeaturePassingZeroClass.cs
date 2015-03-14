@@ -42,7 +42,7 @@ namespace BlessYou
                     changes++;                
                 }
             } 
-            FFeatureValueVector.Add(changes);
+            FFeatureValueRawVector.Add(changes);
         }
         //=====================================================================
         public override void UpdateFeatureWeight(ConfigurationStatClass i_config)

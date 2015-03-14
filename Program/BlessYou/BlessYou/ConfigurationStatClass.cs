@@ -35,6 +35,23 @@ namespace BlessYou
         public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
 
 
+        //ToDo implement interval weights
+        public static double C_FEATURE_INTERVAL_0_WEIGHT = 1; 
+        public static double C_FEATURE_INTERVAL_1_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_2_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_3_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_4_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_5_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_6_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_7_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_8_WEIGHT = 1;
+        public static double C_FEATURE_INTERVAL_9_WEIGHT = 1;
+
+
+        
+
+
+
         //The fields bellow are used when generating custom weights. 
         //>>>>>>>
         //IMPORTANT: If you add a non-double field you need to chanage the GenerateRandomConfig call
@@ -55,7 +72,11 @@ namespace BlessYou
         public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
         public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
 
+        public static bool USE_EUCLID_SUMMATION = true;
+
         public static double C_EPSILON = 0.000001;
+
+        public static double C_NUMBER_OF_CASES_TO_REUSE = 1;  // 1, 3, 5 or 7 according to teachers
 
         public static string C_CONFIGURATION_REPORT_FILE_NAME = "ConfigurationReport.txt";
         public static string C_CLASS_LIBRARY_REPORT_FILE_NAME = "ClassLibraryReport.txt";

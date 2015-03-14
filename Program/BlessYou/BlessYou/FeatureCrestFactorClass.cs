@@ -45,7 +45,7 @@ namespace BlessYou
             rms = Math.Sqrt(rms / i_Count);
             cf = peak / rms;
 
-            FFeatureValueVector.Add(cf);
+            FFeatureValueRawVector.Add(cf);
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================

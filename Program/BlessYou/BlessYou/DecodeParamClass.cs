@@ -6,7 +6,8 @@
 // 2015-02-24       Introduced.
 // 2015-03-04/GF    DecodeParam: Fixed handling of too short lines.
 // 2015-03-10/GF    DecodeParam: Added handling of comment-lines
-
+// 2015-03-13/GF    DecodeParam: Added check that list file exists
+//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,13 +132,14 @@ namespace BlessYou
                 tempStr = "Usage:\n" +
                                  "BlessYou P1 P2 [P3] where\n" +
                                  "P1 = name of text file with names of all .wav­files to be examined\n" +
-                                 "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" + 
+                                 "P2 = File name for new problem | \"all\" : all files in Case Library run in sequence\n" +
                                  "P3 = path to directory for created .ftr­files (optional)\n";
-                throw new System.Exception(tempStr);              // Set i Project Properties -> Debug: command line params.
-                                                                  // Typical examples as below:
-                                                                  //    ..\..\..\samplesFileNames.txt all 
-                                                                  //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
-                                                                  //    ..\..\..\samplesFileNames-all.txt all (For all samples)
+                throw new System.Exception(tempStr);                // Set i Project Properties -> Debug: command line params.
+                                                                    // Typical examples as below:
+                                                                    //    ..\..\..\samplesFileNames.txt all 
+                                                                    //    ..\..\..\samplesFileNames-15-sneezes.txt all 
+                                                                    //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
+                                                                    //    ..\..\..\samplesFileNames-all.txt all (For all samples)
             }
 
             if ("all" == o_NewProblemFileName.ToLower())
@@ -147,7 +149,17 @@ namespace BlessYou
 
             // Decode sampleFilenames (one per row)
             // Format of list file used as P1: one line per .wav­file:
-            string paramListOfFileNamesStr = System.IO.File.ReadAllText(samplesFileName);
+            string paramListOfFileNamesStr = "";
+            try
+            {
+                paramListOfFileNamesStr = System.IO.File.ReadAllText(samplesFileName);
+            }
+            catch (Exception ex)
+            {
+                tempStr = "ERR " + ex.Message + " - Cannot access file '" + samplesFileName + "' - check name and path!";
+                throw new System.Exception(tempStr);
+            }
+
             char[] lineFeedSep = { '\n' };
             string[] listOfFileNamesStrArr;
             listOfFileNamesStrArr = paramListOfFileNamesStr.Split(lineFeedSep);

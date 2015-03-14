@@ -11,7 +11,8 @@
 //                  FTrigPositionIx, WaveFileIntervalBegAtMilliSecs: added
 //                  DumpWaveFileContents, DumpWaveFileIntervalContents: corrected
 //                  AnalyseWaveFileContents: Add display of interval length in samples.
-//
+// 2015-03-12/GF    Added FOrderNr for dump display
+// 2015-03-13/GF    CalculateFeatureVector: Added normalize of feature vector values in 2nd vector.
 
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = true; // Use DoWaveDump to control dumps
+        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -33,6 +34,8 @@ namespace BlessYou
         int FNrOfIntevals;
         int FIntervalSampleCount;
         int FNumberOfChannelsInOrgininalWaveFile;
+        static int statLastUsedOrderNr; // Used hold latest nr
+        int FOrderNr; // Used to simplify display
 
         // ====================================================================
 
@@ -46,7 +49,16 @@ namespace BlessYou
         public WaveFileClass()
         {
             FNrOfIntevals = ConfigurationStatClass.C_NR_OF_INTERVALS;
+            FOrderNr = statLastUsedOrderNr;
+            statLastUsedOrderNr++;
         } // WaveFileClass
+
+        //=====================================================================
+
+        public int OrderNr
+        {
+            get { return FOrderNr; }
+        } // OrderNr
 
         //=====================================================================
 
@@ -96,6 +108,10 @@ namespace BlessYou
             //      Stereo: läs 2 (L, R)  integer 16 bit, konvertera till double och medelvärdesbilda, placera som double i FWaveFileContents44p1KHz16bitSamples 
             // 4. Utvärdera ev. fel kasta exception om fel
 
+            //string s = System.IO.Directory.GetCurrentDirectory();
+            //Console.WriteLine("cd='" + s + "'");
+            
+
             FWaveFileName = i_WaveFileName;
             WavFile _wavFile = new WavFile(FWaveFileName);
 
@@ -107,7 +123,7 @@ namespace BlessYou
 
             FNumberOfChannelsInOrgininalWaveFile = _wavFile.NumberOfChannelsInWaveFile;
 
-       //     DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 
         } // ReadWaveFile
 
@@ -141,7 +157,7 @@ namespace BlessYou
                 FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor;
             }
 
-          //  DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
 
         } // NormalizeWaveFileContents
 
@@ -201,8 +217,8 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0,-50} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%",
-                              System.IO.Path.GetFileName(FWaveFileName),
+            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%, {10}",
+                              FOrderNr,
                               WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,
                               FTrigPositionIx,
@@ -211,7 +227,9 @@ namespace BlessYou
                               WaveFileIntervalLengthInMilliSecs,
                               "(" + FIntervalSampleCount + ")",
                               100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
-                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)));
+                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
+                              System.IO.Path.GetFileName(FWaveFileName)
+                              );
 
             //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)
@@ -233,15 +251,35 @@ namespace BlessYou
             // 2. Type of feature depends on i_FeatureObj
             // Console.WriteLine("Feature: {0}", i_FeatureObj.FeatureName); // ToDo
             int soundSampleIx;
-
+            double maxValueOfThisFeature = 0;
             int round = 0;
             soundSampleIx = FStartOfFirstIntervalIx;
             for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
             {
                 i_FeatureObj.calculateFeatureValuesFromSamples(FWaveFileContents44p1KHz16bitSamples, soundSampleIx, FIntervalSampleCount, round);
+                if (i_FeatureObj.FeatureValueRawVector[intervalIx] > maxValueOfThisFeature)
+                {
+                    maxValueOfThisFeature = i_FeatureObj.FeatureValueRawVector[intervalIx];
+                }
                 soundSampleIx = soundSampleIx + FIntervalSampleCount;
                 round++;
             } // for intervalIx
+
+            // All intervals have data! Normalize...
+            for (int intervalIx = 0; intervalIx < FNrOfIntevals; ++intervalIx)
+            {
+                if (ConfigurationStatClass.C_EPSILON > maxValueOfThisFeature)
+                {
+                    // Too small scale vcalue ??? 
+                    i_FeatureObj.FeatureValueNormlizedVector.Add(i_FeatureObj.FeatureValueRawVector[intervalIx]); // ???? Not Scalable???
+                }
+                else
+                {
+                    i_FeatureObj.FeatureValueNormlizedVector.Add(i_FeatureObj.FeatureValueRawVector[intervalIx] / maxValueOfThisFeature);
+                }
+            } // for intervalIx
+
+
         } // CalculateFeatureVector
 
         // ====================================================================
@@ -358,7 +396,7 @@ namespace BlessYou
 
             string[] lineArr = new string[theUsedEndIx + 3];
 
-            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
+            usedFileName = FOrderNr + "_" + System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + fileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_StartIx + " to " + theUsedEndIx);
 
             currLineIx = 0;

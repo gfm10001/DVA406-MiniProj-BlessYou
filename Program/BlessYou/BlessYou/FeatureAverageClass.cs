@@ -36,7 +36,7 @@ namespace BlessYou
 
             }
             average = average / i_Count;
-            FFeatureValueVector.Add(average);
+            FFeatureValueRawVector.Add(average);
         } // calculateFeatureValues
 
         public override void UpdateFeatureWeight(ConfigurationStatClass i_config)

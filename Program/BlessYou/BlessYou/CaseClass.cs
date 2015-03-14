@@ -9,6 +9,9 @@
 // 2015-03-08/GF    AnalyseParamsToString: added
 // 2015-03-11/GF    Correction: Trigg Position display was incorrect
 //                  Addition: AnalyseParamsToString display also index
+// 2015-03-12/GF    Added: FOrderNr for dump display
+// 2015-03-13/GF    Added: GetChangesOfAllValuesOfThisFeatureTypeToString, GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString, 
+//                         CalculateSimilarityValueExt, CalculateSimilarityFunctionOfThisFeature
 
 using System;
 using System.Collections.Generic;
@@ -27,9 +30,18 @@ namespace BlessYou
         double FWaveFileTriggPositionInMilliSecs;
         double FWaveFileIntervallLengthInMilliSecs;
         int FNumberOfChannelsInOrgininalWaveFile;
+        int FOrderNr; // Used at dump display
 
         EnumCaseStatus _SneezeStatus;
         List<FeatureBaseClass> FFeatureTypeVector; // Each list element in the FV is a type of feature, each element consists of a number of values, one per time interval
+
+
+        //=====================================================================
+
+        public int OrderNr
+        {
+            get { return FOrderNr; }
+        } // OrderNr
 
         //=====================================================================
 
@@ -128,6 +140,7 @@ namespace BlessYou
             FWaveFileTriggPositionInMilliSecs = waveFileObj.WaveFileTrigAtMilliSecs;
             FWaveFileIntervallLengthInMilliSecs = waveFileObj.WaveFileIntervalLengthInMilliSecs;
             FNumberOfChannelsInOrgininalWaveFile = waveFileObj.NumberOfChannelsInOrgininalWaveFile;
+            FOrderNr = waveFileObj.OrderNr;
 
             FeaturePeakClass featurePeakObj = new FeaturePeakClass(i_config);
             waveFileObj.CalculateFeatureVector(featurePeakObj);
@@ -241,22 +254,84 @@ namespace BlessYou
 
         // ====================================================================
 
+        public double CalculateDistanceToNewCaseForThisFeature(CaseClass i_NewCase, int i_FeatureIx)
+        {
+            double intervalSum = 0.0;
+
+            intervalSum = 0.0;
+            if (ConfigurationStatClass.USE_EUCLID_SUMMATION)
+            {
+                for (int ix = 0; ix < FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector.Count; ++ix)
+                {
+                    intervalSum = intervalSum + Math.Pow(FFeatureTypeVector[i_FeatureIx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix]), 2.0);
+                } // for ix
+                intervalSum = Math.Sqrt(intervalSum);
+            }
+            else
+            {
+                for (int ix = 0; ix < FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector.Count; ++ix)
+                {
+                    intervalSum = intervalSum + 
+                                    FFeatureTypeVector[i_FeatureIx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix], FFeatureTypeVector[i_FeatureIx].FeatureValueNormlizedVector[ix]);
+                } // for ix
+            }
+
+            // ToDo: divide ??
+            // intervalSum = intervalSum / ConfigurationStatClass.C_NR_OF_INTERVALS;
+            return intervalSum;
+        } // CalculateDistanceToNewCaseForThisFeature
+
+        // ====================================================================
+
+        public double CalculateSimilarityFunctionOfNewCaseForThisFeature(CaseClass i_NewCase, int i_FeatureIx)
+        {
+            double distance = CalculateDistanceToNewCaseForThisFeature(i_NewCase, i_FeatureIx);
+            return 1 / (1 + distance);
+        } // CalculateSimilarityFunctionOfNewCaseForThisFeature
+
+        // ====================================================================
+
         public double CalculateDistanceValue(CaseClass i_NewCase)
         {
             double sum = 0;
+
             for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
             {
-                for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
-                {
-                    double temp = FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
-                    sum = sum + temp * FFeatureTypeVector[jx].FeatureWeight;
-                } // for ix
+                //for (int ix = 0; ix < FFeatureTypeVector[jx].FeatureValueVector.Count; ++ix)
+                //{
+                   // double temp = FFeatureTypeVector[jx].AbsDiffForAttribute(i_NewCase.FFeatureTypeVector[jx].FeatureValueVector[ix], FFeatureTypeVector[jx].FeatureValueVector[ix]);
+                  //  sum = sum + temp * FFeatureTypeVector[jx].FeatureWeight;
+                //} // for ix
                 //sum = sum / FFeatureTypeVector[jx].FeatureValueVector.Count;
                 //sum = sum * FFeatureTypeVector[jx].FeatureWeight;
+                sum = sum + FFeatureTypeVector[jx].FeatureWeight * CalculateDistanceToNewCaseForThisFeature(i_NewCase, jx);
             } // for jx
             return sum;
-        } // calculateSimilarityFunction
+        } // CalculateDistanceValue
 
+
+
+        // ====================================================================
+
+        public double CalculateSimilarityValue(CaseClass i_NewCase)
+        {
+            double distance = CalculateDistanceValue(i_NewCase);
+            return 1 / (1 + distance);
+        } // CalculateSimilarityValue     
+
+        // ====================================================================
+
+        public double CalculateSimilarityValueExt(CaseClass i_NewCase)
+        {
+            double simularity = 0;
+
+            for (int jx = 0; jx < FFeatureTypeVector.Count; ++jx)
+            {
+                simularity = simularity + FFeatureTypeVector[jx].FeatureWeight * CalculateSimilarityFunctionOfNewCaseForThisFeature(i_NewCase, jx);
+            } // for jx
+            return simularity;
+        } // CalculateSimilarityValueExt       
+        
         // ====================================================================
 
         public override string ToString()
@@ -265,9 +340,9 @@ namespace BlessYou
             foreach (FeatureBaseClass fbc in FFeatureTypeVector)
             {
                 resStr = resStr + "Feature Type = " + fbc.FeatureName + "\n";
-                for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+                for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
                 {
-                    resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueVector[ix]);
+                    resStr = resStr + " " + String.Format("{0:000000.0}", fbc.FeatureValueRawVector[ix]);
                 } // for
                 resStr = resStr + "\n";
             }
@@ -276,30 +351,111 @@ namespace BlessYou
 
         // ====================================================================
 
-        public string FeatureTypeToString(int i_FeatureTypeIx)
+        public string GetAllValuesOfThisFeatureTypeToString(int i_FeatureTypeIx, double i_ScaleFactor)
         {
             string resStr = "";
             FeatureBaseClass fbc;
 
             fbc = FFeatureTypeVector[i_FeatureTypeIx];
 
-            resStr = String.Format("{0,-40}", System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
 
-            for (int ix = 0; ix < fbc.FeatureValueVector.Count; ++ix)
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
             {
-                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueVector[ix]);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000}", fbc.FeatureValueRawVector[ix] * i_ScaleFactor);
             } // for
             return resStr;
-        } // FeatureTypeToString
+        } // GetAllValuesOfThisFeatureTypeToString
 
+        // ====================================================================
+
+        public string GetChangesOfAllValuesOfThisFeatureTypeToString(int i_FeatureTypeIx)
+        {
+            string resStr = "";
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
+            {
+                // Even out the diffs into both sides intervalls.
+                if (0 == ix)
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix + 1] - fbc.FeatureValueRawVector[ix]) / 2.0);
+                }
+                else if (fbc.FeatureValueRawVector.Count - 1 == ix)
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix] - fbc.FeatureValueRawVector[ix - 1]) / 2.0);
+                }
+                else
+                {
+                    resStr = resStr + "\t" + String.Format("{0, 10:0.000}", (fbc.FeatureValueRawVector[ix - 1] - fbc.FeatureValueRawVector[ix]) / 2.0 
+                                                                             + 
+                                                                            (fbc.FeatureValueRawVector[ix + 1] - fbc.FeatureValueRawVector[ix]) / 2.0);
+                }
+
+            } // for
+            return resStr;
+        } // GetChangesOfAllValuesOfThisFeatureTypeToString
+
+        // ====================================================================
+
+        public string GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString(int i_FirstFeatureTypeIx, int i_SecondFeatureTypeIx, List<CaseClass> i_TheCaseList)
+        {
+            // Return string with coordinate pairs: "x, y", x = similarity in first feature, y = similarity in second feature
+            string resStr = "";
+
+            resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
+
+            for (int otherCaseIx = 0; otherCaseIx < i_TheCaseList.Count; ++otherCaseIx)
+            {
+                resStr = resStr + "\t f:" + String.Format("{0, 4:0}", i_TheCaseList[otherCaseIx].OrderNr);
+
+                double firstFeatureSimilarityValue = CalculateSimilarityFunctionOfNewCaseForThisFeature(i_TheCaseList[otherCaseIx], i_FirstFeatureTypeIx);
+                double secondFeatureSimilarityValue = CalculateSimilarityFunctionOfNewCaseForThisFeature(i_TheCaseList[otherCaseIx], i_SecondFeatureTypeIx);
+                resStr = resStr + "\t" + String.Format("{0, 10:0.000} \t {1, 10:0.000}",
+                                                        firstFeatureSimilarityValue,      // "x"
+                                                        secondFeatureSimilarityValue);    // "y"
+                resStr = resStr + Environment.NewLine;
+
+            } // for otherCaseIx
+            return resStr;
+        } // GetDiffsOfAllValuesNormalizedOfThisFeatureTypeToString
+
+        // ====================================================================
+
+        public double GetMaxFeatureValueOfThisFeature(int i_FeatureTypeIx)
+        {
+            double resDouble = 0.0;
+            FeatureBaseClass fbc;
+
+            fbc = FFeatureTypeVector[i_FeatureTypeIx];
+
+            for (int ix = 0; ix < fbc.FeatureValueRawVector.Count; ++ix)
+            {
+                if (fbc.FeatureValueRawVector[ix] < 0)
+                {
+                    throw new System.NotImplementedException("GetMaxFeatureValueOfThisFeature, i_FeatureTypeIx=" + i_FeatureTypeIx + " ERROR < 0 at ix=" + ix + "!!!");
+                }
+
+                if (resDouble < fbc.FeatureValueRawVector[ix])
+                {
+                    resDouble = fbc.FeatureValueRawVector[ix];
+                }
+            } // for
+            return resDouble;
+        } // GetMaxFeatureValueOfThisFeature
+        
         // ====================================================================
 
         public string AnalyseParamsToString()
         {
             string resStr = "";
 
-            resStr = String.Format("{0,-60} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) Sneeze: {10}",
-                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr),
+            resStr = String.Format("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) {10} - {11}",
+                                     FOrderNr,
                                      FWaveFileLengthInMilliSecs,
                                      FWaveFileIntervalBegPositionInMilliSecs,
                                      FWaveFileTriggPositionInMilliSecs,
@@ -309,7 +465,8 @@ namespace BlessYou
                                      100.00 * (FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                      100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * FWaveFileIntervallLengthInMilliSecs / FWaveFileLengthInMilliSecs),
                                      FNumberOfChannelsInOrgininalWaveFile,
-                                     _SneezeStatus);
+                                     _SneezeStatus,
+                                     System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
             return resStr;
         } // AnalyseParamsToString
 
