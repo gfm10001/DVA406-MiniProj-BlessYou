@@ -18,7 +18,9 @@ namespace BlessYou
         double FDistanceValue;
         double FSimilarityValue; 
         EnumCaseStatus FProposedStatus;
-
+        double FCaseSimilarityRankingValue;
+        int FNrOfCorrectRetrievesRankingValue;
+        int FNrOfWrongRetrievesRankingValue;
 
         //=====================================================================
 
@@ -58,13 +60,59 @@ namespace BlessYou
                 FSimilarityValue = value;
             }
         } // SimilarityValue
+
+        //=====================================================================
+
+        public double CaseSimilarityRankingValue
+        {
+            get
+            {
+                return FCaseSimilarityRankingValue;
+            }
+            set
+            {
+                FCaseSimilarityRankingValue = value;
+            }
+        } // CaseRankingValue
+ 
+        //=====================================================================
+
+        public int NrOfCorrectRetrievesRankingValue
+        {
+            get
+            {
+                return FNrOfCorrectRetrievesRankingValue;
+            }
+            set
+            {
+                FNrOfCorrectRetrievesRankingValue = value;
+            }
+        } // NrOfCorrectRetrievesRankingValue
+
+
+        //=====================================================================
+
+        public int NrOfWrongRetrievesRankingValue
+        {
+            get
+            {
+                return FNrOfWrongRetrievesRankingValue;
+            }
+            set
+            {
+                FNrOfWrongRetrievesRankingValue = value;
+            }
+        } // NrOfWrongRetrievesRankingValue
+
         #endregion
 
         //=====================================================================
 
         public RetrievedCaseClass()
         {
-
+            CaseSimilarityRankingValue = 0.0;
+            NrOfCorrectRetrievesRankingValue = 0;
+            NrOfWrongRetrievesRankingValue = 0;
         }
 
         //=====================================================================
@@ -75,6 +123,7 @@ namespace BlessYou
             // ToDo better implementation
             this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
             this.ProposedStatus = EnumCaseStatus.csUnknown;
+            CaseSimilarityRankingValue = 0;
         } // RetrievedCaseClass
 
         //=====================================================================

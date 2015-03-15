@@ -73,7 +73,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void RetrieveUsingSimilarityfunction(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, int i_MaxRetrievedMatchesCount, out List<RetrievedCaseClass> o_RetrievedMatches)
+        public static void RetrieveUsingSimilarityfunction(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, out List<RetrievedCaseClass> o_RetrievedMatches)
         {
             // 1. För varje case i case library:
             //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
@@ -106,11 +106,13 @@ namespace BlessYou
 
             // Sort the values best similarity case last
             List<RetrievedCaseClass> sortedCaseList = similarityCaseList.OrderBy(x => x.SimilarityValue).ToList();
+            sortedCaseList.Reverse();
 
-            // Send best similarity case in reverse order 
-            for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx)
+            // Return all similarity case from best to worst
+            //for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx) 
+            for (int ix = 0; ix < sortedCaseList.Count; ++ix)
             {
-                o_RetrievedMatches.Add(sortedCaseList[jx]);
+                o_RetrievedMatches.Add(sortedCaseList[ix]);
             } // for ix
 
             // Write all SF numbers to file
@@ -254,7 +256,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void ReuseUsingMajorityVote(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, out EnumCaseStatus o_CaseStatus)
+        public static void ReuseUsingMajorityVote(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, EnumCaseStatus i_SelectedProblemObjCaseStatus, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
             if (i_RetrievedMatches == null || i_RetrievedMatches.Count == 0)
@@ -262,23 +264,50 @@ namespace BlessYou
                 o_CaseStatus = EnumCaseStatus.csNone;
                 return;
             }
+
+            List<RetrievedCaseClass> retrievedMatches = i_RetrievedMatches;
             int numberOfSneezes = 0;
             int numberOfNonSneezes = 0;
-            for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix)
+            for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix) // ToDo remove i_RetrievedMatches.Count add check and send error
             {
-                if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                i_RetrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
+                if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
-                    numberOfSneezes++;
+                    if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    {
+                        numberOfSneezes++;
+                        retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
+                    }
+                    else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    {
+                        numberOfNonSneezes++;
+                        retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERROR case have no sneezestatus");
+                        o_CaseStatus = EnumCaseStatus.csNone;
+                        return;
+                    }
                 }
-                else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                 {
-                    numberOfNonSneezes++;
-                }
-                else
-                {
-                    Console.WriteLine("ERROR case have no sneezestatus");
-                    o_CaseStatus = EnumCaseStatus.csNone;
-                    return;
+                    if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    {
+                        numberOfSneezes++;
+                        retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
+                    }
+                    else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    {
+                        numberOfNonSneezes++;
+                        retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERROR case have no sneezestatus");
+                        o_CaseStatus = EnumCaseStatus.csNone;
+                        return;
+                    }
                 }
             } // for ix
 
@@ -303,18 +332,59 @@ namespace BlessYou
             return EnumCaseStatus.csNone;
         }
 
-        public void Revise()
+        // ====================================================================
+
+        public static void AccumulateSimilarityValuesInList(List<RetrievedCaseClass> i_RetrievedMatchesList, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList)
         {
-            // TBA
-            throw new System.NotImplementedException();
-        } // Revise
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            foreach (RetrievedCaseClass retMatchesObj in i_RetrievedMatchesList)
+            {
+                foreach (RetrievedCaseClass accSimObj in accumulatedSimilarityValuesMatchesList)
+                {
+                    if (retMatchesObj.WavFile_FullPathAndFileNameStr == accSimObj.WavFile_FullPathAndFileNameStr)
+                    {
+                        accSimObj.NrOfCorrectRetrievesRankingValue += retMatchesObj.NrOfCorrectRetrievesRankingValue;
+                        accSimObj.NrOfWrongRetrievesRankingValue += retMatchesObj.NrOfWrongRetrievesRankingValue;
+                        accSimObj.CaseSimilarityRankingValue += retMatchesObj.CaseSimilarityRankingValue;
+                    }
+                } // foreach
+            } // foreach
+
+            // Print case accumulatedSimilarityvalues and vote frequency
+            //List<string> resultString;
+            //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesMatchesList, out resultString);
+            //foreach (string s in resultString)
+            //{
+            //    Console.WriteLine("{0}", s);
+            //}
+        } // AccumulateSimilarityValuesInList
+        
+        // ====================================================================
+
+        public static void ClearSimilarityValuesInList(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList)
+        {
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            foreach (RetrievedCaseClass accSimObj in accumulatedSimilarityValuesMatchesList)
+            {
+                accSimObj.NrOfCorrectRetrievesRankingValue = 0;
+                accSimObj.NrOfWrongRetrievesRankingValue = 0;
+                accSimObj.CaseSimilarityRankingValue = 0;
+            } // foreach
+        } // ClearSimilarityValuesInList
 
         // ====================================================================
 
-        public void Retain()
+        public static void Revise()
         {
-            // TBA
-            throw new System.NotImplementedException();
+
+            // throw new System.NotImplementedException();
+        } // Revise
+        // ====================================================================
+
+        public static void Retain()
+        {
+            
+            // throw new System.NotImplementedException();
         } // Retain
 
         // ====================================================================
@@ -437,5 +507,44 @@ namespace BlessYou
 
         // ====================================================================
 
+        public static void DumpAllAccumulatedSimilarityValuesToString(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out List<string> o_ResultString)
+        {
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            o_ResultString = new List<string>(); 
+            int nrOfCasesCorrectAndWrong = 0;
+            int nrOfCasesCorrectOnly = 0;
+            int nrOfCasesWrongOnly = 0;
+            int nrOfCasesNeverUsedInEvaluation = 0;
+            foreach (RetrievedCaseClass rCC in accumulatedSimilarityValuesMatchesList)
+            {
+                //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
+                if (rCC.NrOfCorrectRetrievesRankingValue > 0 && rCC.NrOfWrongRetrievesRankingValue > 0)
+                {
+                    nrOfCasesCorrectAndWrong++;
+                }
+                else if (rCC.NrOfCorrectRetrievesRankingValue > 0 && rCC.NrOfWrongRetrievesRankingValue == 0)
+                {
+                    nrOfCasesCorrectOnly++;
+                }
+                if (rCC.NrOfCorrectRetrievesRankingValue == 0 && rCC.NrOfWrongRetrievesRankingValue > 0)
+                {
+                    nrOfCasesWrongOnly++;
+                }
+                if (rCC.NrOfCorrectRetrievesRankingValue == 0 && rCC.NrOfWrongRetrievesRankingValue == 0)
+                {
+                    nrOfCasesNeverUsedInEvaluation++;
+                }
+                o_ResultString.Add(String.Format("File: {0}", rCC.WavFile_FullPathAndFileNameStr));
+                o_ResultString.Add(String.Format("Dump nr of times used to detect sound correct {0}", rCC.NrOfCorrectRetrievesRankingValue));
+                o_ResultString.Add(String.Format("Dump nr of times used to detect sound incorrect {0}", rCC.NrOfWrongRetrievesRankingValue));
+                o_ResultString.Add(String.Format("Summarized similarity value {0}\n", rCC.CaseSimilarityRankingValue));
+            }
+
+            o_ResultString.Add(String.Format("\nNr of cases with problems: {0}\n", nrOfCasesCorrectAndWrong));
+            o_ResultString.Add(String.Format("Nr of cases only Correct:  {0}\n", nrOfCasesCorrectOnly));
+            o_ResultString.Add(String.Format("Nr of cases only Wrong:    {0}\n", nrOfCasesWrongOnly));
+            o_ResultString.Add(String.Format("Nr of cases never used:    {0}\n", nrOfCasesNeverUsedInEvaluation));
+
+        } // DumpAllAccumulatedSimilarityValuesToString
     } // CBRSystem
 }
