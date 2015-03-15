@@ -28,6 +28,7 @@ namespace BlessYou
         static void Main(string[] args)
         {
             const string C_THIS_VERSION = "Bless You v.0.6/2 of 2015-03-15";
+            DateTime startTime;
 
             //Usage:
             //BlessYou P1 P2 [P3] where
@@ -35,8 +36,7 @@ namespace BlessYou
             //P2 = File name for new problem | "all" : all files in Case Library run in sequence
             //P3 = path to directory for created .ftr­files (optional)
 
-            Console.WriteLine(C_THIS_VERSION);
-            Console.WriteLine("Starting: " + DateTime.Now.ToString() + "\n");
+            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
             ConfigurationStatClass config = null;// = CBRSystemClass.GenerateRandomConfig(100);
@@ -52,6 +52,8 @@ namespace BlessYou
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
             DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
+            startTime = DateTime.Now;
+            Console.WriteLine("Starting: " + startTime.ToString() + ", config file: " + args[0] + " \n");
 
 
 
@@ -66,6 +68,7 @@ namespace BlessYou
             }
 
             // Dump calculated features 
+
             //Console.Write("Dump all features to files... ");
             //caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
 
@@ -246,6 +249,7 @@ namespace BlessYou
             } // if
 
             // 7. Finish.
+            Console.WriteLine("Finished: " + DateTime.Now.ToString() + ", elapsed: " + (DateTime.Now - startTime).ToString() + "\n");
             Console.Write("\nPress any key to exit! ");
             Console.ReadKey();
 
