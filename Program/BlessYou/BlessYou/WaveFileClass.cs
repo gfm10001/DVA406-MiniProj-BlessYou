@@ -220,7 +220,7 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%, {10}",
+            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 5:0}ms Int: {6, 5:0}ms {7, 8:0} = {8, 2:0}%, of whole: {9, 3:0}%, {10}",
                               FOrderNr,
                               WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,

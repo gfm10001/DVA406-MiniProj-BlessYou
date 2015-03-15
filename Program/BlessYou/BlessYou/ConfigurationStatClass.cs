@@ -69,6 +69,7 @@ namespace BlessYou
         public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;
         public static int C_NR_OF_SAMPLES_2_POWER_16 = 16;
 
+        public static bool C_USE_PARALLEL_EXECUTION = false;
         public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
         public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
 
