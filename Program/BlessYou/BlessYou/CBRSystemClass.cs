@@ -376,23 +376,76 @@ namespace BlessYou
 
         public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
-            //List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
-            //int 
+            List<double> SimilarityRankingValueList = new List<double>();
+            List<int> notUsedCaseToRemoveFromLibraryIxList = new List<int>();
+            List<int> wrongCaseToRemoveFromLibraryIxList = new List<int>();
+            double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
+            double minSimilarityRankingValue = double.MaxValue;
 
-            //o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
-            //for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
-            //{
-            //    // Evaluate which case that is the worst case that can be removed from the library
-            //    if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
-            //    {
-            //        if (o_CaseToRemoveFromCaseLibrary.NrOfWrongRetrievesRankingValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
-            //        {
+            // Evaluate which case that is the worst case that can be removed from the library
+            o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
+            maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[0].NrOfWrongRetrievesRankingValue;
+            for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            {
+                SimilarityRankingValueList.Add(accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue);
 
-            //        }
-            //    }
-            //}
-            //// throw new System.NotImplementedException();
+                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
+                {
+                    wrongCaseToRemoveFromLibraryIxList.Add(ix);
+                    if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
+                    {
+                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
+                    }
+                }
+                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
+                {
+                    notUsedCaseToRemoveFromLibraryIxList.Add(ix);
+                    if (minSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                    {
+                        minSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                    }
+                }
+            } // for
+
+            if (wrongCaseToRemoveFromLibraryIxList.Count > 0)
+            {
+                List<RetrievedCaseClass> maxWrongCaseToRemoveFromLibraryList = accumulatedSimilarityValuesMatchesList.FindAll(
+                delegate(RetrievedCaseClass rcc)
+                {
+                    return rcc.NrOfWrongRetrievesRankingValue == maxWrongCaseToRemoveFromLibraryValue;
+                });
+                double tempDouble = maxWrongCaseToRemoveFromLibraryList[0].CaseSimilarityRankingValue;
+                int tempIx = 0;
+                for (int ix = 0; ix < maxWrongCaseToRemoveFromLibraryList.Count; ++ix)
+                {
+                    if (tempDouble > maxWrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
+                    {
+                        tempIx = ix;
+                    }
+                }
+                o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[tempIx];
+            }
+            else if (notUsedCaseToRemoveFromLibraryIxList.Count > 0)
+            {
+                for (int ix = 0; ix < notUsedCaseToRemoveFromLibraryIxList.Count; ++ix)
+                {
+                    if (accumulatedSimilarityValuesMatchesList[notUsedCaseToRemoveFromLibraryIxList[ix]].CaseSimilarityRankingValue == minSimilarityRankingValue)
+                    {
+                        o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[notUsedCaseToRemoveFromLibraryIxList[ix]];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[SimilarityRankingValueList.IndexOf(SimilarityRankingValueList.Max())];
+            }
+
+
+
+             FEL I UTVÄRDERINGEN
         } // Revise
         // ====================================================================
 

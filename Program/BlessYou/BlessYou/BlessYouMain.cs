@@ -225,13 +225,13 @@ namespace BlessYou
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
                     numberofCasesForMajorityVote += 2;
+                    RetrievedCaseClass caseToRemoveFromCaseLibrary;
+                    CBRSystemClass.Revise(accumulatedSimilarityValuesMatchesList, out caseToRemoveFromCaseLibrary);
                     CBRSystemClass.ClearSimilarityValuesInList(accumulatedSimilarityValuesMatchesList);
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
                 while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
-
-            //CBRSystemClass.Revise(accumulatedSimilarityValuesMatchesList);
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
