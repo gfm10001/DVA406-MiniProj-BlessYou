@@ -91,12 +91,16 @@ namespace BlessYou
                 CaseClass currentCase;
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
-                theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+
+                // Alternative function  ==> Similar result
+                //theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
+                theCase.SimilarityValue = currentCase.CalculateSimilarityValueExt(i_NewCase);
+                similarityCaseList.Add(theCase);
+
+                // Debug print all similarity values camparing i_NewCase to i_CaseLibraryList one by one
                 //string str = GetSimilarityValuesToString(i_NewCase, theCase);
                 //dumpSimilarityValues.Add(str);
-                similarityCaseList.Add(theCase);
             } // for ix
-
 
             // System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", dumpSimilarityValues);
 
@@ -109,33 +113,34 @@ namespace BlessYou
                 o_RetrievedMatches.Add(sortedCaseList[jx]);
             } // for ix
 
-
-            // Debug prints
-            string correctAnswer;
-            if (o_RetrievedMatches[0].SneezeStatus == i_NewCase.SneezeStatus)
-            {
-                correctAnswer = "Correct";
-            }
-            else
-            {
-
-                correctAnswer = "Wrong";
-            }
-            string sFLargeStr;
-            if (o_RetrievedMatches[0].SimilarityValue > 0.7)
-            {
-                sFLargeStr = ">0.70";
-            }
-            else
-            {
-                sFLargeStr = "";
-            }
             // Write all SF numbers to file
             //List<string> resultString;
             //GetAllSimilarityValuesToString(i_NewCase, sortedCaseList, out resultString);
             //System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", resultString);
-            Console.WriteLine("SF={0:0.000000} between current {1,-50} and {2,-50} {3} {4}", o_RetrievedMatches[0].SimilarityValue, System.IO.Path.GetFileName(o_RetrievedMatches[0].WavFile_FullPathAndFileNameStr),
-                                                                           System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr), correctAnswer, sFLargeStr);
+
+            // Debug prints
+            //string correctAnswer;
+            //if (o_RetrievedMatches[0].SneezeStatus == i_NewCase.SneezeStatus)
+            //{
+            //    correctAnswer = "Correct";
+            //}
+            //else
+            //{
+
+            //    correctAnswer = "Wrong";
+            //}
+            //string sFLargeStr;
+            //if (o_RetrievedMatches[0].SimilarityValue > 0.7)
+            //{
+            //    sFLargeStr = ">0.70";
+            //}
+            //else
+            //{
+            //    sFLargeStr = "";
+            //}
+            // Debug print similarityfunction values
+            //Console.WriteLine("SF={0:0.000000} between current {1,-50} and {2,-50} {3} {4}", o_RetrievedMatches[0].SimilarityValue, System.IO.Path.GetFileName(o_RetrievedMatches[0].WavFile_FullPathAndFileNameStr),
+            //                                                               System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr), correctAnswer, sFLargeStr);
         } // RetrieveUsingSimilarityfunction
 
         // ====================================================================
@@ -407,7 +412,7 @@ namespace BlessYou
         }
         // ====================================================================
 
-        public static string GetSimilarityValuesToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)
+        public static string GetSimilarityValueToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)
         {
             string resStr = "";
 
@@ -415,7 +420,7 @@ namespace BlessYou
                                                                            System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr));
 
             return resStr;
-        } // GetSimilarityValuesToString
+        } // GetSimilarityValueToString
 
         // ====================================================================
 
@@ -425,7 +430,7 @@ namespace BlessYou
             o_ResultString = new List<string>();
             for (int ix = 0; ix < i_SortedList.Count; ++ix)
             {
-                resStr = GetSimilarityValuesToString(i_NewCase, i_SortedList[ix]);
+                resStr = GetSimilarityValueToString(i_NewCase, i_SortedList[ix]);
                 o_ResultString.Add(resStr);
             }
         } // GetAllSimilarityValuesToString
