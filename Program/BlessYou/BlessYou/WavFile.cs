@@ -7,7 +7,8 @@
 // 2015-03-08/GF    Moved Normalise to WaveFileClass.
 // 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
 //                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
-
+// 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
+//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,7 +155,7 @@ namespace BlessYou
 
             int[] retval = new int[usedByteLenght / 2]; // Adapt to 16bit from bytes
 
-            for (int i = 0, z = 0; i < retval.Length; i += 2, z++)
+            for (int i = 0, z = 0; i < usedByteLenght; i += 2, z++)
             {
                 retval[z] = BitConverter.ToInt16(temp, i);
             }

@@ -13,7 +13,7 @@
 // 2015-03-12/GF    Refactored file dump of features to CaseLibraryClass
 //
 
-FIXA LÄSNING AV FILER - SP3.WAVE !!!! ex
+// ToDo: FIXA LÄSNING AV FILER - SP3.WAVE !!!! ex
 
 
 using System;

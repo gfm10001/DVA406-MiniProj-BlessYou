@@ -309,7 +309,7 @@ namespace BlessYou
 
             string[] lineArr = new string[theUsedEndIx - i_BegIx + 3];
 
-            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
+            usedFileName = FOrderNr + "_" + System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_BegIx + " to " + i_EndIx);
 
             currLineIx = 0;
