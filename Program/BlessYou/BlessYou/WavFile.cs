@@ -10,6 +10,7 @@
 // 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
 //                  LoadFile: add check that file recorded with expected parameters (44.1 KHz, 16 bit, Stereo or Mono)
 //                  NumberOfChannelsInWaveFile: Added "getter"
+//                  Merge fix...
 
 using System;
 using System.Collections.Generic;
@@ -282,7 +283,7 @@ namespace BlessYou
                 throw new InvalidDataException("File too big to be analyzed!");
 
 
-            int pointer = 44;
+    //        int pointer = 44;
             int limit = filedata.Length;
             int trueLength = (int)(_fmt.dwSamplesPerSec * _fmt.wChannels * _fmt.dwChunkSize);
             _rawdata = new int[filedata.Length - 44];
