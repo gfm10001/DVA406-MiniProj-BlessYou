@@ -128,6 +128,11 @@ namespace BlessYou
             {
                 PrepareFile(filepath); // Convert to mono!
             }
+            else
+            {
+
+                Console.WriteLine("Mono");
+            }
 
         }
 

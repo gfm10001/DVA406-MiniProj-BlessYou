@@ -376,19 +376,23 @@ namespace BlessYou
 
         public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
-            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            //List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            //int 
 
-            o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
-            for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
-            {
-                // Evaluate which case that is the worst case that can be removed from the library
-                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
-                {
+            //o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
+            //for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            //{
+            //    // Evaluate which case that is the worst case that can be removed from the library
+            //    if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
+            //    {
+            //        if (o_CaseToRemoveFromCaseLibrary.NrOfWrongRetrievesRankingValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
+            //        {
 
-                }
-            }
-            // throw new System.NotImplementedException();
+            //        }
+            //    }
+            //}
+            //// throw new System.NotImplementedException();
         } // Revise
         // ====================================================================
 
