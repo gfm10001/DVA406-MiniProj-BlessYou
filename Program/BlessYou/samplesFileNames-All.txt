@@ -156,5 +156,4 @@
 0	..\Data\SP\None-Sneezes\frost.wav
 0	..\Data\SP\None-Sneezes\giant-bee.wav
 0	..\Data\SP\None-Sneezes\headwear.wav
-0	..\Data\SP\None-Sneezes\hit.wav
 0	..\Data\SP\None-Sneezes\horse.wav

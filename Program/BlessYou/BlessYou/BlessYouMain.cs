@@ -45,6 +45,7 @@ namespace BlessYou
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = new List<RetrievedCaseClass>();
 
 
             // 1. Decode Params
@@ -56,10 +57,16 @@ namespace BlessYou
             // 2. Create CASE-library
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
 
+            // Prepare for revise and retain
+            foreach (CaseClass c in caseLibraryObj.ListOfCases)
+            {
+                RetrievedCaseClass rCCObj = new RetrievedCaseClass(c);
+                accumulatedSimilarityValuesMatchesList.Add(rCCObj);
+            }
 
             // Dump calculated features 
-            Console.Write("Dump all features to files... ");
-            caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
+            //Console.Write("Dump all features to files... ");
+            //caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
 
             Console.WriteLine();
 
@@ -103,19 +110,27 @@ namespace BlessYou
                 CaseClass selectedProblemObj = new CaseClass();
 
 
-                // While loop introduced as an alternative for using similarityvalue and majority vote
-                int numberofCases = 1;
-                while (numberofCases <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_REUSE)
+
+                int numberofCasesForMajorityVote;
+                if (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
                 {
-                    Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCases);
+                    numberofCasesForMajorityVote = 1;
+                }
+                else
+                {
+                    numberofCasesForMajorityVote = ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE;
+                }
+                                
+                // do - while loop introduced to test number of cases for majority vote
+                do
+                {
+                    Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCasesForMajorityVote);
                     correctSneezes = 0;
                     inCorrectSneezes = 0;
                     correctNoneSneezes = 0;
                     inCorrectNoneSneezes = 0;
-                    double lowestCorrect = 1;
-                    double lowestWrong = 1;
-                    double highestCorrect = 0;
-                    double highestWrong = 0;
+                    List<double> CorrectSneezesSimilarityValue = new List<double>();
+                    List<double> WrongSneezesSimilarityValue = new List<double>();
 
                     for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                     {
@@ -135,7 +150,7 @@ namespace BlessYou
                         // Original:
                         // CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
                         // Alternative:
-                        CBRSystemClass.RetrieveUsingSimilarityfunction(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                        CBRSystemClass.RetrieveUsingSimilarityfunction(selectedProblemObj, caseLibaryMinusOneCaseList, out retrievedMatchesList);
 
                         //4. Start reuse function
                         EnumCaseStatus caseStatus;
@@ -144,32 +159,18 @@ namespace BlessYou
                         // Original:
                         //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                         // Alternative:
-                        CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, numberofCases, out caseStatus);
+                        CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, numberofCasesForMajorityVote, selectedProblemObj.SneezeStatus, out caseStatus);
                         if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
                             {
-                                    if (lowestCorrect > retrievedMatchesList[0].SimilarityValue)
-                                    {
-                                        lowestCorrect = retrievedMatchesList[0].SimilarityValue;
-                                    }
-                                    if (highestCorrect < retrievedMatchesList[0].SimilarityValue)
-                                    {
-                                        highestCorrect = retrievedMatchesList[0].SimilarityValue;
-                                    }
+                                CorrectSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
                                 correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 correctSneezes++;
                             }
                             else
                             {
-                                if (lowestWrong > retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    lowestWrong = retrievedMatchesList[0].SimilarityValue;
-                                }
-                                if (highestWrong < retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    highestWrong = retrievedMatchesList[0].SimilarityValue;
-                                }
+                                WrongSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectSneezes++;
                                 //Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
@@ -179,34 +180,22 @@ namespace BlessYou
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze)
                             {
-                                if (lowestCorrect > retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    lowestCorrect = retrievedMatchesList[0].SimilarityValue;
-                                }
-                                if (highestCorrect < retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    highestCorrect = retrievedMatchesList[0].SimilarityValue;
-                                }
+                                CorrectSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
                                 correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 correctNoneSneezes++;
                             }
                             else
                             {
-                                if (lowestWrong > retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    lowestWrong = retrievedMatchesList[0].SimilarityValue;
-                                }
-                                if (highestWrong < retrievedMatchesList[0].SimilarityValue)
-                                {
-                                    highestWrong = retrievedMatchesList[0].SimilarityValue;
-                                }
+                                WrongSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
                                 //System.Diagnostics.Debugger.Break();
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectNoneSneezes++;
                                 //Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
                             }
                         }
+                        CBRSystemClass.AccumulateSimilarityValuesInList(retrievedMatchesList, accumulatedSimilarityValuesMatchesList);
                     } // for ix
+
 
 
                     double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
@@ -214,8 +203,8 @@ namespace BlessYou
                     caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
                     Console.WriteLine();
-                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", highestCorrect, lowestCorrect);
-                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", highestWrong, lowestWrong);
+                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", CorrectSneezesSimilarityValue.Max(), CorrectSneezesSimilarityValue.Min());
+                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", WrongSneezesSimilarityValue.Max(), WrongSneezesSimilarityValue.Min());
                     Console.WriteLine();
                     Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
                     Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
@@ -231,18 +220,17 @@ namespace BlessYou
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
-                    numberofCases += 2;
+                    numberofCasesForMajorityVote += 2;
+                    CBRSystemClass.ClearSimilarityValuesInList(accumulatedSimilarityValuesMatchesList);
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
+                while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
-
-
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
-            for (int ix = 0; ix < retrievedMatchesList.Count; ++ix)
+            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
                 //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
-
             } // for ix
 
             // 6. Optionally dump case info

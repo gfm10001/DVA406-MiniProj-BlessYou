@@ -76,7 +76,8 @@ namespace BlessYou
 
         public static double C_EPSILON = 0.000001;
 
-        public static double C_NUMBER_OF_CASES_TO_REUSE = 1;  // 1, 3, 5 or 7 according to teachers
+        public static int C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE = 5;  // 1, 3, 5 or 7 according to teachers
+        public static bool C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS = false;   // if true run 1, 3, 5  and 7 if C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE = 7
 
         public static string C_CONFIGURATION_REPORT_FILE_NAME = "ConfigurationReport.txt";
         public static string C_CLASS_LIBRARY_REPORT_FILE_NAME = "ClassLibraryReport.txt";

@@ -154,7 +154,7 @@ namespace BlessYou
 
             int[] retval = new int[usedByteLenght / 2]; // Adapt to 16bit from bytes
 
-            for (int i = 0, z = 0; i < retval.Length; i += 2, z++)
+            for (int i = 0, z = 0; i < usedByteLenght; i += 2, z++)
             {
                 retval[z] = BitConverter.ToInt16(temp, i);
             }
