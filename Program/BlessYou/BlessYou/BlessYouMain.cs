@@ -227,6 +227,9 @@ namespace BlessYou
                 while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
+
+            //CBRSystemClass.Revise(accumulatedSimilarityValuesMatchesList);
+
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)

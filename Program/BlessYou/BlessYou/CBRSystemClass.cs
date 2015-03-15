@@ -374,9 +374,20 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise()
+        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
 
+            o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
+            for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            {
+                // Evaluate which case that is the worst case that can be removed from the library
+                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
+                {
+
+                }
+            }
             // throw new System.NotImplementedException();
         } // Revise
         // ====================================================================
