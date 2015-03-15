@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks; // Par.Invore
 
 namespace BlessYou
 {
@@ -167,17 +168,62 @@ namespace BlessYou
             FFeatureTypeVector.Add(featurePassingZeroObj);
 
             //ToDo Evaluationfunctions to be developed
-            FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr, i_config);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
-            FFeatureTypeVector.Add(featureLomontFFT16Obj);
 
-            FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr, i_config);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
-            FFeatureTypeVector.Add(featureLomontFFT14Obj);
+            if (ConfigurationStatClass.C_USE_PARALLEL_EXECUTION)
+            {
 
-            FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
-            waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
-            FFeatureTypeVector.Add(featureLomontFFT12Obj);
+                // Exp. par. version...
+                FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr, i_config);
+                FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr, i_config);
+                FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
+
+                #region ParallelTasks
+                Parallel.Invoke(
+                            () =>
+                            {
+                                // Console.WriteLine("Begin first task...");
+                                waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+                                FFeatureTypeVector.Add(featureLomontFFT16Obj);
+                            },  // close first Action
+
+                            () =>
+                            {
+                                // Console.WriteLine("Begin second task...");
+                                waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+                                FFeatureTypeVector.Add(featureLomontFFT14Obj);
+                            }, //close second Action
+
+                            () =>
+                            {
+                                // Console.WriteLine("Begin third task...");
+                                waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+                                FFeatureTypeVector.Add(featureLomontFFT12Obj);
+                            } //close third Action
+                         ); //close parallel.invoke
+
+
+                //Console.WriteLine("Returned from Parallel.Invoke");
+                #endregion
+                FFeatureTypeVector.Add(featureLomontFFT16Obj);
+                FFeatureTypeVector.Add(featureLomontFFT14Obj);
+                FFeatureTypeVector.Add(featureLomontFFT12Obj);
+            }
+            else
+            {
+                // Normal sequential version...
+                FeatureLomontFFTClass featureLomontFFT16Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_16, _WavFile_FullPathAndFileNameStr, i_config);
+                waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
+                FFeatureTypeVector.Add(featureLomontFFT16Obj);
+
+                FeatureLomontFFTClass featureLomontFFT14Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_14, _WavFile_FullPathAndFileNameStr, i_config);
+                waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
+                FFeatureTypeVector.Add(featureLomontFFT14Obj);
+
+                FeatureLomontFFTClass featureLomontFFT12Obj = new FeatureLomontFFTClass(ConfigurationStatClass.C_NR_OF_SAMPLES_2_POWER_12, _WavFile_FullPathAndFileNameStr, i_config);
+                waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
+                FFeatureTypeVector.Add(featureLomontFFT12Obj);
+            }
+            
 
             // At last normalize feature weights
             double sum = 0;
@@ -395,6 +441,7 @@ namespace BlessYou
 
             resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
 
+
             for (int otherCaseIx = 0; otherCaseIx < i_TheCaseList.Count; ++otherCaseIx)
             {
                 resStr = resStr + "\t f:" + String.Format("{0, 4:0}", i_TheCaseList[otherCaseIx].OrderNr);
@@ -440,7 +487,7 @@ namespace BlessYou
         {
             string resStr = "";
 
-            resStr = String.Format("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 6:0} = {7, 3:0}%, of whole: {8, 2:0}% (was {9} channel(s)) {10} - {11}",
+            resStr = String.Format("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms Int: {5, 4:0}ms {6, 7:0} = {7, 3:0}%, of whole: {8, 3:0}% (was {9} channel(s)) {10} - {11}",
                                      FOrderNr,
                                      FWaveFileLengthInMilliSecs,
                                      FWaveFileIntervalBegPositionInMilliSecs,

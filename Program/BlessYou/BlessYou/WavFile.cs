@@ -9,7 +9,9 @@
 //                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
 // 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
 //                  LoadFile: add check that file recorded with expected parameters (44.1 KHz, 16 bit, Stereo or Mono)
-//
+//                  NumberOfChannelsInWaveFile: Added "getter"
+//                  Merge fix...
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,25 +38,25 @@ namespace BlessYou
 
          unsafe public struct fileheader
         {
-            public fixed byte sGroupID[4];       //Surprisingly enough, this is always "RIFF"
-            public uint dwFileLength;            //File length in bytes, measured from offset 8
-            public fixed byte sRiffType[4];      //In wave files, this is always "WAVE"
+            public fixed byte sGroupID[4];          // Surprisingly enough, this is always "RIFF"
+            public uint dwFileLength;               // File length in bytes, measured from offset 8
+            public fixed byte sRiffType[4];         // In wave files, this is always "WAVE"
         }
         unsafe public struct fmtchunk
         {
-            public fixed byte sChunkID[4];        //Four bytes: "fmt "
-            public uint dwChunkSize;     //Length of header in bytes
-            public ushort wFormatTag;      //1 if uncompressed Microsoft PCM audio
-            public ushort wChannels;       //Number of channels
-            public uint dwSamplesPerSec; //Frequency of the audio in Hz
-            public uint dwAvgBytesPerSec;//For estimating RAM allocation
-            public ushort wBlockAlign;     //Sample frame size in bytes
-            public ushort dwBitsPerSample; //Bits per sample
+            public fixed byte sChunkID[4];          // Four bytes: "fmt "
+            public uint dwChunkSize;                // Length of header in bytes
+            public ushort wFormatTag;               // 1 if uncompressed Microsoft PCM audio
+            public ushort wChannels;                // Number of channels
+            public uint dwSamplesPerSec;            // Frequency of the audio in Hz
+            public uint dwAvgBytesPerSec;           // For estimating RAM allocation
+            public ushort wBlockAlign;              // Sample frame size in bytes
+            public ushort dwBitsPerSample;          // Bits per sample
         }
         unsafe public struct datachunk
         {
-            public fixed byte sChunkID[4];       //Four bytes: "data"
-            public uint dwChunkSize;    //Length of header in bytes
+            public fixed byte sChunkID[4];          // Four bytes: "data"
+            public uint dwChunkSize;                // Length of header in bytes
             //Different arrays for the different frame sizes
             //public fixed byte byteArray[8];     //8 bit unsigned data; or...
             //public fixed short shortArray[16];    //16 bit signed data
@@ -121,7 +123,11 @@ namespace BlessYou
         {
             //_filepath = filepath;
             LoadFile(filepath);
-            PrepareFile(filepath);
+            // If 2 channels, do Stereo to Mono adaption!
+            if (2 == _fmt.wChannels)
+            {
+                PrepareFile(filepath); // Convert to mono!
+            }
 
         }
 
@@ -276,9 +282,11 @@ namespace BlessYou
             if (_header.dwFileLength > Int32.MaxValue)
                 throw new InvalidDataException("File too big to be analyzed!");
 
-       //     int pointer = 44;
-       //     int limit = filedata.Length;
-            //_rawdata = new int[filedata.Length - 44];
+
+    //        int pointer = 44;
+            int limit = filedata.Length;
+            int trueLength = (int)(_fmt.dwSamplesPerSec * _fmt.wChannels * _fmt.dwChunkSize);
+            _rawdata = new int[filedata.Length - 44];
 
      //       int index = 0;
 
