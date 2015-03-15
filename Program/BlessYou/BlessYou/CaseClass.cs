@@ -441,6 +441,7 @@ namespace BlessYou
 
             resStr = String.Format("{0, 4:0} - {1,-40}", FOrderNr, System.IO.Path.GetFileName(_WavFile_FullPathAndFileNameStr));
 
+
             for (int otherCaseIx = 0; otherCaseIx < i_TheCaseList.Count; ++otherCaseIx)
             {
                 resStr = resStr + "\t f:" + String.Format("{0, 4:0}", i_TheCaseList[otherCaseIx].OrderNr);
