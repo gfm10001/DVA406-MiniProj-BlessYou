@@ -8,6 +8,7 @@
 // 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
 //                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
 // 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
+//                  LoadFile: add check that file recorded with expected parameters (44.1 KHz, 16 bit, Stereo or Mono)
 //
 using System;
 using System.Collections.Generic;
@@ -251,6 +252,17 @@ namespace BlessYou
                 _fmt.dwAvgBytesPerSec = BitConverter.ToUInt32(filedata, 28);
                 _fmt.wBlockAlign = BitConverter.ToUInt16(filedata, 32);
                 _fmt.dwBitsPerSample = BitConverter.ToUInt16(filedata, 34);
+
+                // Check that file recorded with expected parameters.
+                if ( (44100 != _fmt.dwSamplesPerSec)
+                      ||
+                      (2 < _fmt.wChannels)
+                      ||
+                      (16 != _fmt.dwBitsPerSample)
+                      )
+                {
+                    throw new System.NotImplementedException("Unexpected .wave-file params! '" + filepath + "'");
+                }
             }
             
             fixed (datachunk* d = &_dataheader)
