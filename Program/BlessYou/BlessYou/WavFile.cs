@@ -9,7 +9,6 @@
 //                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
 // 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
 //                  LoadFile: add check that file recorded with expected parameters (44.1 KHz, 16 bit, Stereo or Mono)
-//                  NumberOfChannelsInWaveFile: Added "getter"
 //                  Merge fix...
 
 using System;
@@ -123,11 +122,7 @@ namespace BlessYou
         {
             //_filepath = filepath;
             LoadFile(filepath);
-            // If 2 channels, do Stereo to Mono adaption!
-            if (2 == _fmt.wChannels)
-            {
-                PrepareFile(filepath); // Convert to mono!
-            }
+            PrepareFile(filepath);
         }
 
        /// <summary>
@@ -281,11 +276,9 @@ namespace BlessYou
             if (_header.dwFileLength > Int32.MaxValue)
                 throw new InvalidDataException("File too big to be analyzed!");
 
-
-    //        int pointer = 44;
-            int limit = filedata.Length;
-            int trueLength = (int)(_fmt.dwSamplesPerSec * _fmt.wChannels * _fmt.dwChunkSize);
-            _rawdata = new int[filedata.Length - 44];
+       //     int pointer = 44;
+       //     int limit = filedata.Length;
+            //_rawdata = new int[filedata.Length - 44];
 
      //       int index = 0;
 
