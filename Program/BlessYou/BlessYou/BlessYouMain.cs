@@ -46,7 +46,8 @@ namespace BlessYou
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
-
+            int nrOfConfirmedSneezes;
+            int nrOfConfirmedNoneSneezes;
 
 
             // 1. Decode Params
@@ -57,6 +58,7 @@ namespace BlessYou
 
             // 2. Create CASE-library
             // First extract 50+50 random files for use as first library and load those...
+            Console.WriteLine("1. Read default Case Library: 50 Sneezes and 50 None-Sneezes selected randomly from " + allSoundFilesObjList.Count + " files...\n");
             HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
@@ -85,29 +87,38 @@ namespace BlessYou
             // 3. Evaluate cases
             if ("" != newProblemFileName)
             {
-                //foreach (SoundFileClass sfc in soundfileObjList)
-                //{
-                SoundFileClass newProblemSoundFileObj = new SoundFileClass();
-                newProblemSoundFileObj.SoundFileName = newProblemFileName;
-                newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
+                do
+                {
+                    SoundFileClass newProblemSoundFileObj = new SoundFileClass();
+                    newProblemSoundFileObj.SoundFileName = newProblemFileName;
+                    newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
 
-                CaseClass newProblemObj = new CaseClass();
-                newProblemObj.WavFile_FullPathAndFileNameStr = newProblemSoundFileObj.SoundFileName;
-                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, true, config);
+                    CaseClass newProblemObj = new CaseClass();
+                    newProblemObj.WavFile_FullPathAndFileNameStr = newProblemSoundFileObj.SoundFileName;
+                    try
+                    {
+                        newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, true, config);
+                        CBRSystemClass.RetrieveUsingSimilarityfunction(newProblemObj, caseLibraryObj.ListOfCases, out retrievedMatchesList);
 
-                List<CaseClass> caseList = new List<CaseClass>();
-                caseList.AddRange(caseLibraryObj.ListOfCases);
-                CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
+                        // 4. Start reuse function
+                        EnumCaseStatus caseStatus;
+                        CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, 5, EnumCaseStatus.csUnknown, out caseStatus);
 
-                //4. Start reuse function
-                EnumCaseStatus caseStatus;
-                CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
-                //}
+                        Console.WriteLine("new Problem detected as " + caseStatus);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("\nERROR - msg='" + ex.Message + "' - retry!");
+                    }
+
+                    Console.Write("\n - Enter a new problem file name (or empty line to quit) : ");
+                    newProblemFileName = Console.ReadLine();
+                } while (newProblemFileName != "");
+
             } // if
             else
             {
-                int nrOfConfirmedSneezes;
-                int nrOfConfirmedNoneSneezes;
+
                 int correctSneezes = 0;
                 int inCorrectSneezes = 0;
                 int correctNoneSneezes = 0;
@@ -299,11 +310,10 @@ namespace BlessYou
 
 
             // 5. Skriv ut rapport
-            //Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
-            //for (int ix = 0; ix < accumulatedSimilarityValuesRetrievedMatchesList.Count; ++ix)
-            //{
-            //    //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
-            //} // for ix
+            caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
+            Console.WriteLine();
+            Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
+            Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
 
             // 6. Optionally dump case info
             if (1 == 1)

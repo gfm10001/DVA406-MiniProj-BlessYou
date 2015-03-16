@@ -140,6 +140,7 @@ namespace BlessYou
                                                                     //    ..\..\..\samplesFileNames-15-sneezes.txt all 
                                                                     //    ..\..\..\samplesFileNames.txt  ..\..\..\..\Data\GF\Sneezes\sneeze-1-4.wav
                                                                     //    ..\..\..\samplesFileNames-all.txt all (For all samples)
+                                                                    //    ..\..\..\samplesFileNames-all.txt ..\..\..\..\Data\NewProblems\Sneeze-from-Youtube.wav
             }
 
             if ("all" == o_NewProblemFileName.ToLower())
