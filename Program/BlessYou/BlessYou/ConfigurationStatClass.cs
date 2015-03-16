@@ -88,7 +88,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void DumpConfiguration(string i_Banner, string i_FileName)
+        public static void DumpConfiguration(string i_Banner, string i_FileName)
         {
             List<string> outval = new List<string>();
             Type t = MethodBase.GetCurrentMethod().DeclaringType;
@@ -98,8 +98,8 @@ namespace BlessYou
             {
                 if(f.IsStatic)
                     outval.Add(f.Name + "\t" + f.GetValue(null));
-                else
-                    outval.Add(f.Name + "\t" + f.GetValue(this));
+                //else
+                //    outval.Add(f.Name + "\t" + f.GetValue(this));
             } // foreach
             
             
