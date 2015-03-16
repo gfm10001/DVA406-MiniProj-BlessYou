@@ -33,8 +33,9 @@ namespace BlessYou
         public static double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_CREST_FACTOR_WEIGHT = 0.2;
         public static double C_DEFAULT_PASSING_ZERO_WEIGHT = 0.2;
-        public static double C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT = 0.2;
-        public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT = 0.2;
 
 
         //ToDo implement interval weights
@@ -50,10 +51,6 @@ namespace BlessYou
         public static double C_FEATURE_INTERVAL_9_WEIGHT = 1;
 
 
-        
-
-
-
         //The fields bellow are used when generating custom weights. 
         //>>>>>>>
         //IMPORTANT: If you add a non-double field you need to chanage the GenerateRandomConfig call
@@ -64,8 +61,9 @@ namespace BlessYou
         public double C_M_PEAK2PEAK_FEATURE_WEIGHT = C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
         public double C_M_CREST_FACTOR_WEIGHT = C_DEFAULT_CREST_FACTOR_WEIGHT;
         public double C_M_PASSING_ZERO_WEIGHT = C_DEFAULT_PASSING_ZERO_WEIGHT;
-        public double C_M_LOMONT_FFT_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
-        public double C_M_NAUDIO_FFT_FEATURE_WEIGHT = C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT;
+        public double C_M_LOMONT_FFT_16_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT;
+        public double C_M_LOMONT_FFT_14_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT;
+        public double C_M_LOMONT_FFT_12_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT;
 
         public static int C_NR_OF_SAMPLES_2_POWER_12 = 12;
         public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;

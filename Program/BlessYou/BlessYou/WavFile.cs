@@ -123,7 +123,6 @@ namespace BlessYou
             //_filepath = filepath;
             LoadFile(filepath);
             PrepareFile(filepath);
-
         }
 
        /// <summary>
