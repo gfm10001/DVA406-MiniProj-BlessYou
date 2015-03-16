@@ -46,7 +46,7 @@ namespace BlessYou
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
-            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = new List<RetrievedCaseClass>();
+            List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
 
 
             // 1. Decode Params
@@ -60,11 +60,13 @@ namespace BlessYou
             // 2. Create CASE-library
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
 
+            // Choose 50 sneezes and 50 nonsneezes for case library
+
             // Prepare for revise and retain
             foreach (CaseClass c in caseLibraryObj.ListOfCases)
             {
                 RetrievedCaseClass rCCObj = new RetrievedCaseClass(c);
-                accumulatedSimilarityValuesMatchesList.Add(rCCObj);
+                accumulatedSimilarityValuesRetrievedMatchesList.Add(rCCObj);
             }
 
             // Dump calculated features 
@@ -74,7 +76,7 @@ namespace BlessYou
 
             Console.WriteLine();
 
-            CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+           // CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
 
             // 3. Evaluate cases
@@ -135,6 +137,7 @@ namespace BlessYou
                     inCorrectNoneSneezes = 0;
                     List<double> CorrectSneezesSimilarityValue = new List<double>();
                     List<double> WrongSneezesSimilarityValue = new List<double>();
+                    CBRSystemClass.ClearSimilarityValuesInList(accumulatedSimilarityValuesRetrievedMatchesList);
 
                     for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                     {
@@ -164,6 +167,8 @@ namespace BlessYou
                         //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                         // Alternative:
                         CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, numberofCasesForMajorityVote, selectedProblemObj.SneezeStatus, out caseStatus);
+                        
+                        // Evaluate selectedProblem
                         if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                         {
                             if (caseStatus == EnumCaseStatus.csIsProposedSneeze)
@@ -197,10 +202,8 @@ namespace BlessYou
                                 //Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
                             }
                         }
-                        CBRSystemClass.AccumulateSimilarityValuesInList(retrievedMatchesList, accumulatedSimilarityValuesMatchesList);
+                        CBRSystemClass.AccumulateSimilarityValuesInList(retrievedMatchesList, accumulatedSimilarityValuesRetrievedMatchesList);
                     } // for ix
-
-
 
                     double total = correctSneezes + correctNoneSneezes + inCorrectSneezes + inCorrectNoneSneezes;
 
@@ -238,17 +241,20 @@ namespace BlessYou
 
                     System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
+                    numberofCasesForMajorityVote += 2;
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
-                    numberofCasesForMajorityVote += 2;
-                    CBRSystemClass.ClearSimilarityValuesInList(accumulatedSimilarityValuesMatchesList);
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
                 while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
+
+            RetrievedCaseClass caseToRemoveFromCaseLibrary;
+            CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
-            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            for (int ix = 0; ix < accumulatedSimilarityValuesRetrievedMatchesList.Count; ++ix)
             {
                 //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
             } // for ix

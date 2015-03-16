@@ -71,7 +71,22 @@ namespace BlessYou
             base("LomontFFT - " + i_NumberOfSamplesAsValuePowerOfTwo)
         {
             NumberOfSamplesAsValuePowerOfTwo = i_NumberOfSamplesAsValuePowerOfTwo;
-            base.FFeatureWeight = i_config.C_M_LOMONT_FFT_FEATURE_WEIGHT;
+            if (NumberOfSamplesAsValuePowerOfTwo == 16)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_16_FEATURE_WEIGHT;
+            }
+            else if (NumberOfSamplesAsValuePowerOfTwo == 14)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_14_FEATURE_WEIGHT;
+            }
+            else if (NumberOfSamplesAsValuePowerOfTwo == 12)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_12_FEATURE_WEIGHT;
+            }
+            else
+            {
+                //ToDo Error
+            }
             FFilePathAndName = i_FilePathAndName;
         } // FeatureLomontFFTClass
 
@@ -206,7 +221,22 @@ namespace BlessYou
         //=====================================================================
         public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
         {
-            base.FFeatureWeight = i_config.C_M_LOMONT_FFT_FEATURE_WEIGHT;
+            if (NumberOfSamplesAsValuePowerOfTwo == 16)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_16_FEATURE_WEIGHT;
+            }
+            else if (NumberOfSamplesAsValuePowerOfTwo == 14)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_14_FEATURE_WEIGHT;
+            }
+            else if (NumberOfSamplesAsValuePowerOfTwo == 12)
+            {
+                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_12_FEATURE_WEIGHT;
+            }
+            else
+            {
+                //ToDo Error
+            }
         }
 
 
