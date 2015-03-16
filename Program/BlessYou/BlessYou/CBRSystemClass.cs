@@ -76,7 +76,7 @@ namespace BlessYou
             // 1. För varje case i case library:
             //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
             // 2. Sort the list descending order to get top max in Similarity
-            // 3. Transfer the i_MaxRetrievedMatchesCount cases to the output 
+            // 3. Transfer the cases to the output 
             o_RetrievedMatches = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
 
@@ -90,9 +90,7 @@ namespace BlessYou
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
 
-                // Alternative function  ==> Similar result
-                //theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
-                theCase.SimilarityValue = currentCase.CalculateSimilarityValueExt(i_NewCase);
+                theCase.SimilarityValue = currentCase.CalculateSimilarityValueExt(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
                 similarityCaseList.Add(theCase);
 
                 // Debug print all similarity values camparing i_NewCase to i_CaseLibraryList one by one
@@ -107,13 +105,12 @@ namespace BlessYou
             sortedCaseList.Reverse();
 
             // Return all similarity case from best to worst
-            //for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx) 
             for (int ix = 0; ix < sortedCaseList.Count; ++ix)
             {
                 o_RetrievedMatches.Add(sortedCaseList[ix]);
             } // for ix
 
-            // Write all SF numbers to file
+            // Debug: Write all SF numbers to file
             //List<string> resultString;
             //GetAllSimilarityValuesToString(i_NewCase, sortedCaseList, out resultString);
             //System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", resultString);
@@ -271,9 +268,12 @@ namespace BlessYou
             List<RetrievedCaseClass> retrievedMatches = i_RetrievedMatches;
             int numberOfSneezes = 0;
             int numberOfNonSneezes = 0;
-            for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix) // ToDo remove i_RetrievedMatches.Count add check and send error
+            for (int ix = 0; ix < i_RetrievedMatches.Count; ++ix)
             {
                 retrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
+            }
+            for (int ix = 0; (ix < i_RetrievedMatches.Count && ix < i_NumberOfCasesToUse_K_Value); ++ix)
+            {
                 if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
@@ -322,7 +322,7 @@ namespace BlessYou
             {
                 o_CaseStatus = EnumCaseStatus.csIsProposedNoneSneeze;
             }
-        } // ReuseUsingSimilarityValue
+        } // ReuseUsingMajorityVote
 
         // ====================================================================
 
@@ -353,7 +353,7 @@ namespace BlessYou
                 } // foreach
             } // foreach
 
-            // Print case accumulatedSimilarityvalues and vote frequency
+            //// Print case accumulatedSimilarityvalues and vote frequency
             //List<string> resultString;
             //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesMatchesList, out resultString);
             //foreach (string s in resultString)
@@ -377,10 +377,10 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
+        public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
-            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
             double minSimilarityRankingValue = double.MaxValue;
             List<RetrievedCaseClass> notUsedCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
@@ -392,16 +392,21 @@ namespace BlessYou
             // Evaluate which case that is the worst case that can be removed from the library
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
+                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus != i_SelectedProblemObj.SneezeStatus)
+                {
+                    continue;
+                }
                 if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
                 {
                     wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
                     if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
                     {
-                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
-                        if (wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue || 
+                            wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
                         {
                             wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
-                        }
+                        } 
+                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
                     }
                 }
                 else if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
@@ -428,7 +433,7 @@ namespace BlessYou
                 {
                     if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(wrongCaseToRemoveFromLibraryList[ix]);
                     }
                 }
                 
@@ -439,7 +444,7 @@ namespace BlessYou
                 {
                     if (notUsedCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue == notUsedCaseMinSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = notUsedCaseToRemoveFromLibraryList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(notUsedCaseToRemoveFromLibraryList[ix]);
                     }
                 }
             }
@@ -449,25 +454,22 @@ namespace BlessYou
                 {
                     if (similarityRankingValueList[ix].CaseSimilarityRankingValue == minSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = similarityRankingValueList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(similarityRankingValueList[ix]);
                     }
                 }
             }
-
-
-
         } // Revise
+
         // ====================================================================
 
-        public static void Retain()
+        public static void Retain(RetrievedCaseClass i_CaseToRemoveFromCaseLibrary, CaseLibraryClass i_CaseLibrary)
         {
-            
-            // throw new System.NotImplementedException();
+
+            i_CaseLibrary.RemoveCase(i_CaseToRemoveFromCaseLibrary.RefForRemoval);
         } // Retain
 
-        public static ConfigurationDynClass GenerateRandomConfig(double toplimit = 1.0)
-        // ====================================================================
 
+        public static ConfigurationDynClass GenerateRandomConfig(double toplimit = 1.0)
         {
             ConfigurationDynClass config = new ConfigurationDynClass();
 
@@ -575,7 +577,6 @@ namespace BlessYou
             // ====================================================================
         }
         
-        // CBRSystem
         // ====================================================================
 
         public static string GetSimilarityValueToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)

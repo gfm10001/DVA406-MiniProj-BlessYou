@@ -21,6 +21,15 @@ namespace BlessYou
         double FCaseSimilarityRankingValue;
         int FNrOfCorrectRetrievesRankingValue;
         int FNrOfWrongRetrievesRankingValue;
+        CaseClass FRefForRemoval;
+
+        //=====================================================================
+        
+        public CaseClass RefForRemoval
+        {
+            get { return FRefForRemoval; }
+            set { FRefForRemoval = value; }
+        }
 
         //=====================================================================
 
@@ -124,6 +133,23 @@ namespace BlessYou
             this.WavFile_FullPathAndFileNameStr = i_CaseClassObj.WavFile_FullPathAndFileNameStr;
             this.ProposedStatus = EnumCaseStatus.csUnknown;
             CaseSimilarityRankingValue = 0;
+            FRefForRemoval = i_CaseClassObj;
+        } // RetrievedCaseClass
+
+        //=====================================================================
+
+        public RetrievedCaseClass(RetrievedCaseClass i_RetrievedCaseClassObj) :
+            base(i_RetrievedCaseClassObj)
+
+        {
+           // base.WavFile_FullPathAndFileNameStr = i_RetrievedCaseClassObj.WavFile_FullPathAndFileNameStr;
+            this.ProposedStatus = i_RetrievedCaseClassObj.ProposedStatus;
+            this.FDistanceValue = i_RetrievedCaseClassObj.FDistanceValue;
+            this.SimilarityValue = i_RetrievedCaseClassObj.SimilarityValue;
+            this.CaseSimilarityRankingValue = i_RetrievedCaseClassObj.CaseSimilarityRankingValue;
+            this.NrOfCorrectRetrievesRankingValue = i_RetrievedCaseClassObj.NrOfCorrectRetrievesRankingValue;
+            this.NrOfWrongRetrievesRankingValue = i_RetrievedCaseClassObj.NrOfWrongRetrievesRankingValue;
+            FRefForRemoval = i_RetrievedCaseClassObj.FRefForRemoval;
         } // RetrievedCaseClass
 
         //=====================================================================

@@ -36,32 +36,31 @@ namespace BlessYou
             // P2 = File name for new problem | "all" : all files in Case Library run in sequence
             // P3 = path to directory for created .ftr­files (optional)
 
-            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
+            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
             ConfigurationDynClass config = new ConfigurationDynClass(); // CBRSystemClass.GenerateRandomConfig(100);
-            List<SoundFileClass> soundfileObjList;
-            //List<SoundFileClass> Liblist;
+            List<SoundFileClass> allSoundFilesObjList;
+            List<SoundFileClass> usedSoundFilesObjList;
             CaseLibraryClass caseLibraryObj;
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
-
+            CaseClass selectedProblemObj = new CaseClass();
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
-            DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
+            DecodeParamClass.DecodeParam(args, out allSoundFilesObjList, out newProblemFileName, out ftrFilePath);
             startTime = DateTime.Now;
             Console.WriteLine("Starting: " + startTime.ToString() + ", config file: " + args[0] + " \n");
 
-
-
             // 2. Create CASE-library
-            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
+            // First extract 50+50 random files for use as first library and load those...
+            HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
+            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
-            // Choose 50 sneezes and 50 nonsneezes for case library
-
+   
             // Prepare for revise and retain
             foreach (CaseClass c in caseLibraryObj.ListOfCases)
             {
@@ -113,12 +112,12 @@ namespace BlessYou
 
                 List<string> wronglist = new List<string>();
 
-                CaseClass selectedProblemObj = new CaseClass();
+                
 
 
 
                 int numberofCasesForMajorityVote;
-                if (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
+                if (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
                 {
                     numberofCasesForMajorityVote = 1;
                 }
@@ -153,7 +152,7 @@ namespace BlessYou
                             }
                         } // for jx
 
-                        // Alternative functioncall using similarity value
+                        // Alternative function call using similarity value
                         // Original:
                         // CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
                         // Alternative:
@@ -242,15 +241,16 @@ namespace BlessYou
                     System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                     numberofCasesForMajorityVote += 2;
-                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                    //ToDo throw new System.NotImplementedException();
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
-                while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
+                while (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
+            RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+            Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
+                                 System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+            CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
 
-            RetrievedCaseClass caseToRemoveFromCaseLibrary;
-            CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);

@@ -5,6 +5,8 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-04/GF    Added constructors
+// 2015-03-15/GF    Added: FIsUsedMarker
+//
 
 using System;
 using System.Collections.Generic;
@@ -17,16 +19,26 @@ namespace BlessYou
     {
         private string FSoundFileName;
         private EnumSneezeMarker FSoundFileSneezeMarker;
+        private bool FIsUsedMarker;
 
-        //=====================================================================
+        // ============================================================================
+
+        public bool IsUsedMarker
+        {
+            get { return FIsUsedMarker; }
+            set { FIsUsedMarker = value; }
+        } // IsUsedMarker
+
+        // ============================================================================
 
         public SoundFileClass()
         {
             FSoundFileName = "";
             FSoundFileSneezeMarker = EnumSneezeMarker.smNone;
+            FIsUsedMarker = false;
         } // SoundFileClass
 
-        //=====================================================================
+        // ============================================================================
 
         public SoundFileClass(string i_FileName, EnumSneezeMarker i_FileSneezeMarker)
         {
@@ -34,7 +46,7 @@ namespace BlessYou
             FSoundFileSneezeMarker = i_FileSneezeMarker;
         } // SoundFileClass
 
-        //=====================================================================
+        // ============================================================================
 
         public string SoundFileName
         {
@@ -48,7 +60,7 @@ namespace BlessYou
             }
         } // SoundFileName
 
-        //=====================================================================
+        // ============================================================================
 
         public EnumSneezeMarker SoundFileSneezeMarker
         {
@@ -62,7 +74,7 @@ namespace BlessYou
             }
         } // SoundFileSneezeMarker
 
-        //=====================================================================
+        // ============================================================================
 
     } // SoundFileClass
 }
