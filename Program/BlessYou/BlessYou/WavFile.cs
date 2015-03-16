@@ -7,6 +7,9 @@
 // 2015-03-08/GF    Moved Normalise to WaveFileClass.
 // 2015-03-10/GF    NumberOfChannelsInWaveFile: Added "getter"
 //                  GetSingleChannelData: Adapt result vector size to int16 instead of bytes.
+// 2015-03-15/GF    GetSingleChannelData: Corrected loop end.
+//                  LoadFile: add check that file recorded with expected parameters (44.1 KHz, 16 bit, Stereo or Mono)
+//                  Merge fix...
 
 using System;
 using System.Collections.Generic;
@@ -34,25 +37,25 @@ namespace BlessYou
 
          unsafe public struct fileheader
         {
-            public fixed byte sGroupID[4];       //Surprisingly enough, this is always "RIFF"
-            public uint dwFileLength;            //File length in bytes, measured from offset 8
-            public fixed byte sRiffType[4];      //In wave files, this is always "WAVE"
+            public fixed byte sGroupID[4];          // Surprisingly enough, this is always "RIFF"
+            public uint dwFileLength;               // File length in bytes, measured from offset 8
+            public fixed byte sRiffType[4];         // In wave files, this is always "WAVE"
         }
         unsafe public struct fmtchunk
         {
-            public fixed byte sChunkID[4];        //Four bytes: "fmt "
-            public uint dwChunkSize;     //Length of header in bytes
-            public ushort wFormatTag;      //1 if uncompressed Microsoft PCM audio
-            public ushort wChannels;       //Number of channels
-            public uint dwSamplesPerSec; //Frequency of the audio in Hz
-            public uint dwAvgBytesPerSec;//For estimating RAM allocation
-            public ushort wBlockAlign;     //Sample frame size in bytes
-            public ushort dwBitsPerSample; //Bits per sample
+            public fixed byte sChunkID[4];          // Four bytes: "fmt "
+            public uint dwChunkSize;                // Length of header in bytes
+            public ushort wFormatTag;               // 1 if uncompressed Microsoft PCM audio
+            public ushort wChannels;                // Number of channels
+            public uint dwSamplesPerSec;            // Frequency of the audio in Hz
+            public uint dwAvgBytesPerSec;           // For estimating RAM allocation
+            public ushort wBlockAlign;              // Sample frame size in bytes
+            public ushort dwBitsPerSample;          // Bits per sample
         }
         unsafe public struct datachunk
         {
-            public fixed byte sChunkID[4];       //Four bytes: "data"
-            public uint dwChunkSize;    //Length of header in bytes
+            public fixed byte sChunkID[4];          // Four bytes: "data"
+            public uint dwChunkSize;                // Length of header in bytes
             //Different arrays for the different frame sizes
             //public fixed byte byteArray[8];     //8 bit unsigned data; or...
             //public fixed short shortArray[16];    //16 bit signed data
@@ -154,7 +157,7 @@ namespace BlessYou
 
             int[] retval = new int[usedByteLenght / 2]; // Adapt to 16bit from bytes
 
-            for (int i = 0, z = 0; i < retval.Length; i += 2, z++)
+            for (int i = 0, z = 0; i < usedByteLenght; i += 2, z++)
             {
                 retval[z] = BitConverter.ToInt16(temp, i);
             }
@@ -250,6 +253,17 @@ namespace BlessYou
                 _fmt.dwAvgBytesPerSec = BitConverter.ToUInt32(filedata, 28);
                 _fmt.wBlockAlign = BitConverter.ToUInt16(filedata, 32);
                 _fmt.dwBitsPerSample = BitConverter.ToUInt16(filedata, 34);
+
+                // Check that file recorded with expected parameters.
+                if ( (44100 != _fmt.dwSamplesPerSec)
+                      ||
+                      (2 < _fmt.wChannels)
+                      ||
+                      (16 != _fmt.dwBitsPerSample)
+                      )
+                {
+                    throw new System.NotImplementedException("Unexpected .wave-file params! '" + filepath + "'");
+                }
             }
             
             fixed (datachunk* d = &_dataheader)

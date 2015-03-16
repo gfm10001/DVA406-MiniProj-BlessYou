@@ -69,6 +69,7 @@ namespace BlessYou
         public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;
         public static int C_NR_OF_SAMPLES_2_POWER_16 = 16;
 
+        public static bool C_USE_PARALLEL_EXECUTION = false;
         public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
         public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
 
@@ -76,7 +77,8 @@ namespace BlessYou
 
         public static double C_EPSILON = 0.000001;
 
-        public static double C_NUMBER_OF_CASES_TO_REUSE = 1;  // 1, 3, 5 or 7 according to teachers
+        public static int C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE = 5;  // 1, 3, 5 or 7 according to teachers
+        public static bool C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS = false;   // if true run 1, 3, 5  and 7 if C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE = 7
 
         public static string C_CONFIGURATION_REPORT_FILE_NAME = "ConfigurationReport.txt";
         public static string C_CLASS_LIBRARY_REPORT_FILE_NAME = "ClassLibraryReport.txt";

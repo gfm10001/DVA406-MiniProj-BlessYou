@@ -79,7 +79,8 @@ namespace BlessYou
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
-            bool sendRawDataToFile = false; // true
+            bool sendFFTRawDataToFile = false; // true
+            bool sendFirstRoundOnlyFFTRawDataToFile = false; // true
 
             int samplingFrequency = 1000 * (int)ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz;
             int maxNrOfSamples = 65536; // 2^16
@@ -181,16 +182,19 @@ namespace BlessYou
             //Console.WriteLine("\nDominant bin: " + bin + " Dominant Frequency: " + FFrequencyArr[bin]);
             //Console.Write("Data: ");
 
-            string[] strArr = new string[100000];
-            for (int ix = 0; ix < nrOfSamples / 2; ++ix)
+            if (sendFFTRawDataToFile)
             {
-                //Console.WriteLine(frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n");
-                strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix];
-            }
-
-            string fileName = Path.GetFileName(FFilePathAndName);
-            if (sendRawDataToFile)
-            {
+                string[] strArr = new string[100000];
+                for (int ix = 0; ix < nrOfSamples / 2; ++ix)
+                {
+                    //Console.WriteLine(frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n");
+                    strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix];
+                    if (sendFirstRoundOnlyFFTRawDataToFile)
+                    {
+                        break;
+                    }
+                }
+                string fileName = Path.GetFileName(FFilePathAndName);
                 System.IO.File.WriteAllLines("FFToutput_" + fileName + "_S_" + NumberOfSamplesAsValuePowerOfTwo + "_R_" + i_CurrentRound + ".xls", strArr);
             } // if
 

@@ -13,6 +13,7 @@
 //                  AnalyseWaveFileContents: Add display of interval length in samples.
 // 2015-03-12/GF    Added FOrderNr for dump display
 // 2015-03-13/GF    CalculateFeatureVector: Added normalize of feature vector values in 2nd vector.
+// 2015-03-15/GF    Make each wave-file dump controlled separately.
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,10 @@ namespace BlessYou
 
     public class WaveFileClass
     {
-        bool FDoWaveDump = false; // Use DoWaveDump to control dumps
+        bool FDoRawWaveDump = false; 
+        bool FDoNormalizedWaveDump = false; 
+        bool FDoIntervalWaveDump = false; 
+
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
         int FStartOfFirstIntervalIx;
@@ -38,13 +42,6 @@ namespace BlessYou
         int FOrderNr; // Used to simplify display
 
         // ====================================================================
-
-        public bool DoWaveDump
-        {
-            set {FDoWaveDump = value;}
-        } // DoWaveDump
-
-        //=====================================================================
         
         public WaveFileClass()
         {
@@ -118,12 +115,19 @@ namespace BlessYou
             FWaveFileContents44p1KHz16bitSamples = new double[_wavFile.RawData.Length];
             for (int ix = 0; ix < _wavFile.RawData.Length; ++ix)
             {
+                if ((double)_wavFile.RawData[ix] > 300)
+                {
+                   // Console.WriteLine("ix=" + ix + " = " + _wavFile.RawData[ix] );
+                }
                 FWaveFileContents44p1KHz16bitSamples[ix] = (double) _wavFile.RawData[ix];
             } // for ix
 
             FNumberOfChannelsInOrgininalWaveFile = _wavFile.NumberOfChannelsInWaveFile;
 
-            DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            if (FDoRawWaveDump)
+            {
+                DumpWaveFileContents("Raw", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            }
 
         } // ReadWaveFile
 
@@ -157,7 +161,10 @@ namespace BlessYou
                 FWaveFileContents44p1KHz16bitSamples[i] = FWaveFileContents44p1KHz16bitSamples[i] * scalefactor;
             }
 
-            DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            if (FDoNormalizedWaveDump)
+            {
+                DumpWaveFileContents("Normalized", 0, FWaveFileContents44p1KHz16bitSamples.Length);
+            }
 
         } // NormalizeWaveFileContents
 
@@ -217,7 +224,7 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 4:0}ms Int: {6, 4:0}ms {7, 6:0} = {8, 2:0}%, of whole: {9, 2:0}%, {10}",
+            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 5:0}ms Int: {6, 5:0}ms {7, 8:0} = {8, 2:0}%, of whole: {9, 3:0}%, {10}",
                               FOrderNr,
                               WaveFileLengthInMilliSecs,
                               FStartOfFirstIntervalIx,
@@ -238,7 +245,10 @@ namespace BlessYou
             //} // for ix
 
             // DumpWaveFileContents split into intervalls.
-            DumpWaveFileIntervalContents(FStartOfFirstIntervalIx, FIntervalSampleCount);
+            if (FDoIntervalWaveDump)
+            {
+                DumpWaveFileIntervalContents(FStartOfFirstIntervalIx, FIntervalSampleCount);
+            }
         
         } // AnalyseWaveFileContents
 
@@ -296,11 +306,6 @@ namespace BlessYou
             int zeroFlag;
             int currLineIx;
 
-            if (!FDoWaveDump)
-            {
-                return;
-            }
-
             // ToDo: - only use a part at debug - or too many samples!
             if (theUsedEndIx > 1000000)
             {
@@ -309,7 +314,7 @@ namespace BlessYou
 
             string[] lineArr = new string[theUsedEndIx - i_BegIx + 3];
 
-            usedFileName = System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
+            usedFileName = FOrderNr + "_" + System.IO.Path.GetFileNameWithoutExtension(FWaveFileName) + "_" + i_FileNameModifier + ".xls";
             Console.WriteLine("Dumping: " + usedFileName, ", from " + i_BegIx + " to " + i_EndIx);
 
             currLineIx = 0;
@@ -382,11 +387,6 @@ namespace BlessYou
             int intervalIx;
             string fileNameModifier = "Intervals";
             int currLineIx;
-
-            if (!FDoWaveDump)
-            {
-                return;
-            }
 
             // ToDo: - only use a part at debug - or too many samples!
             if (theUsedEndIx > 1000000)
