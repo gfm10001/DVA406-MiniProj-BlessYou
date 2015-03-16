@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="CalculateSimilarityStatClass.cs" />
     <Compile Include="CaseClass.cs" />
+    <Compile Include="ConfigurationDynClass.cs" />
     <Compile Include="FeatureLomontFFTClass.cs" />
     <Compile Include="ConfigurationStatClass.cs" />
     <Compile Include="FeatureNAudioFFTClass.cs" />

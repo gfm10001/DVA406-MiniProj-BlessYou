@@ -27,19 +27,19 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.6/3 of 2015-03-16";
+            const string C_THIS_VERSION = "Bless You v.0.7/0 of 2015-03-16";
             DateTime startTime;
 
-            //Usage:
-            //BlessYou P1 P2 [P3] where
-            //P1 = name of text file with names of all .wav­files to be examined
-            //P2 = File name for new problem | "all" : all files in Case Library run in sequence
-            //P3 = path to directory for created .ftr­files (optional)
+            // Usage:
+            // BlessYou P1 P2 [P3] where
+            // P1 = name of text file with names of all .wav­files to be examined
+            // P2 = File name for new problem | "all" : all files in Case Library run in sequence
+            // P3 = path to directory for created .ftr­files (optional)
 
             Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config = new ConfigurationStatClass(); // CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationDynClass config = new ConfigurationDynClass(); // CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -159,7 +159,7 @@ namespace BlessYou
                         // Alternative:
                         CBRSystemClass.RetrieveUsingSimilarityfunction(selectedProblemObj, caseLibaryMinusOneCaseList, out retrievedMatchesList);
 
-                        //4. Start reuse function
+                        // 4. Start reuse function
                         EnumCaseStatus caseStatus;
 
                         // Alternative functioncall using majority vote

@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace BlessYou
 {
-    public class ConfigurationStatClass
+    public static class ConfigurationStatClass
     {
         public static double C_MAX_POSSIBLE_VALUE = 100000;             // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
@@ -50,20 +50,6 @@ namespace BlessYou
         public static double C_FEATURE_INTERVAL_8_WEIGHT = 1;
         public static double C_FEATURE_INTERVAL_9_WEIGHT = 1;
 
-
-        //The fields bellow are used when generating custom weights. 
-        //>>>>>>>
-        //IMPORTANT: If you add a non-double field you need to chanage the GenerateRandomConfig call
-        //>>>>>>>
-        public double C_M_AVERAGE_FEATURE_WEIGHT = C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
-        public double C_M_PEAK_FEATURE_WEIGHT = C_DEFAULT_PEAK_FEATURE_WEIGHT;
-        public double C_M_RMS_FEATURE_WEIGHT = C_DEFAULT_RMS_FEATURE_WEIGHT;
-        public double C_M_PEAK2PEAK_FEATURE_WEIGHT = C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
-        public double C_M_CREST_FACTOR_WEIGHT = C_DEFAULT_CREST_FACTOR_WEIGHT;
-        public double C_M_PASSING_ZERO_WEIGHT = C_DEFAULT_PASSING_ZERO_WEIGHT;
-        public double C_M_LOMONT_FFT_16_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT;
-        public double C_M_LOMONT_FFT_14_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT;
-        public double C_M_LOMONT_FFT_12_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT;
 
         public static int C_NR_OF_SAMPLES_2_POWER_12 = 12;
         public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;

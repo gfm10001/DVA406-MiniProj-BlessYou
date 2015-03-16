@@ -465,11 +465,11 @@ namespace BlessYou
             // throw new System.NotImplementedException();
         } // Retain
 
-        public static ConfigurationStatClass GenerateRandomConfig(double toplimit =1.0)
+        public static ConfigurationDynClass GenerateRandomConfig(double toplimit = 1.0)
         // ====================================================================
 
         {
-            ConfigurationStatClass config = new ConfigurationStatClass();
+            ConfigurationDynClass config = new ConfigurationDynClass();
 
             Type t = config.GetType();
             FieldInfo[] fio = t.GetFields();
@@ -489,7 +489,7 @@ namespace BlessYou
 
         public static void EvaluateFeatureOneByOne(CaseLibraryClass caseLibraryObj)
         {
-            ConfigurationStatClass config = new ConfigurationStatClass();
+            ConfigurationDynClass config = new ConfigurationDynClass();
             Type t = config.GetType();
             FieldInfo[] fionfo = t.GetFields();
             //List<List<RetrievedCaseClass>> debuglist = new List<List<RetrievedCaseClass>>();
