@@ -56,12 +56,11 @@ namespace BlessYou
             Console.WriteLine("Starting: " + startTime.ToString() + ", config file: " + args[0] + " \n");
 
             // 2. Create CASE-library
-            // First extract 50+50 random files for use as first library
-            HelperStaticClass.GetRandomSelection(allSoundFilesObjList, usedSoundFilesObjList);
+            // First extract 50+50 random files for use as first library and load those...
+            HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
-            // Choose 50 sneezes and 50 nonsneezes for case library
-
+   
             // Prepare for revise and retain
             foreach (CaseClass c in caseLibraryObj.ListOfCases)
             {
@@ -153,7 +152,7 @@ namespace BlessYou
                             }
                         } // for jx
 
-                        // Alternative functioncall using similarity value
+                        // Alternative function call using similarity value
                         // Original:
                         // CBRSystemClass.Retrieve(selectedProblemObj, caseLibaryMinusOneCaseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
                         // Alternative:

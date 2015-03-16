@@ -183,21 +183,18 @@ namespace BlessYou
                             {
                                 // Console.WriteLine("Begin first task...");
                                 waveFileObj.CalculateFeatureVector(featureLomontFFT16Obj);
-                                FFeatureTypeVector.Add(featureLomontFFT16Obj);
                             },  // close first Action
 
                             () =>
                             {
                                 // Console.WriteLine("Begin second task...");
                                 waveFileObj.CalculateFeatureVector(featureLomontFFT14Obj);
-                                FFeatureTypeVector.Add(featureLomontFFT14Obj);
                             }, //close second Action
 
                             () =>
                             {
                                 // Console.WriteLine("Begin third task...");
                                 waveFileObj.CalculateFeatureVector(featureLomontFFT12Obj);
-                                FFeatureTypeVector.Add(featureLomontFFT12Obj);
                             } //close third Action
                          ); //close parallel.invoke
 
