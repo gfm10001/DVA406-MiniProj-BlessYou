@@ -47,7 +47,7 @@ namespace BlessYou
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
-
+            CaseClass selectedProblemObj = new CaseClass();
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
@@ -113,7 +113,7 @@ namespace BlessYou
 
                 List<string> wronglist = new List<string>();
 
-                CaseClass selectedProblemObj = new CaseClass();
+                
 
 
 
@@ -249,7 +249,14 @@ namespace BlessYou
             } // else
 
 
-            RetrievedCaseClass caseToRemoveFromCaseLibrary;
+            // Print case accumulatedSimilarityvalues and vote frequency
+            //List<string> resultString;
+            //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesRetrievedMatchesList, out resultString);
+            //foreach (string s in resultString)
+            //{
+            //    Console.WriteLine("{0}", s);
+            //}
+            RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
 
             // 5. Skriv ut rapport

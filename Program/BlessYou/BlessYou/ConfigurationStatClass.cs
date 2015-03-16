@@ -87,20 +87,20 @@ namespace BlessYou
 
         public static void DumpConfiguration(string i_Banner, string i_FileName)
         {
-            // ToDo: Kan reflection användas här?
-            string totText = "";
+            //// ToDo: Kan reflection användas här?
+            //string totText = "";
 
-            List<string> outval = new List<string>();
-            Type t = MethodBase.GetCurrentMethod().DeclaringType;
+            //List<string> outval = new List<string>();
+            //Type t = MethodBase.GetCurrentMethod().DeclaringType;
 
-            FieldInfo[] finfo = t.GetFields();
-            foreach (FieldInfo f in finfo)
-            {
-                if(f.IsStatic)
-                    outval.Add(f.Name + " --> " + f.GetValue(null));
-                else
-                    outval.Add(f.Name + " --> " + f.GetValue(t));
-            }
+            //FieldInfo[] finfo = t.GetFields();
+            //foreach (FieldInfo f in finfo)
+            //{
+            //    if (f.IsStatic)
+            //        outval.Add(f.Name + " --> " + f.GetValue(null));
+            //    else
+            //        outval.Add(f.Name + " --> " + f.GetValue(t));
+            //}
             
             
 
@@ -108,24 +108,24 @@ namespace BlessYou
 
 
 
-            totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
-            totText = totText + "C_MAX_POSSIBLE_VALUE                   = " + C_MAX_POSSIBLE_VALUE + Environment.NewLine;
-            totText = totText + "C_NR_OF_INTERVALS                      = " + C_NR_OF_INTERVALS + Environment.NewLine;
+            //totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
+            //totText = totText + "C_MAX_POSSIBLE_VALUE                   = " + C_MAX_POSSIBLE_VALUE + Environment.NewLine;
+            //totText = totText + "C_NR_OF_INTERVALS                      = " + C_NR_OF_INTERVALS + Environment.NewLine;
 
-            totText = totText + "C_TRIGGER_LEVEL_IN_PERCENT             = " + C_TRIGGER_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_PREFETCH_IN_MILLI_SECS       = " + C_TRIGGER_PREFETCH_IN_MILLI_SECS + Environment.NewLine;
+            //totText = totText + "C_TRIGGER_LEVEL_IN_PERCENT             = " + C_TRIGGER_LEVEL_IN_PERCENT + Environment.NewLine;
+            //totText = totText + "C_TRIGGER_PREFETCH_IN_MILLI_SECS       = " + C_TRIGGER_PREFETCH_IN_MILLI_SECS + Environment.NewLine;
 
-            totText = totText + "C_TRIGGER_OFF_LEVEL_IN_PERCENT         = " + C_TRIGGER_OFF_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_OFF_DURATION_IN_MILLI_SECS   = " + C_TRIGGER_OFF_DURATION_IN_MILLI_SECS + Environment.NewLine;
+            //totText = totText + "C_TRIGGER_OFF_LEVEL_IN_PERCENT         = " + C_TRIGGER_OFF_LEVEL_IN_PERCENT + Environment.NewLine;
+            //totText = totText + "C_TRIGGER_OFF_DURATION_IN_MILLI_SECS   = " + C_TRIGGER_OFF_DURATION_IN_MILLI_SECS + Environment.NewLine;
 
-            try
-            {
-                System.IO.File.WriteAllText(i_FileName, totText);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("DumpConfiguration to {0} - ERR: " + ex.Message, i_FileName);
-            }
+            //try
+            //{
+            //    System.IO.File.WriteAllText(i_FileName, totText);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("DumpConfiguration to {0} - ERR: " + ex.Message, i_FileName);
+            //}
 
         } // DumpConfiguration
 

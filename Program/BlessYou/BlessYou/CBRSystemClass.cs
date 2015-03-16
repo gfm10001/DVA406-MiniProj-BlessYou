@@ -353,7 +353,7 @@ namespace BlessYou
                 } // foreach
             } // foreach
 
-            // Print case accumulatedSimilarityvalues and vote frequency
+            //// Print case accumulatedSimilarityvalues and vote frequency
             //List<string> resultString;
             //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesMatchesList, out resultString);
             //foreach (string s in resultString)
@@ -379,8 +379,8 @@ namespace BlessYou
 
         public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
-            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
             double minSimilarityRankingValue = double.MaxValue;
             List<RetrievedCaseClass> notUsedCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
@@ -397,11 +397,11 @@ namespace BlessYou
                     wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
                     if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
                     {
-                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
-                        if (wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue || wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
                         {
                             wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
-                        }
+                        } 
+                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
                     }
                 }
                 else if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
@@ -426,7 +426,7 @@ namespace BlessYou
             {
                 for (int ix = 0; ix < wrongCaseToRemoveFromLibraryList.Count; ++ix)
                 {
-                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
+                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue) // && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
                     {
                         o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
                     }
@@ -439,7 +439,7 @@ namespace BlessYou
                 {
                     if (notUsedCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue == notUsedCaseMinSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = notUsedCaseToRemoveFromLibraryList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(notUsedCaseToRemoveFromLibraryList[ix]);
                     }
                 }
             }
@@ -449,7 +449,7 @@ namespace BlessYou
                 {
                     if (similarityRankingValueList[ix].CaseSimilarityRankingValue == minSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = similarityRankingValueList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(similarityRankingValueList[ix]);
                     }
                 }
             }
@@ -575,7 +575,6 @@ namespace BlessYou
             // ====================================================================
         }
         
-        // CBRSystem
         // ====================================================================
 
         public static string GetSimilarityValueToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)
