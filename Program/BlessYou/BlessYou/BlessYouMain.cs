@@ -46,8 +46,8 @@ namespace BlessYou
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
-            List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
-            CaseClass selectedProblemObj = new CaseClass();
+
+
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
@@ -60,22 +60,15 @@ namespace BlessYou
             HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
-   
-            // Prepare for revise and retain
-            foreach (CaseClass c in caseLibraryObj.ListOfCases)
-            {
-                RetrievedCaseClass rCCObj = new RetrievedCaseClass(c);
-                accumulatedSimilarityValuesRetrievedMatchesList.Add(rCCObj);
-            }
+
 
             // Dump calculated features 
-
             //Console.Write("Dump all features to files... ");
             //caseLibraryObj.DumpAllFeatureValuesOfAllCasesToFiles("Feature");
 
             Console.WriteLine();
 
-           // CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+            // CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
 
             // 3. Evaluate cases
@@ -88,11 +81,12 @@ namespace BlessYou
                 newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
 
                 CaseClass newProblemObj = new CaseClass();
-                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, config);
+                newProblemObj.WavFile_FullPathAndFileNameStr = newProblemSoundFileObj.SoundFileName;
+                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, true, config);
 
                 List<CaseClass> caseList = new List<CaseClass>();
                 caseList.AddRange(caseLibraryObj.ListOfCases);
-                CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                CBRSystemClass.Retrieve(newProblemObj, caseList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
 
                 //4. Start reuse function
                 EnumCaseStatus caseStatus;
@@ -109,11 +103,7 @@ namespace BlessYou
                 int inCorrectNoneSneezes = 0;
 
                 List<string> correctList = new List<string>();
-
                 List<string> wronglist = new List<string>();
-
-                
-
 
 
                 int numberofCasesForMajorityVote;
@@ -125,11 +115,25 @@ namespace BlessYou
                 {
                     numberofCasesForMajorityVote = ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE;
                 }
-                                
-                // do - while loop introduced to test number of cases for majority vote
-                do
+                Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCasesForMajorityVote);
+
+                // do - while to read new cases and evaluate against current library, exchange worst case in library with the current case.
+                bool isMoreToDo = true;
+                bool checkPhase = false;
+                while (isMoreToDo)
                 {
-                    Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCasesForMajorityVote);
+                    List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
+
+                    // Prepare for revise and retain
+                    foreach (CaseClass c in caseLibraryObj.ListOfCases)
+                    {
+                        RetrievedCaseClass rCCObj = new RetrievedCaseClass(c);
+                        accumulatedSimilarityValuesRetrievedMatchesList.Add(rCCObj);
+                    }
+
+
+                    CaseClass selectedProblemObj = new CaseClass();
+
                     correctSneezes = 0;
                     inCorrectSneezes = 0;
                     correctNoneSneezes = 0;
@@ -166,7 +170,7 @@ namespace BlessYou
                         //CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
                         // Alternative:
                         CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, numberofCasesForMajorityVote, selectedProblemObj.SneezeStatus, out caseStatus);
-                        
+
                         // Evaluate selectedProblem
                         if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                         {
@@ -208,7 +212,7 @@ namespace BlessYou
 
                     caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
-                    Console.WriteLine();
+                   // Console.WriteLine();
                     double xMax = Double.NaN;
                     double xMin = Double.NaN;
                     if (0 < CorrectSneezesSimilarityValue.Count)
@@ -216,7 +220,7 @@ namespace BlessYou
                         xMax = CorrectSneezesSimilarityValue.Max();
                         xMin = CorrectSneezesSimilarityValue.Min();
                     } // if
-                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", xMax, xMin);
+                    //Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", xMax, xMin);
 
                     xMax = Double.NaN;
                     xMin = Double.NaN;
@@ -225,39 +229,71 @@ namespace BlessYou
                         xMax = WrongSneezesSimilarityValue.Max();
                         xMin = WrongSneezesSimilarityValue.Min();
                     } // if
-                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", xMax, xMin);
+                    //Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", xMax, xMin);
 
-                    Console.WriteLine();
-                    Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
-                    Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
+                    //Console.WriteLine();
+                    //Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
+                    //Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
 
-                    Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
+                  //  Console.WriteLine("Number of correct guesses:    >>> >>> >>>> >>> >>>   {0, 4:0} = {1, 3:0.0}%", correctSneezes + correctNoneSneezes, ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0);
 
-                    Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
-                    Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
-                    Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
-                    Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
+                    //Console.WriteLine("Number of correct SNEEZE guesses:                    {0, 4:0} = {1, 3:0.0}%", correctSneezes, ((double)correctSneezes / total) * 100.0);
+                    //Console.WriteLine("Number of correct NONE SNEEZES guesses:              {0, 4:0} = {1, 3:0.0}%", correctNoneSneezes, ((double)correctNoneSneezes / total) * 100.0);
+                    //Console.WriteLine("Number of incorrect SNEEZE guesses:                  {0, 4:0} = {1, 3:0.0}%", inCorrectSneezes, ((double)inCorrectSneezes / total) * 100.0);
+                    //Console.WriteLine("Number of incorrect NONE SNEEZES guesses:            {0, 4:0} = {1, 3:0.0}%", inCorrectNoneSneezes, ((double)inCorrectNoneSneezes / total) * 100.0);
 
                     System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
-                    numberofCasesForMajorityVote += 2;
-                } // While loop introduced as an alternative for using similarityvalue and majority vote
-                while (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
-            } // else
+                    //    numberofCasesForMajorityVote += 2;
 
-            RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
-            CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
-            Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
-                                 System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
-            CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
+                    RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+                    CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+
+                    if (true == checkPhase)
+                    {
+                        // In this phase - remove the worst case
+
+                        // Remove worst case to give space for new
+                        Console.WriteLine("Correct: {0, 3:0.0}%  - {1,40}\n", ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0, 
+                                         System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+                        CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
+
+                        checkPhase = false;
+                    }
+                    else
+                    {
+                        // In this phase: add another file to the case library
+                        // Try to get a random unused sound file--- 
+                        SoundFileClass unusedProblemSoundFileObj;
+                        HelperStaticClass.GetUnusedRandomFile(allSoundFilesObjList, out unusedProblemSoundFileObj);
+                        if (null == unusedProblemSoundFileObj)
+                        {
+                            isMoreToDo = false;
+                            break;
+                        }
+
+                        // ... treat as new case
+                        CaseClass unusedProblemObj = new CaseClass();
+                        unusedProblemObj.WavFile_FullPathAndFileNameStr = unusedProblemSoundFileObj.SoundFileName;
+                        unusedProblemObj.ExtractWavFileFeatures(unusedProblemSoundFileObj, false, config);
+                        Console.WriteLine("Correct: {0, 3:0.0}%  + {1, 40}", ((double)(correctSneezes + correctNoneSneezes) / total) * 100.0, 
+                                           System.IO.Path.GetFileName(unusedProblemSoundFileObj.SoundFileName));
+                        caseLibraryObj.AddCase(unusedProblemObj);
+                        checkPhase = true;
+                    } // else
+
+
+                }  // IsMoreToDo
+
+            } // else
 
 
             // 5. Skriv ut rapport
-            Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
-            for (int ix = 0; ix < accumulatedSimilarityValuesRetrievedMatchesList.Count; ++ix)
-            {
-                //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
-            } // for ix
+            //Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
+            //for (int ix = 0; ix < accumulatedSimilarityValuesRetrievedMatchesList.Count; ++ix)
+            //{
+            //    //ToDo Console.WriteLine("ix: {0} {1}", ix, retrievedMatchesList[ix].GetCurrentMatchingString());
+            //} // for ix
 
             // 6. Optionally dump case info
             if (1 == 1)

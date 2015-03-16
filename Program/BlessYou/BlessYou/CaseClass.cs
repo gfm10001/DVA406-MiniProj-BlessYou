@@ -105,7 +105,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj, ConfigurationDynClass i_config = null)
+        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj, bool i_DoDisplayAnalyseLog, ConfigurationDynClass i_config = null)
         {
 
             if (i_config == null)
@@ -134,6 +134,7 @@ namespace BlessYou
 
             waveFileObj.ReadWaveFile(i_SoundFileObj.SoundFileName);
             waveFileObj.NormalizeWaveFileContents();
+            waveFileObj.DisplayOfFileAnalyseLog = i_DoDisplayAnalyseLog;
             waveFileObj.AnalyseWaveFileContents();
 
             FWaveFileLengthInMilliSecs = waveFileObj.WaveFileLengthInMilliSecs;

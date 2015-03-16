@@ -377,7 +377,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
+        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
@@ -392,10 +392,6 @@ namespace BlessYou
             // Evaluate which case that is the worst case that can be removed from the library
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
-                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus != i_SelectedProblemObj.SneezeStatus)
-                {
-                    continue;
-                }
                 if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
                 {
                     wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
@@ -542,7 +538,7 @@ namespace BlessYou
                     } // for jx
 
                     List<RetrievedCaseClass> retrievedMatchesList;
-                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
                     
 
                     //4. Start reuse function
