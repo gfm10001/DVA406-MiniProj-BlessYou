@@ -14,6 +14,7 @@
 // 2015-03-12/GF    Added FOrderNr for dump display
 // 2015-03-13/GF    CalculateFeatureVector: Added normalize of feature vector values in 2nd vector.
 // 2015-03-15/GF    Make each wave-file dump controlled separately.
+// 2013-03-16/GF    DisplayOfFileAnalyseLog: added
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace BlessYou
     {
         bool FDoRawWaveDump = false; 
         bool FDoNormalizedWaveDump = false; 
-        bool FDoIntervalWaveDump = false; 
+        bool FDoIntervalWaveDump = false;
+        bool FDisplayOfFileAnalyseLog = true;
 
         string FWaveFileName;
         double[] FWaveFileContents44p1KHz16bitSamples;
@@ -40,6 +42,14 @@ namespace BlessYou
         int FNumberOfChannelsInOrgininalWaveFile;
         static int statLastUsedOrderNr; // Used hold latest nr
         int FOrderNr; // Used to simplify display
+
+        // ====================================================================
+        
+        public bool DisplayOfFileAnalyseLog
+        {
+            get { return FDisplayOfFileAnalyseLog; }
+            set { FDisplayOfFileAnalyseLog = value; }
+        } // DisplayOfFileAnalyseLog
 
         // ====================================================================
         
@@ -224,19 +234,23 @@ namespace BlessYou
 
             // Calculate intervall length
             FIntervalSampleCount = (triggerOffIx - FStartOfFirstIntervalIx) / FNrOfIntevals;
-            Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 5:0}ms Int: {6, 5:0}ms {7, 8:0} = {8, 2:0}%, of whole: {9, 3:0}%, {10}",
-                              FOrderNr,
-                              WaveFileLengthInMilliSecs,
-                              FStartOfFirstIntervalIx,
-                              FTrigPositionIx,
-                              triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
-                              ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs,
-                              WaveFileIntervalLengthInMilliSecs,
-                              "(" + FIntervalSampleCount + ")",
-                              100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
-                              100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
-                              System.IO.Path.GetFileName(FWaveFileName)
-                              );
+
+            if (true == FDisplayOfFileAnalyseLog)
+            {
+                Console.WriteLine("{0, 4:0} - Tot: {1, 6:0}ms IBeg: {2, 6:0}ms Trigg: {3, 6:0}ms IEnd: {4, 6:0}ms IntAll: {5, 5:0}ms Int: {6, 5:0}ms {7, 8:0} = {8, 2:0}%, of whole: {9, 3:0}%, {10}",
+                                  FOrderNr,
+                                  WaveFileLengthInMilliSecs,
+                                  FStartOfFirstIntervalIx,
+                                  FTrigPositionIx,
+                                  triggerOffIx / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz,
+                                  ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs,
+                                  WaveFileIntervalLengthInMilliSecs,
+                                  "(" + FIntervalSampleCount + ")",
+                                  100.00 * (WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
+                                  100.00 * (ConfigurationStatClass.C_NR_OF_INTERVALS * WaveFileIntervalLengthInMilliSecs / (FWaveFileContents44p1KHz16bitSamples.Length / ConfigurationStatClass.C_SOUND_SAMPLE_FREQUENCY_IN_kHz)),
+                                  System.IO.Path.GetFileName(FWaveFileName)
+                                  );
+            } // if
 
             //// Dump each interval as a separate file.
             //for (int ix = 0; ix < ConfigurationStatClass.C_NR_OF_INTERVALS; ++ix)

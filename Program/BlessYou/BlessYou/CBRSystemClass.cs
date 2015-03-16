@@ -377,7 +377,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
+        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
             int nrOfSneezes = 0;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
@@ -561,12 +561,12 @@ namespace BlessYou
                     } // for jx
 
                     List<RetrievedCaseClass> retrievedMatchesList;
-                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
                     
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
-                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList,ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES,selectedProblemObj.SneezeStatus,out caseStatus);
+                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, selectedProblemObj.SneezeStatus, out caseStatus);
                     if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
                         //correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
@@ -687,12 +687,12 @@ namespace BlessYou
                     } // for jx
 
                     List<RetrievedCaseClass> retrievedMatchesList;
-                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
 
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
-                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, selectedProblemObj.SneezeStatus, out caseStatus);
+                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, selectedProblemObj.SneezeStatus, out caseStatus);
                     if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
                         correct++;
