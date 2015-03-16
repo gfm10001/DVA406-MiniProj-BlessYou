@@ -27,7 +27,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.6/3 of 2015-03-15";
+            const string C_THIS_VERSION = "Bless You v.0.6/3 of 2015-03-16";
             DateTime startTime;
 
             //Usage:
