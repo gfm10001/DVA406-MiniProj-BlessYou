@@ -61,7 +61,7 @@ namespace BlessYou
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
    
-            // Prepare for revise and retain
+            // Prepare list for revise and retain
             foreach (CaseClass c in caseLibraryObj.ListOfCases)
             {
                 RetrievedCaseClass rCCObj = new RetrievedCaseClass(c);
@@ -111,10 +111,6 @@ namespace BlessYou
                 List<string> correctList = new List<string>();
 
                 List<string> wronglist = new List<string>();
-
-                
-
-
 
                 int numberofCasesForMajorityVote;
                 if (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
@@ -247,8 +243,8 @@ namespace BlessYou
 
             RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
-            Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
-                                 System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+            CBRSystemClass.PrintInfoAfterRevise(accumulatedSimilarityValuesRetrievedMatchesList, selectedProblemObj, caseToRemoveFromCaseLibrary);
+
             CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
 
 
