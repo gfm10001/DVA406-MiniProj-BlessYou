@@ -75,7 +75,18 @@ namespace BlessYou
 
             Console.WriteLine();
 
-           // CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+
+            config.C_M_AVERAGE_FEATURE_WEIGHT = 0;
+            config.C_M_CREST_FACTOR_WEIGHT = 0;
+            config.C_M_LOMONT_FFT_12_FEATURE_WEIGHT = 0;
+            config.C_M_LOMONT_FFT_14_FEATURE_WEIGHT = 1;
+            config.C_M_LOMONT_FFT_16_FEATURE_WEIGHT = 0;
+            config.C_M_PASSING_ZERO_WEIGHT = 0;
+            config.C_M_PEAK_FEATURE_WEIGHT = 0;
+            config.C_M_PEAK2PEAK_FEATURE_WEIGHT = 0;
+            config.C_M_RMS_FEATURE_WEIGHT = 0;
+            CBRSystemClass.EvaluateFeatureVectors(caseLibraryObj, config);
+
 
 
             // 3. Evaluate cases
@@ -111,10 +122,6 @@ namespace BlessYou
                 List<string> correctList = new List<string>();
 
                 List<string> wronglist = new List<string>();
-
-                
-
-
 
                 int numberofCasesForMajorityVote;
                 if (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)

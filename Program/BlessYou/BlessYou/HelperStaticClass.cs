@@ -19,7 +19,7 @@ namespace BlessYou
 
         public static void GetRandomSelection(List<SoundFileClass> i_AllFilesList, out List<SoundFileClass> o_SelectedFilesList)
         {
-            Random rnd = new Random();
+            Random rnd = new Random(0);
             o_SelectedFilesList = new List<SoundFileClass>();
 
             for (int i = 0; i < ConfigurationStatClass.C_NR_OF_RANDOM_SNEEZE_FILES; ++i)

@@ -494,13 +494,22 @@ namespace BlessYou
             ConfigurationDynClass config = new ConfigurationDynClass();
             Type t = config.GetType();
             FieldInfo[] fionfo = t.GetFields();
-            //List<List<RetrievedCaseClass>> debuglist = new List<List<RetrievedCaseClass>>();
+            List<string> fnames = new List<string>();
+            List<string> weight = new List<string>();
+            List<string> scorrect = new List<string>();
+            List<string> swrong = new List<string>();
+            
+            List<string> outval = new List<string>();
+
+
+            outval.Add("Feature\tName\tWeight\tCorrect\tWrong");
 
             foreach (FieldInfo f in fionfo)
             {
                 if (f.IsStatic)
                     continue;
 
+                fnames.Add(f.Name);
                 foreach (FieldInfo e in fionfo)
                 {
                     if (e.IsStatic)
@@ -515,22 +524,18 @@ namespace BlessYou
                 {
                     c.UpdateFeatureVectors(config);
                 }
-                //foreach (CaseClass c in caseLibraryObj.ListOfCases)
-                //{
-                //    c.UpdateFeatureVectors(config);
-                //    c.ca
-                  
-                //}
 
                 int correct = 0, wrong = 0;
-                List<string> correctList = new List<string>();
-                List<string> wronglist = new List<string>();
+                //List<string> correctList = new List<string>();
+                //List<string> wronglist = new List<string>();
+
+
 
                 CaseClass selectedProblemObj = new CaseClass();
                 for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
                 {
                     selectedProblemObj = caseLibraryObj.ListOfCases[ix];
-                    Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                    //Console.WriteLine("\nFilename: " + selectedProblemObj.WavFile_FullPathAndFileNameStr);
                     List<CaseClass> caseMinusOneList = new List<CaseClass>();
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
@@ -547,35 +552,181 @@ namespace BlessYou
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
-                    CBRSystemClass.Reuse(retrievedMatchesList, out caseStatus);
+                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList,ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES,selectedProblemObj.SneezeStatus,out caseStatus);
                     if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
-                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        //correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                         correct++;
                     }
                     else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                     {
-                        correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        //correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                         correct++;
                     }
                     else
                     {
                         //System.Diagnostics.Debugger.Break();
-                        wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
+                        //wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                         wrong++;
-                        Console.WriteLine("GUESSED WRONG HERE!");
+                        //Console.WriteLine("GUESSED WRONG HERE!");
                     }
                 }
-                Console.WriteLine("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");// for ix
-                Console.WriteLine("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
-                Console.WriteLine("Feature name:" + f.Name);
-                correctList.Add("\nNumber of correct guesses: " + correct + " / " + (correct / (double)(correct + wrong)) * 100 + "%");
-                wronglist.Add("Number of wrong guesses: " + wrong + " / " + (wrong / (double)(wrong + correct)) * 100 + "%\n");
-                System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
-                System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
+
+
+                outval.Add(f.Name + "\t" + f.GetValue(config) + "\t" + correct + "\t" + wrong);
+                //Console.WriteLine("Number of correct guesses: " + correct + " (" + (correct / (double)(correct + wrong)) * 100 + "%)");// for ix
+                //Console.WriteLine("Number of wrong guesses:   " + wrong + " (" + (wrong / (double)(wrong + correct)) * 100 + "%)\n");
+
+                //correctList.Add("\nNumber of correct guesses: " + correct + " (" + (correct / (double)(correct + wrong)) * 100 + "%)");
+                //wronglist.Add("Number of wrong guesses:   " + wrong + " (" + (wrong / (double)(wrong + correct)) * 100 + "%)\n");
+                //System.IO.File.WriteAllLines("./Wrongs-" + f.Name + ".txt", wronglist);
+                //System.IO.File.WriteAllLines("./Corrects-" + f.Name + ".txt", correctList);
             }
+
+            //for (int DisplayPos = 0; DisplayPos < outval.Count; DisplayPos++)
+            //{
+            //    Console.WriteLine("{0,10}{1,10}{2,10}",
+            //     f.Name[DisplayPos],
+            //     correct.ToString()[DisplayPos],
+            //     wrong.ToString()[DisplayPos]);
+            //}
+
+
+
+
+            int maxVariableNamelength = 0;
+            foreach (string s in outval)
+            {
+                int p = s.IndexOf("\t");
+                if (p > maxVariableNamelength)
+                {
+                    maxVariableNamelength = p;
+                }
+            } // foreach
+
+
+            string totText = "";
+            for (int ix = 0; ix < outval.Count; ++ix)
+            {
+                string[] parts = outval[ix].Split('\t');
+                string tabStr = new string(' ', maxVariableNamelength - parts[0].Length + 1);
+                totText = totText + parts[0] + tabStr + " = " + parts[1] + Environment.NewLine;
+            } // foreach
+
+            foreach (string s in outval)
+            {
+                Console.WriteLine(s);
+            }
+
+
+            System.IO.File.WriteAllLines("FeatureWeightAnalysis.txt", outval);
             // ====================================================================
         }
+
+        public static void EvaluateFeatureVectors(CaseLibraryClass caseLibraryObj, ConfigurationDynClass i_config)
+        {
+
+            //ConfigurationDynClass config = new ConfigurationDynClass();
+            Type t = i_config.GetType();
+            FieldInfo[] fionfo = t.GetFields();
+            List<string> fnames = new List<string>();
+            List<string> weight = new List<string>();
+            //List<string> scorrect = new List<string>();
+            //List<string> swrong = new List<string>();
+
+            fnames.Add("Vector Name");
+            weight.Add("Weight");
+            //scorrect.Add("Correct");
+            //swrong.Add("Wrong");
+            int correct = 0, wrong = 0;
+
+            List<string> outval = new List<string>();
+
+
+            //outval.Add("Feature\tName\tWeight\tCorrect\tWrong");
+            foreach(CaseClass c in caseLibraryObj.ListOfCases)
+            {
+                c.UpdateFeatureVectors(i_config);
+            }
+
+
+            foreach (FieldInfo f in fionfo)
+            {
+                if (f.IsStatic)
+                    continue;
+                fnames.Add(f.Name);
+                weight.Add(f.GetValue(i_config).ToString());
+            }
+
+                CaseClass selectedProblemObj = new CaseClass();
+                for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
+                {
+                    selectedProblemObj = caseLibraryObj.ListOfCases[ix];
+                    List<CaseClass> caseMinusOneList = new List<CaseClass>();
+                    for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
+                    {
+                        //caseLibraryObj.ListOfCases[jx].UpdateFeatureVectors(i_config);
+                        if (jx != ix)
+                        {
+                            caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
+                        }
+                    } // for jx
+
+                    List<RetrievedCaseClass> retrievedMatchesList;
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+
+
+                    //4. Start reuse function
+                    EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
+                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, selectedProblemObj.SneezeStatus, out caseStatus);
+                    if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    {
+                        correct++;
+                    }
+                    else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    {
+                        correct++;
+                    }
+                    else
+                    {
+                        wrong++;
+                    }
+                }
+                //scorrect.Add(correct.ToString());
+                //swrong.Add(wrong.ToString());
+                //outval.Add(f.Name + "\t" + f.GetValue(config) + "\t" + correct + "\t" + wrong);
+            
+
+            int longest = 0;
+            foreach (string s in fnames)
+            {
+                if (s.Length > longest)
+                    longest = s.Length;
+            }
+            for (int i =0;i<fnames.Count;i++)
+            {
+                while (fnames[i].Length <= longest+2)
+                    fnames[i] += " "; 
+            }
+
+            for (int ix = 0; ix < fnames.Count; ix++)
+            {
+                Console.WriteLine("{0,-10}{1,-10}",
+                 fnames[ix],
+                 weight[ix]);
+                
+                //.ToString()[DisplayPos],
+                 //wrong.ToString()[DisplayPos]);
+            }
+            Console.WriteLine("Correct: " + correct);
+            Console.WriteLine("Wrong: " + wrong+"\n");
+
+
+
+            //System.IO.File.WriteAllLines("FeatureWeightAnalysis.txt", outval);
+        
+        }
+
         
         // ====================================================================
 
