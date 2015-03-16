@@ -47,7 +47,7 @@ namespace BlessYou
             string ftrFilePath; // If empty no storage of ftr files
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> accumulatedSimilarityValuesRetrievedMatchesList = new List<RetrievedCaseClass>();
-
+            CaseClass selectedProblemObj = new CaseClass();
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
@@ -112,7 +112,7 @@ namespace BlessYou
 
                 List<string> wronglist = new List<string>();
 
-                CaseClass selectedProblemObj = new CaseClass();
+                
 
 
 
@@ -241,15 +241,16 @@ namespace BlessYou
                     System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                     numberofCasesForMajorityVote += 2;
-                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                    //ToDo throw new System.NotImplementedException();
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
                 while (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
+            RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+            Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
+                                 System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+            CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
 
-            RetrievedCaseClass caseToRemoveFromCaseLibrary;
-            CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);

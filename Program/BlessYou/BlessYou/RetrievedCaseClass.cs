@@ -127,6 +127,19 @@ namespace BlessYou
         } // RetrievedCaseClass
 
         //=====================================================================
+
+        public RetrievedCaseClass(RetrievedCaseClass i_RetrievedCaseClassObj)
+        {
+            base.WavFile_FullPathAndFileNameStr = i_RetrievedCaseClassObj.WavFile_FullPathAndFileNameStr;
+            this.ProposedStatus = i_RetrievedCaseClassObj.ProposedStatus;
+            this.FDistanceValue = i_RetrievedCaseClassObj.FDistanceValue;
+            this.SimilarityValue = i_RetrievedCaseClassObj.SimilarityValue;
+            this.CaseSimilarityRankingValue = i_RetrievedCaseClassObj.CaseSimilarityRankingValue;
+            this.NrOfCorrectRetrievesRankingValue = i_RetrievedCaseClassObj.NrOfCorrectRetrievesRankingValue;
+            this.NrOfWrongRetrievesRankingValue = i_RetrievedCaseClassObj.NrOfWrongRetrievesRankingValue;
+        } // RetrievedCaseClass
+
+        //=====================================================================
     
         public string GetCurrentMatchingString()
         {

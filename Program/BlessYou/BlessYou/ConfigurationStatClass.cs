@@ -78,6 +78,7 @@ namespace BlessYou
 
         public static void DumpConfiguration(string i_Banner, string i_FileName)
         {
+
             List<string> outval = new List<string>();
             Type t = MethodBase.GetCurrentMethod().DeclaringType;
 
@@ -111,6 +112,7 @@ namespace BlessYou
                 string tabStr = new string(' ', maxVariableNamelength - parts[0].Length + 1);
                 totText = totText + parts[0] + tabStr + " = " + parts[1] + Environment.NewLine;
             } // foreach
+
 
             try
             {
