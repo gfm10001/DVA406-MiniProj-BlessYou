@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace BlessYou
 {
@@ -90,6 +91,24 @@ namespace BlessYou
         {
             // ToDo: Kan reflection användas här?
             string totText = "";
+
+            List<string> outval = new List<string>();
+            Type t = MethodBase.GetCurrentMethod().DeclaringType;
+
+            FieldInfo[] finfo = t.GetFields();
+            foreach (FieldInfo f in finfo)
+            {
+                if(f.IsStatic)
+                    outval.Add(f.Name + " --> " + f.GetValue(null));
+                else
+                    outval.Add(f.Name + " --> " + f.GetValue(t));
+            }
+            
+            
+
+
+
+
 
             totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
             totText = totText + "C_MAX_POSSIBLE_VALUE                   = " + C_MAX_POSSIBLE_VALUE + Environment.NewLine;
