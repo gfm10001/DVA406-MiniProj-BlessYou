@@ -270,7 +270,7 @@ namespace BlessYou
             int numberOfNonSneezes = 0;
             for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix) // ToDo remove i_RetrievedMatches.Count add check and send error
             {
-                i_RetrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
+                retrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
                 if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
@@ -378,30 +378,40 @@ namespace BlessYou
         {
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
-            List<double> SimilarityRankingValueList = new List<double>();
-            List<int> notUsedCaseToRemoveFromLibraryIxList = new List<int>();
-            List<int> wrongCaseToRemoveFromLibraryIxList = new List<int>();
-            double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
+            List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
             double minSimilarityRankingValue = double.MaxValue;
+            List<RetrievedCaseClass> notUsedCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
+            double notUsedCaseMinSimilarityRankingValue = double.MaxValue;
+            List<RetrievedCaseClass> wrongCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
+            double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
+            double wrongCaseMinSimilarityRankingValue = double.MaxValue;
 
             // Evaluate which case that is the worst case that can be removed from the library
-            o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[0];
-            maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[0].NrOfWrongRetrievesRankingValue;
-            for (int ix = 1; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
-                SimilarityRankingValueList.Add(accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue);
-
                 if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
                 {
-                    wrongCaseToRemoveFromLibraryIxList.Add(ix);
-                    if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
+                    wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
+                    if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
                     {
                         maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
+                        if (wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                        {
+                            wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                        }
                     }
                 }
-                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
+                else if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
                 {
-                    notUsedCaseToRemoveFromLibraryIxList.Add(ix);
+                    notUsedCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
+                    if (notUsedCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                    {
+                        notUsedCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                    }
+                }
+                else
+                {
+                    similarityRankingValueList.Add(accumulatedSimilarityValuesMatchesList[ix]);
                     if (minSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
                     {
                         minSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
@@ -409,43 +419,40 @@ namespace BlessYou
                 }
             } // for
 
-            if (wrongCaseToRemoveFromLibraryIxList.Count > 0)
+            if (wrongCaseToRemoveFromLibraryList.Count > 0)
             {
-                List<RetrievedCaseClass> maxWrongCaseToRemoveFromLibraryList = accumulatedSimilarityValuesMatchesList.FindAll(
-                delegate(RetrievedCaseClass rcc)
+                for (int ix = 0; ix < wrongCaseToRemoveFromLibraryList.Count; ++ix)
                 {
-                    return rcc.NrOfWrongRetrievesRankingValue == maxWrongCaseToRemoveFromLibraryValue;
-                });
-                double tempDouble = maxWrongCaseToRemoveFromLibraryList[0].CaseSimilarityRankingValue;
-                int tempIx = 0;
-                for (int ix = 0; ix < maxWrongCaseToRemoveFromLibraryList.Count; ++ix)
-                {
-                    if (tempDouble > maxWrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
+                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
                     {
-                        tempIx = ix;
+                        o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
                     }
                 }
-                o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[tempIx];
+                
             }
-            else if (notUsedCaseToRemoveFromLibraryIxList.Count > 0)
+            else if (notUsedCaseToRemoveFromLibraryList.Count > 0)
             {
-                for (int ix = 0; ix < notUsedCaseToRemoveFromLibraryIxList.Count; ++ix)
+                for (int ix = 0; ix < notUsedCaseToRemoveFromLibraryList.Count; ++ix)
                 {
-                    if (accumulatedSimilarityValuesMatchesList[notUsedCaseToRemoveFromLibraryIxList[ix]].CaseSimilarityRankingValue == minSimilarityRankingValue)
+                    if (notUsedCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue == notUsedCaseMinSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[notUsedCaseToRemoveFromLibraryIxList[ix]];
-                        break;
+                        o_CaseToRemoveFromCaseLibrary = notUsedCaseToRemoveFromLibraryList[ix];
                     }
                 }
             }
             else
             {
-                o_CaseToRemoveFromCaseLibrary = accumulatedSimilarityValuesMatchesList[SimilarityRankingValueList.IndexOf(SimilarityRankingValueList.Max())];
+                for (int ix = 0; ix < similarityRankingValueList.Count; ++ix)
+                {
+                    if (similarityRankingValueList[ix].CaseSimilarityRankingValue == minSimilarityRankingValue)
+                    {
+                        o_CaseToRemoveFromCaseLibrary = similarityRankingValueList[ix];
+                    }
+                }
             }
 
 
 
-             FEL I UTVÄRDERINGEN
         } // Revise
         // ====================================================================
 
