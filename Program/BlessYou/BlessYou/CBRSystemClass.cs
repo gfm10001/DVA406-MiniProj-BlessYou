@@ -273,7 +273,7 @@ namespace BlessYou
             int numberOfNonSneezes = 0;
             for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix) // ToDo remove i_RetrievedMatches.Count add check and send error
             {
-                i_RetrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
+                retrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
                 if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
@@ -377,10 +377,85 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise()
+        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
+            List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
+            o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
+            List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
+            double minSimilarityRankingValue = double.MaxValue;
+            List<RetrievedCaseClass> notUsedCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
+            double notUsedCaseMinSimilarityRankingValue = double.MaxValue;
+            List<RetrievedCaseClass> wrongCaseToRemoveFromLibraryList = new List<RetrievedCaseClass>();
+            double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
+            double wrongCaseMinSimilarityRankingValue = double.MaxValue;
 
-            // throw new System.NotImplementedException();
+            // Evaluate which case that is the worst case that can be removed from the library
+            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            {
+                if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
+                {
+                    wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
+                    if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
+                    {
+                        maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
+                        if (wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                        {
+                            wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                        }
+                    }
+                }
+                else if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue && 0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue)
+                {
+                    notUsedCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
+                    if (notUsedCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                    {
+                        notUsedCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                    }
+                }
+                else
+                {
+                    similarityRankingValueList.Add(accumulatedSimilarityValuesMatchesList[ix]);
+                    if (minSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                    {
+                        minSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
+                    }
+                }
+            } // for
+
+            if (wrongCaseToRemoveFromLibraryList.Count > 0)
+            {
+                for (int ix = 0; ix < wrongCaseToRemoveFromLibraryList.Count; ++ix)
+                {
+                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
+                    {
+                        o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
+                    }
+                }
+                
+            }
+            else if (notUsedCaseToRemoveFromLibraryList.Count > 0)
+            {
+                for (int ix = 0; ix < notUsedCaseToRemoveFromLibraryList.Count; ++ix)
+                {
+                    if (notUsedCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue == notUsedCaseMinSimilarityRankingValue)
+                    {
+                        o_CaseToRemoveFromCaseLibrary = notUsedCaseToRemoveFromLibraryList[ix];
+                    }
+                }
+            }
+            else
+            {
+                for (int ix = 0; ix < similarityRankingValueList.Count; ++ix)
+                {
+                    if (similarityRankingValueList[ix].CaseSimilarityRankingValue == minSimilarityRankingValue)
+                    {
+                        o_CaseToRemoveFromCaseLibrary = similarityRankingValueList[ix];
+                    }
+                }
+            }
+
+
+
         } // Revise
         // ====================================================================
 
@@ -390,11 +465,11 @@ namespace BlessYou
             // throw new System.NotImplementedException();
         } // Retain
 
-        public static ConfigurationStatClass GenerateRandomConfig(double toplimit =1.0)
+        public static ConfigurationDynClass GenerateRandomConfig(double toplimit = 1.0)
         // ====================================================================
 
         {
-            ConfigurationStatClass config = new ConfigurationStatClass();
+            ConfigurationDynClass config = new ConfigurationDynClass();
 
             Type t = config.GetType();
             FieldInfo[] fio = t.GetFields();
@@ -414,7 +489,7 @@ namespace BlessYou
 
         public static void EvaluateFeatureOneByOne(CaseLibraryClass caseLibraryObj)
         {
-            ConfigurationStatClass config = new ConfigurationStatClass();
+            ConfigurationDynClass config = new ConfigurationDynClass();
             Type t = config.GetType();
             FieldInfo[] fionfo = t.GetFields();
             //List<List<RetrievedCaseClass>> debuglist = new List<List<RetrievedCaseClass>>();

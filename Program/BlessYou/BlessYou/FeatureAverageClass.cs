@@ -16,7 +16,7 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
         } // FeatureAverageClass
 
-        public FeatureAverageClass(ConfigurationStatClass config)
+        public FeatureAverageClass(ConfigurationDynClass config)
             : base("Average")
         {
 
@@ -39,7 +39,7 @@ namespace BlessYou
             FFeatureValueRawVector.Add(average);
         } // calculateFeatureValues
 
-        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FeatureWeight = i_config.C_M_AVERAGE_FEATURE_WEIGHT;
         }

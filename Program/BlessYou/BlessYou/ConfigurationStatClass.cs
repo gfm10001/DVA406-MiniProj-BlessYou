@@ -4,16 +4,18 @@
 //
 // History:
 // 2015-02-24       Introduced.
+// 2015-03-16/SP    DumpConfiguration: Added use of relection
 
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace BlessYou
 {
-    public class ConfigurationStatClass
+    public static class ConfigurationStatClass
     {
         public static double C_MAX_POSSIBLE_VALUE = 100000;             // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
@@ -31,8 +33,9 @@ namespace BlessYou
         public static double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
         public static double C_DEFAULT_CREST_FACTOR_WEIGHT = 0.2;
         public static double C_DEFAULT_PASSING_ZERO_WEIGHT = 0.2;
-        public static double C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT = 0.2;
-        public static double C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT = 0.2;
+        public static double C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT = 0.2;
 
 
         //ToDo implement interval weights
@@ -48,28 +51,11 @@ namespace BlessYou
         public static double C_FEATURE_INTERVAL_9_WEIGHT = 1;
 
 
-        
-
-
-
-        //The fields bellow are used when generating custom weights. 
-        //>>>>>>>
-        //IMPORTANT: If you add a non-double field you need to chanage the GenerateRandomConfig call
-        //>>>>>>>
-        public double C_M_AVERAGE_FEATURE_WEIGHT = C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
-        public double C_M_PEAK_FEATURE_WEIGHT = C_DEFAULT_PEAK_FEATURE_WEIGHT;
-        public double C_M_RMS_FEATURE_WEIGHT = C_DEFAULT_RMS_FEATURE_WEIGHT;
-        public double C_M_PEAK2PEAK_FEATURE_WEIGHT = C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
-        public double C_M_CREST_FACTOR_WEIGHT = C_DEFAULT_CREST_FACTOR_WEIGHT;
-        public double C_M_PASSING_ZERO_WEIGHT = C_DEFAULT_PASSING_ZERO_WEIGHT;
-        public double C_M_LOMONT_FFT_FEATURE_WEIGHT = C_DEFAULT_LOMONT_FFT_FEATURE_WEIGHT;
-        public double C_M_NAUDIO_FFT_FEATURE_WEIGHT = C_DEFAULT_NAUDIO_FFT_FEATURE_WEIGHT;
-
         public static int C_NR_OF_SAMPLES_2_POWER_12 = 12;
         public static int C_NR_OF_SAMPLES_2_POWER_14 = 14;
         public static int C_NR_OF_SAMPLES_2_POWER_16 = 16;
 
-        public static bool C_USE_PARALLEL_EXECUTION = false;
+        public static bool C_USE_PARALLEL_EXECUTION = true;
         public static int C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 1000;
         public static int C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ = 5000;
 
@@ -88,18 +74,39 @@ namespace BlessYou
 
         public static void DumpConfiguration(string i_Banner, string i_FileName)
         {
-            // ToDo: Kan reflection användas här?
-            string totText = "";
+            List<string> outval = new List<string>();
+            Type t = MethodBase.GetCurrentMethod().DeclaringType;
 
-            totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
-            totText = totText + "C_MAX_POSSIBLE_VALUE                   = " + C_MAX_POSSIBLE_VALUE + Environment.NewLine;
-            totText = totText + "C_NR_OF_INTERVALS                      = " + C_NR_OF_INTERVALS + Environment.NewLine;
+            FieldInfo[] finfo = t.GetFields();
+            foreach (FieldInfo f in finfo)
+            {
+                if(f.IsStatic)
+                    outval.Add(f.Name + "\t" + f.GetValue(null));
+                //else
+                //    outval.Add(f.Name + "\t" + f.GetValue(this));
+            } // foreach
+            
+            
+            // Fix tabulation...
+            int maxVariableNamelength = 0;
+            foreach (string s in outval)
+            {
+                int p = s.IndexOf("\t");
+                if (p > maxVariableNamelength)
+                {
+                    maxVariableNamelength = p;
+                }
+            } // foreach
 
-            totText = totText + "C_TRIGGER_LEVEL_IN_PERCENT             = " + C_TRIGGER_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_PREFETCH_IN_MILLI_SECS       = " + C_TRIGGER_PREFETCH_IN_MILLI_SECS + Environment.NewLine;
 
-            totText = totText + "C_TRIGGER_OFF_LEVEL_IN_PERCENT         = " + C_TRIGGER_OFF_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_OFF_DURATION_IN_MILLI_SECS   = " + C_TRIGGER_OFF_DURATION_IN_MILLI_SECS + Environment.NewLine;
+            // Create report...
+            string totText = i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
+            for (int ix = 0; ix < outval.Count; ++ix)
+            {
+                string[] parts = outval[ix].Split('\t');
+                string tabStr = new string(' ', maxVariableNamelength - parts[0].Length + 1);
+                totText = totText + parts[0] + tabStr + " = " + parts[1] + Environment.NewLine;
+            } // foreach
 
             try
             {

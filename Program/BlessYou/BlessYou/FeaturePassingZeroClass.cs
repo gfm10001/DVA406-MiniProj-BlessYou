@@ -16,7 +16,7 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
         } // FeaturePeakClass
 
-        public FeaturePassingZeroClass(ConfigurationStatClass i_config) :
+        public FeaturePassingZeroClass(ConfigurationDynClass i_config) :
             base("PassingZero")
         {
             base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
@@ -45,7 +45,7 @@ namespace BlessYou
             FFeatureValueRawVector.Add(changes);
         }
         //=====================================================================
-        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
         }

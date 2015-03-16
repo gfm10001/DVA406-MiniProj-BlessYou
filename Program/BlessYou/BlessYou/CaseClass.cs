@@ -105,11 +105,11 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj, ConfigurationStatClass i_config = null)
+        public void ExtractWavFileFeatures(SoundFileClass i_SoundFileObj, ConfigurationDynClass i_config = null)
         {
 
             if (i_config == null)
-                i_config = new ConfigurationStatClass();
+                i_config = new ConfigurationDynClass();
 
             WaveFileClass waveFileObj = new WaveFileClass();
             switch (i_SoundFileObj.SoundFileSneezeMarker)
@@ -239,7 +239,7 @@ namespace BlessYou
             // ToDo    throw new System.NotImplementedException();
         } // ExtractWavFileFeatures
 
-        public void UpdateFeatureVectors(ConfigurationStatClass i_config)
+        public void UpdateFeatureVectors(ConfigurationDynClass i_config)
         {
             //FFeatureTypeVector.Clear();
 
