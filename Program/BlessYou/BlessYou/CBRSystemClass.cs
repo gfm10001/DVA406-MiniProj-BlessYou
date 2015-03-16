@@ -377,7 +377,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
+        public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
@@ -392,12 +392,17 @@ namespace BlessYou
             // Evaluate which case that is the worst case that can be removed from the library
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
+                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus != i_SelectedProblemObj.SneezeStatus)
+                {
+                    continue;
+                }
                 if (0 == accumulatedSimilarityValuesMatchesList[ix].NrOfCorrectRetrievesRankingValue && accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue > 0)
                 {
                     wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
                     if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
                     {
-                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue || wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
+                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue || 
+                            wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
                         {
                             wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
                         } 
@@ -426,7 +431,7 @@ namespace BlessYou
             {
                 for (int ix = 0; ix < wrongCaseToRemoveFromLibraryList.Count; ++ix)
                 {
-                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue) // && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
+                    if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
                     {
                         o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
                     }
@@ -453,10 +458,8 @@ namespace BlessYou
                     }
                 }
             }
-
-
-
         } // Revise
+
         // ====================================================================
 
         public static void Retain()

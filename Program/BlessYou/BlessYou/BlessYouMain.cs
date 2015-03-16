@@ -257,7 +257,10 @@ namespace BlessYou
             //    Console.WriteLine("{0}", s);
             //}
             RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
-            CBRSystemClass.Revise(accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+            CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
+            Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
+                                 System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+
 
             // 5. Skriv ut rapport
             Console.WriteLine("Number of matches = {0}", retrievedMatchesList.Count);
