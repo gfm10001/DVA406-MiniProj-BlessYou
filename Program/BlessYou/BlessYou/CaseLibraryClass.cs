@@ -37,7 +37,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void AddCase(CaseClass i_NewCase, int i_IndexInCaseLibrary)
+        public void AddCase(CaseClass i_NewCase)
         {
             FListOfCases.Add(i_NewCase);
 
