@@ -76,7 +76,7 @@ namespace BlessYou
 
             Console.WriteLine();
 
-            CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+           // CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
 
             // 3. Evaluate cases
