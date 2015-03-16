@@ -20,6 +20,9 @@ namespace BlessYou
     {
         public const double C_MAX_POSSIBLE_VALUE = 100000;             // was 0x7FFF; // The maximum absolute value in a sound file recoded at 16 bit 
 
+        public const int C_NR_OF_RANDOM_SNEEZE_FILES = 50;
+        public const int C_NR_OF_RANDOM_NONE_SNEEZE_FILES = 50; 
+
         public const int C_NR_OF_INTERVALS = 10;                       // The interesting part of the sound file is split into this number of equal size intervals
         public const double C_TRIGGER_LEVEL_IN_PERCENT = 50;
         public const double C_TRIGGER_PREFETCH_IN_MILLI_SECS = 100;    // Trigger is moved backwards this amount to get a prefetch 

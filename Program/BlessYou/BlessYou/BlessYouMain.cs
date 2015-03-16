@@ -40,8 +40,8 @@ namespace BlessYou
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
             ConfigurationDynClass config = new ConfigurationDynClass(); // CBRSystemClass.GenerateRandomConfig(100);
-            List<SoundFileClass> soundfileObjList;
-            //List<SoundFileClass> Liblist;
+            List<SoundFileClass> allSoundFilesObjList;
+            List<SoundFileClass> usedSoundFilesObjList;
             CaseLibraryClass caseLibraryObj;
             string newProblemFileName; // If empty run all problems
             string ftrFilePath; // If empty no storage of ftr files
@@ -51,14 +51,14 @@ namespace BlessYou
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
-            DecodeParamClass.DecodeParam(args, out soundfileObjList, out newProblemFileName, out ftrFilePath);
+            DecodeParamClass.DecodeParam(args, out allSoundFilesObjList, out newProblemFileName, out ftrFilePath);
             startTime = DateTime.Now;
             Console.WriteLine("Starting: " + startTime.ToString() + ", config file: " + args[0] + " \n");
 
-
-
             // 2. Create CASE-library
-            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, soundfileObjList, config);
+            // First extract 50+50 random files for use as first library
+            HelperStaticClass.GetRandomSelection(allSoundFilesObjList, usedSoundFilesObjList);
+            FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
             // Choose 50 sneezes and 50 nonsneezes for case library
 
