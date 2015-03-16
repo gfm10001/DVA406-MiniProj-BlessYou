@@ -379,6 +379,7 @@ namespace BlessYou
 
         public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
+            int nrOfSneezes = 0;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
@@ -389,10 +390,23 @@ namespace BlessYou
             double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
             double wrongCaseMinSimilarityRankingValue = double.MaxValue;
 
+
+            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            {
+                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    nrOfSneezes++;
+                }
+            }
+
             // Evaluate which case that is the worst case that can be removed from the library
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
-                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus != i_SelectedProblemObj.SneezeStatus)
+                if (nrOfSneezes > ConfigurationStatClass.C_NR_OF_RANDOM_SNEEZE_FILES + 1 && accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    continue;
+                }
+                if (nrOfSneezes < ConfigurationStatClass.C_NR_OF_RANDOM_SNEEZE_FILES - 1 && accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                 {
                     continue;
                 }
