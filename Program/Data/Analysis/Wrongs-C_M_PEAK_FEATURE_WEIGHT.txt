@@ -1,0 +1,33 @@
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-1-3.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-2-1.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-2-2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-3-3.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-4-2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-5-2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-7-2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-9-2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneeze-1-11.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\Sneezes\sneezes-1-7.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\None-Sneezes\stan-20feb-A-09m14s.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\None-Sneezes\London-part-1-21feb-A-29m46s.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\GF\None-Sneezes\Don Quixote-1-21feb-A-06m00s.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\Sneezes\Sneeze24.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_11.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_12.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_16.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_17.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_19.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Cough_20.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Sound_21.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\NS\None-Sneezes\Sound_24.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\Sneezes\SP1.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\Sneezes\SP21.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\Sneezes\SP22.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\birds2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\bow.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\build2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\clock.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\cricket2.wav
+C:\Users\spr10002\Desktop\DVA406-MiniProj-BlessYou\Program\Data\SP\None-Sneezes\hit.wav
+Number of wrong guesses: 31 / 19,375%
+
