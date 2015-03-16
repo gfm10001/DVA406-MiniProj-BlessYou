@@ -76,7 +76,7 @@ namespace BlessYou
             // 1. För varje case i case library:
             //      1.1 Beräkna Simularity Function (CalculateSimilarity), save each value locally
             // 2. Sort the list descending order to get top max in Similarity
-            // 3. Transfer the i_MaxRetrievedMatchesCount cases to the output 
+            // 3. Transfer the cases to the output 
             o_RetrievedMatches = new List<RetrievedCaseClass>();
             List<RetrievedCaseClass> similarityCaseList = new List<RetrievedCaseClass>();
 
@@ -90,9 +90,7 @@ namespace BlessYou
                 currentCase = i_CaseLibraryList[ix];
                 RetrievedCaseClass theCase = new RetrievedCaseClass(currentCase);
 
-                // Alternative function  ==> Similar result
-                //theCase.SimilarityValue = currentCase.CalculateSimilarityValue(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
-                theCase.SimilarityValue = currentCase.CalculateSimilarityValueExt(i_NewCase);
+                theCase.SimilarityValue = currentCase.CalculateSimilarityValueExt(i_NewCase); // If equal 1 perfect match if equal 0 no match at all
                 similarityCaseList.Add(theCase);
 
                 // Debug print all similarity values camparing i_NewCase to i_CaseLibraryList one by one
@@ -107,13 +105,12 @@ namespace BlessYou
             sortedCaseList.Reverse();
 
             // Return all similarity case from best to worst
-            //for (int ix = 0, jx = sortedCaseList.Count - 1; jx >= 0 && ix < i_MaxRetrievedMatchesCount; ++ix, --jx) 
             for (int ix = 0; ix < sortedCaseList.Count; ++ix)
             {
                 o_RetrievedMatches.Add(sortedCaseList[ix]);
             } // for ix
 
-            // Write all SF numbers to file
+            // Debug: Write all SF numbers to file
             //List<string> resultString;
             //GetAllSimilarityValuesToString(i_NewCase, sortedCaseList, out resultString);
             //System.IO.File.WriteAllLines(System.IO.Path.GetFileName(i_NewCase.WavFile_FullPathAndFileNameStr) + "_SF.txt", resultString);
@@ -325,7 +322,7 @@ namespace BlessYou
             {
                 o_CaseStatus = EnumCaseStatus.csIsProposedNoneSneeze;
             }
-        } // ReuseUsingSimilarityValue
+        } // ReuseUsingMajorityVote
 
         // ====================================================================
 
@@ -436,7 +433,7 @@ namespace BlessYou
                 {
                     if (maxWrongCaseToRemoveFromLibraryValue == wrongCaseToRemoveFromLibraryList[ix].NrOfWrongRetrievesRankingValue && wrongCaseMinSimilarityRankingValue == wrongCaseToRemoveFromLibraryList[ix].CaseSimilarityRankingValue)
                     {
-                        o_CaseToRemoveFromCaseLibrary = wrongCaseToRemoveFromLibraryList[ix];
+                        o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(wrongCaseToRemoveFromLibraryList[ix]);
                     }
                 }
                 
@@ -467,7 +464,8 @@ namespace BlessYou
 
         public static void Retain(RetrievedCaseClass i_CaseToRemoveFromCaseLibrary, CaseLibraryClass i_CaseLibrary)
         {
-            i_CaseLibrary.RemoveCase(i_CaseToRemoveFromCaseLibrary);
+
+            i_CaseLibrary.RemoveCase(i_CaseToRemoveFromCaseLibrary.RefForRemoval);
         } // Retain
 
 

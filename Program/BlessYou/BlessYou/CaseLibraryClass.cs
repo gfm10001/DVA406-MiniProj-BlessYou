@@ -37,16 +37,21 @@ namespace BlessYou
 
         // ====================================================================
 
-        public void AddCase(CaseClass i_NewCase)
+        public void AddCase(CaseClass i_NewCase, int i_IndexInCaseLibrary)
         {
             FListOfCases.Add(i_NewCase);
+
         } // AddCase
 
         // ====================================================================
 
         public void RemoveCase(CaseClass i_Case)
         {
-            FListOfCases.Remove(i_Case);
+            bool b = FListOfCases.Remove(i_Case);
+            if (false == b)
+            {
+                throw new System.NotImplementedException("RemoveCase: fails!");
+            }
         } // RemoveCase
 
         // ====================================================================
