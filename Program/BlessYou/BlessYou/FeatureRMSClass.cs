@@ -40,6 +40,11 @@ namespace BlessYou
             FFeatureValueRawVector.Add(rms);
         } // calculateFeatureValuesFromSamples
 
+
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FFeatureWeight = i_config.C_M_RMS_FEATURE_WEIGHT;
+        }
         //=====================================================================
 
     } // FeatureRMSClass

@@ -204,6 +204,11 @@ namespace BlessYou
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FFeatureWeight = i_config.C_M_LOMONT_FFT_FEATURE_WEIGHT;
+        }
+
 
     } // FeatureLomontFFTClass
 }

@@ -49,6 +49,11 @@ namespace BlessYou
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FeatureWeight = i_config.C_M_CREST_FACTOR_WEIGHT;
+        }
+
 
     } // FeatureCrestFactorClass
 }

@@ -99,6 +99,11 @@ namespace BlessYou
             //}
             return absDiff;
         }
+        public virtual void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            throw new NotImplementedException();
+        
+        }
 
     } // FeatureBaseClass
 }
