@@ -4,6 +4,7 @@
 //
 // History:
 // 2015-02-24       Introduced.
+// 2015-03-16/SP    DumpConfiguration: Added use of relection
 
 
 using System;
@@ -87,11 +88,8 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void DumpConfiguration(string i_Banner, string i_FileName)
+        public void DumpConfiguration(string i_Banner, string i_FileName)
         {
-            // ToDo: Kan reflection användas här?
-            string totText = "";
-
             List<string> outval = new List<string>();
             Type t = MethodBase.GetCurrentMethod().DeclaringType;
 
@@ -99,26 +97,32 @@ namespace BlessYou
             foreach (FieldInfo f in finfo)
             {
                 if(f.IsStatic)
-                    outval.Add(f.Name + " --> " + f.GetValue(null));
+                    outval.Add(f.Name + "\t" + f.GetValue(null));
                 else
-                    outval.Add(f.Name + " --> " + f.GetValue(t));
-            }
+                    outval.Add(f.Name + "\t" + f.GetValue(this));
+            } // foreach
             
             
+            // Fix tabulation...
+            int maxVariableNamelength = 0;
+            foreach (string s in outval)
+            {
+                int p = s.IndexOf("\t");
+                if (p > maxVariableNamelength)
+                {
+                    maxVariableNamelength = p;
+                }
+            } // foreach
 
 
-
-
-
-            totText = totText + i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
-            totText = totText + "C_MAX_POSSIBLE_VALUE                   = " + C_MAX_POSSIBLE_VALUE + Environment.NewLine;
-            totText = totText + "C_NR_OF_INTERVALS                      = " + C_NR_OF_INTERVALS + Environment.NewLine;
-
-            totText = totText + "C_TRIGGER_LEVEL_IN_PERCENT             = " + C_TRIGGER_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_PREFETCH_IN_MILLI_SECS       = " + C_TRIGGER_PREFETCH_IN_MILLI_SECS + Environment.NewLine;
-
-            totText = totText + "C_TRIGGER_OFF_LEVEL_IN_PERCENT         = " + C_TRIGGER_OFF_LEVEL_IN_PERCENT + Environment.NewLine;
-            totText = totText + "C_TRIGGER_OFF_DURATION_IN_MILLI_SECS   = " + C_TRIGGER_OFF_DURATION_IN_MILLI_SECS + Environment.NewLine;
+            // Create report...
+            string totText = i_Banner + " at " + DateTime.Now.ToString() + Environment.NewLine;
+            for (int ix = 0; ix < outval.Count; ++ix)
+            {
+                string[] parts = outval[ix].Split('\t');
+                string tabStr = new string(' ', maxVariableNamelength - parts[0].Length + 1);
+                totText = totText + parts[0] + tabStr + " = " + parts[1] + Environment.NewLine;
+            } // foreach
 
             try
             {
