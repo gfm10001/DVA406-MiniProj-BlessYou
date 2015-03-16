@@ -39,6 +39,10 @@ namespace BlessYou
             FFeatureValueRawVector.Add(peak);
         } // calculateFeatureValuesFromSamples
 
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
+        }
         //=====================================================================
 
     } // FeaturePeakClass

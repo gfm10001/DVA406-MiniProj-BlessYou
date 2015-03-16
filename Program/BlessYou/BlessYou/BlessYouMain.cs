@@ -27,7 +27,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.6/3 of 2015-03-15";
+            const string C_THIS_VERSION = "Bless You v.0.6/3 of 2015-03-16";
             DateTime startTime;
 
             //Usage:
@@ -39,7 +39,7 @@ namespace BlessYou
             Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config = null;// = CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationStatClass config = new ConfigurationStatClass();// CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -74,7 +74,7 @@ namespace BlessYou
 
             Console.WriteLine();
 
-            //CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
+            CBRSystemClass.EvaluateFeatureOneByOne(caseLibraryObj);
 
 
             // 3. Evaluate cases

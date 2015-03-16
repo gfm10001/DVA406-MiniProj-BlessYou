@@ -48,6 +48,11 @@ namespace BlessYou
             FFeatureValueRawVector.Add(p2p);
         } // calculateFeatureValues
 
+
+        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        {
+            base.FFeatureWeight = i_config.C_M_PEAK2PEAK_FEATURE_WEIGHT;
+        }
         //=====================================================================
 
     } // FeatureAverageClass
