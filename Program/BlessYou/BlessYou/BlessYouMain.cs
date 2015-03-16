@@ -36,7 +36,7 @@ namespace BlessYou
             // P2 = File name for new problem | "all" : all files in Case Library run in sequence
             // P3 = path to directory for created .ftr­files (optional)
 
-            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
+            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
             ConfigurationDynClass config = new ConfigurationDynClass(); // CBRSystemClass.GenerateRandomConfig(100);
@@ -118,7 +118,7 @@ namespace BlessYou
 
 
                 int numberofCasesForMajorityVote;
-                if (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
+                if (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS)
                 {
                     numberofCasesForMajorityVote = 1;
                 }
@@ -245,7 +245,7 @@ namespace BlessYou
                     // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
                     //ToDo throw new System.NotImplementedException();
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
-                while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
+                while (ConfigurationStatClass.RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
 

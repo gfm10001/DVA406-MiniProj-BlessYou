@@ -169,7 +169,7 @@ namespace BlessYou
 
             //ToDo Evaluationfunctions to be developed
 
-            if (ConfigurationStatClass.C_USE_PARALLEL_EXECUTION)
+            if (ConfigurationStatClass.USE_PARALLEL_EXECUTION)
             {
 
                 // Exp. par. version...
