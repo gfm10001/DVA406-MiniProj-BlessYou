@@ -242,24 +242,15 @@ namespace BlessYou
                     System.IO.File.WriteAllLines("./Wrongs.txt", wronglist);
                     System.IO.File.WriteAllLines("./Corrects.txt", correctList);
                     numberofCasesForMajorityVote += 2;
-                    // ToDo: utvärdera alla retrievedMatchesList för varje loop omgång
-                    //ToDo throw new System.NotImplementedException();
                 } // While loop introduced as an alternative for using similarityvalue and majority vote
                 while (ConfigurationStatClass.C_RUN_ALL_MAJORITY_VOTE_CASE_NUMBERS && numberofCasesForMajorityVote <= ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE);
             } // else
 
-
-            // Print case accumulatedSimilarityvalues and vote frequency
-            //List<string> resultString;
-            //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesRetrievedMatchesList, out resultString);
-            //foreach (string s in resultString)
-            //{
-            //    Console.WriteLine("{0}", s);
-            //}
             RetrievedCaseClass caseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             CBRSystemClass.Revise(selectedProblemObj, accumulatedSimilarityValuesRetrievedMatchesList, out caseToRemoveFromCaseLibrary);
             Console.WriteLine("Selected Problem: {0}, Case to remove: {1}", System.IO.Path.GetFileName(selectedProblemObj.WavFile_FullPathAndFileNameStr),
                                  System.IO.Path.GetFileName(caseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr));
+            CBRSystemClass.Retain(caseToRemoveFromCaseLibrary, caseLibraryObj);
 
 
             // 5. Skriv ut rapport

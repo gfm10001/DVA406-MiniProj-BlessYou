@@ -271,9 +271,12 @@ namespace BlessYou
             List<RetrievedCaseClass> retrievedMatches = i_RetrievedMatches;
             int numberOfSneezes = 0;
             int numberOfNonSneezes = 0;
-            for (int ix = 0; (ix < i_RetrievedMatches.Count) && (ix < i_NumberOfCasesToUse_K_Value); ++ix) // ToDo remove i_RetrievedMatches.Count add check and send error
+            for (int ix = 0; ix < i_RetrievedMatches.Count; ++ix)
             {
                 retrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
+            }
+            for (int ix = 0; (ix < i_RetrievedMatches.Count && ix < i_NumberOfCasesToUse_K_Value); ++ix)
+            {
                 if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
@@ -462,15 +465,14 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Retain()
+        public static void Retain(RetrievedCaseClass i_CaseToRemoveFromCaseLibrary, CaseLibraryClass i_CaseLibrary)
         {
-            
-            // throw new System.NotImplementedException();
+            i_CaseLibrary.RemoveCase(i_CaseToRemoveFromCaseLibrary);
         } // Retain
 
-        public static ConfigurationStatClass GenerateRandomConfig(double toplimit =1.0)
         // ====================================================================
 
+        public static ConfigurationStatClass GenerateRandomConfig(double toplimit =1.0)
         {
             ConfigurationStatClass config = new ConfigurationStatClass();
 
