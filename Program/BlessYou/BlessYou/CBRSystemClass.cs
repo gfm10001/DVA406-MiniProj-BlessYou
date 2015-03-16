@@ -794,5 +794,19 @@ namespace BlessYou
             o_ResultString.Add(String.Format("Nr of cases never used:    {0}\n", nrOfCasesNeverUsedInEvaluation));
 
         } // DumpAllAccumulatedSimilarityValuesToString
+
+        // ====================================================================
+
+        public static void PrintInfoAfterRevise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, CaseClass i_SelectedProblemObj, RetrievedCaseClass i_CaseToRemoveFromCaseLibrary)
+        {
+            int sum = 0;
+            foreach (RetrievedCaseClass r in i_AccumulatedSimilarityValuesMatchesList)
+            {
+                sum = sum + r.NrOfCorrectRetrievesRankingValue + r.NrOfWrongRetrievesRankingValue;
+            }
+            Console.WriteLine("Selected Problem: {0}, Case to remove: {1} Rankingvaluesum: {2}", System.IO.Path.GetFileName(i_SelectedProblemObj.WavFile_FullPathAndFileNameStr),
+                                 System.IO.Path.GetFileName(i_CaseToRemoveFromCaseLibrary.WavFile_FullPathAndFileNameStr), sum);
+        } // PrintInfoAfterRevise
+
     } // CBRSystem
 }
