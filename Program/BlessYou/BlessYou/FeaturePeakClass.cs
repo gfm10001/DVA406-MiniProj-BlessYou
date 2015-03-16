@@ -16,7 +16,7 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
-        public FeaturePeakClass(ConfigurationStatClass i_config) :
+        public FeaturePeakClass(ConfigurationDynClass i_config) :
             base("Peak")
         {
             base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
@@ -39,7 +39,7 @@ namespace BlessYou
             FFeatureValueRawVector.Add(peak);
         } // calculateFeatureValuesFromSamples
 
-        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
         }

@@ -67,7 +67,7 @@ namespace BlessYou
 
         //=====================================================================
 
-        public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo, string i_FilePathAndName, ConfigurationStatClass i_config) :
+        public FeatureLomontFFTClass(double i_NumberOfSamplesAsValuePowerOfTwo, string i_FilePathAndName, ConfigurationDynClass i_config) :
             base("LomontFFT - " + i_NumberOfSamplesAsValuePowerOfTwo)
         {
             NumberOfSamplesAsValuePowerOfTwo = i_NumberOfSamplesAsValuePowerOfTwo;
@@ -219,7 +219,7 @@ namespace BlessYou
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
-        public override void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             if (NumberOfSamplesAsValuePowerOfTwo == 16)
             {

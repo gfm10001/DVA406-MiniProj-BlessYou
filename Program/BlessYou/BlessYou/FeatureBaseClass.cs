@@ -74,7 +74,7 @@ namespace BlessYou
         } // FeatureBaseClass
 
 
-        public FeatureBaseClass(string i_FeatureName,ConfigurationStatClass i_config)
+        public FeatureBaseClass(string i_FeatureName, ConfigurationDynClass i_config)
         {
             FFeatureValueRawVector = new List<double>();
             FFeatureValueNormlizedVector = new List<double>();
@@ -99,7 +99,7 @@ namespace BlessYou
             //}
             return absDiff;
         }
-        public virtual void UpdateFeatureWeight(ConfigurationStatClass i_config)
+        public virtual void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             throw new NotImplementedException();
         
