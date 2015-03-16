@@ -39,7 +39,7 @@ namespace BlessYou
             Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.C_USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
-            ConfigurationStatClass config = new ConfigurationStatClass();// CBRSystemClass.GenerateRandomConfig(100);
+            ConfigurationStatClass config = new ConfigurationStatClass(); // CBRSystemClass.GenerateRandomConfig(100);
             List<SoundFileClass> soundfileObjList;
             //List<SoundFileClass> Liblist;
             CaseLibraryClass caseLibraryObj;
@@ -207,8 +207,24 @@ namespace BlessYou
                     caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
                     Console.WriteLine();
-                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", CorrectSneezesSimilarityValue.Max(), CorrectSneezesSimilarityValue.Min());
-                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", WrongSneezesSimilarityValue.Max(), WrongSneezesSimilarityValue.Min());
+                    double xMax = Double.NaN;
+                    double xMin = Double.NaN;
+                    if (0 < CorrectSneezesSimilarityValue.Count)
+                    {
+                        xMax = CorrectSneezesSimilarityValue.Max();
+                        xMin = CorrectSneezesSimilarityValue.Min();
+                    } // if
+                    Console.WriteLine("highestCorrect = {0}, lowestCorrect = {1}", xMax, xMin);
+
+                    xMax = Double.NaN;
+                    xMin = Double.NaN;
+                    if (0 < WrongSneezesSimilarityValue.Count)
+                    {
+                        xMax = WrongSneezesSimilarityValue.Max();
+                        xMin = WrongSneezesSimilarityValue.Min();
+                    } // if
+                    Console.WriteLine("highestWrong = {0}, lowestWrong = {1}", xMax, xMin);
+
                     Console.WriteLine();
                     Console.WriteLine("In Total Case Library: Nr of confirmed sneezes:      {0, 4:0}", nrOfConfirmedSneezes);
                     Console.WriteLine("In Total Case Library: Nr of confirmed none-sneezes: {0, 4:0}", nrOfConfirmedNoneSneezes);
