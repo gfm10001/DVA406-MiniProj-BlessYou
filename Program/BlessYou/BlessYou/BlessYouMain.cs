@@ -27,6 +27,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
+            Main(args);
             const string C_THIS_VERSION = "Bless You v.0.7/0 of 2015-03-16";
             DateTime startTime;
 
@@ -206,7 +207,6 @@ namespace BlessYou
                                 WrongSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectSneezes++;
-                                //Console.WriteLine("GUESSED WRONG HERE on SNEEZE!");
                             }
                         }
                         if (selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
@@ -220,10 +220,8 @@ namespace BlessYou
                             else
                             {
                                 WrongSneezesSimilarityValue.Add(retrievedMatchesList[0].SimilarityValue);
-                                //System.Diagnostics.Debugger.Break();
                                 wronglist.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
                                 inCorrectNoneSneezes++;
-                                //Console.WriteLine("GUESSED WRONG HERE on None-SNEEZE!");
                             }
                         }
                         CBRSystemClass.AccumulateSimilarityValuesInList(retrievedMatchesList, accumulatedSimilarityValuesRetrievedMatchesList);
@@ -233,7 +231,6 @@ namespace BlessYou
 
                     caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
 
-                   // Console.WriteLine();
                     double xMax = Double.NaN;
                     double xMin = Double.NaN;
                     if (0 < CorrectSneezesSimilarityValue.Count)

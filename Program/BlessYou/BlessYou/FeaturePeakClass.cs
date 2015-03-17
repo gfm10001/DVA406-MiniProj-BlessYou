@@ -19,7 +19,7 @@ namespace BlessYou
         public FeaturePeakClass(ConfigurationDynClass i_config) :
             base("Peak")
         {
-            base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
+            base.FFeatureWeight = i_config.M_PEAK_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================
@@ -41,7 +41,7 @@ namespace BlessYou
 
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
-            base.FFeatureWeight = i_config.C_M_PEAK_FEATURE_WEIGHT;
+            base.FFeatureWeight = i_config.M_PEAK_FEATURE_WEIGHT;
         }
         //=====================================================================
 

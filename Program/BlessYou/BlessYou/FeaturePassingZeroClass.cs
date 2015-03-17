@@ -19,7 +19,7 @@ namespace BlessYou
         public FeaturePassingZeroClass(ConfigurationDynClass i_config) :
             base("PassingZero")
         {
-            base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
+            base.FFeatureWeight = i_config.M_PASSING_ZERO_WEIGHT;
         } 
 
         private bool _IsPositive(double value)
@@ -47,7 +47,7 @@ namespace BlessYou
         //=====================================================================
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
-            base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
+            base.FFeatureWeight = i_config.M_PASSING_ZERO_WEIGHT;
         }
     } // FeatureCrestFactorClass
 }

@@ -20,7 +20,7 @@ namespace BlessYou
             : base("Average")
         {
 
-            base.FFeatureWeight = config.C_M_AVERAGE_FEATURE_WEIGHT;
+            base.FFeatureWeight = config.M_AVERAGE_FEATURE_WEIGHT;
         }
 
         //=====================================================================
@@ -41,7 +41,7 @@ namespace BlessYou
 
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
-            base.FeatureWeight = i_config.C_M_AVERAGE_FEATURE_WEIGHT;
+            base.FeatureWeight = i_config.M_AVERAGE_FEATURE_WEIGHT;
         }
 
         //=====================================================================

@@ -19,15 +19,15 @@ namespace BlessYou
         //>>>>>>>
         //IMPORTANT: If you add a non-double field you need to chanage the GenerateRandomConfig call
         //>>>>>>>
-        public double C_M_AVERAGE_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
-        public double C_M_PEAK_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
-        public double C_M_RMS_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
-        public double C_M_PEAK2PEAK_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
-        public double C_M_CREST_FACTOR_WEIGHT = ConfigurationStatClass.C_DEFAULT_CREST_FACTOR_WEIGHT;
-        public double C_M_PASSING_ZERO_WEIGHT = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
-        public double C_M_LOMONT_FFT_16_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT;
-        public double C_M_LOMONT_FFT_14_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT;
-        public double C_M_LOMONT_FFT_12_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT;
+        public double M_AVERAGE_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
+        public double M_PEAK_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_PEAK_FEATURE_WEIGHT;
+        public double M_RMS_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
+        public double M_PEAK2PEAK_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
+        public double M_CREST_FACTOR_WEIGHT = ConfigurationStatClass.C_DEFAULT_CREST_FACTOR_WEIGHT;
+        public double M_PASSING_ZERO_WEIGHT = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
+        public double M_LOMONT_FFT_16_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT;
+        public double M_LOMONT_FFT_14_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT;
+        public double M_LOMONT_FFT_12_FEATURE_WEIGHT = ConfigurationStatClass.C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT;
 
         // ====================================================================
 

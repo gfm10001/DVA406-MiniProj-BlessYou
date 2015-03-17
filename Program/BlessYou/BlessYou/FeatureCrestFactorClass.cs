@@ -19,7 +19,7 @@ namespace BlessYou
         public FeatureCrestFactorClass(ConfigurationDynClass i_stats)
             : base("CF")
         {
-            base.FFeatureWeight = i_stats.C_M_CREST_FACTOR_WEIGHT;
+            base.FFeatureWeight = i_stats.M_CREST_FACTOR_WEIGHT;
         
         }
 
@@ -51,7 +51,7 @@ namespace BlessYou
         //=====================================================================
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
-            base.FeatureWeight = i_config.C_M_CREST_FACTOR_WEIGHT;
+            base.FeatureWeight = i_config.M_CREST_FACTOR_WEIGHT;
         }
 
 

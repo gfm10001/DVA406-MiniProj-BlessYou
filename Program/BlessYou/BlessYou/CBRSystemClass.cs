@@ -22,10 +22,11 @@ namespace BlessYou
         // ====================================================================
 
         /// <summary>
-        /// Retrieve most similar match for a specifiled case vs. the case library
+        /// Calculate distance values and returns a sorted list of them
         /// </summary>
-        /// 
-
+        /// <param name="i_NewCase">Case</param>
+        /// <param name="i_CaseLibraryList">Case Library</param>
+        /// <param name="o_RetrievedMatches">Result</param>
         public static void Retrieve(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, int i_MaxRetrievedMatchesCount, out List<RetrievedCaseClass> o_RetrievedMatches)
         {
             // 1. För varje case i case library:
@@ -71,6 +72,12 @@ namespace BlessYou
 
         // ====================================================================
 
+        /// <summary>
+        /// Calculate distance values and returns a sorted list of them
+        /// </summary>
+        /// <param name="i_NewCase">Case</param>
+        /// <param name="i_CaseLibraryList">Case Library</param>
+        /// <param name="o_RetrievedMatches">Result</param>
         public static void RetrieveUsingSimilarityfunction(CaseClass i_NewCase, List<CaseClass> i_CaseLibraryList, out List<RetrievedCaseClass> o_RetrievedMatches)
         {
             // 1. För varje case i case library:
@@ -142,11 +149,12 @@ namespace BlessYou
 
         // ====================================================================
 
+       
         /// <summary>
         /// Reuse most similar match for a specified case vs. the case library
         /// </summary>
-        /// 
-
+        /// <param name="i_RetrievedMatches">Matches</param>
+        /// <param name="o_CaseStatus">Result</param>
         public static void Reuse(List<RetrievedCaseClass> i_RetrievedMatches, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
@@ -232,9 +240,6 @@ namespace BlessYou
             }
 
             double DistancePrbability = 1 - bestDistanceValue / totalAVGdistance;
-            //if (DistancePrbability < 0.70)
-            //    System.Diagnostics.Debugger.Break();
-
             Console.WriteLine("Uncertianty in finding solution.\nCount value:" + countProbability + "\nDistance value:" + DistancePrbability);
 
             if (countProbability > DistancePrbability)
@@ -256,6 +261,13 @@ namespace BlessYou
 
         // ====================================================================
 
+        /// <summary>
+        /// Determine the final propositon of a case
+        /// </summary>
+        /// <param name="i_RetrievedMatches">Best Matching Cases</param>
+        /// <param name="i_NumberOfCasesToUse_K_Value">How many to consider</param>
+        /// <param name="i_SelectedProblemObjCaseStatus">DEBUG VALUE</param>
+        /// <param name="o_CaseStatus">Result</param>
         public static void ReuseUsingMajorityVote(List<RetrievedCaseClass> i_RetrievedMatches, int i_NumberOfCasesToUse_K_Value, EnumCaseStatus i_SelectedProblemObjCaseStatus, out EnumCaseStatus o_CaseStatus)
         {
             //Verify list
@@ -268,6 +280,8 @@ namespace BlessYou
             List<RetrievedCaseClass> retrievedMatches = i_RetrievedMatches;
             int numberOfSneezes = 0;
             int numberOfNonSneezes = 0;
+
+            //Rank evey case
             for (int ix = 0; ix < i_RetrievedMatches.Count; ++ix)
             {
                 retrievedMatches[ix].CaseSimilarityRankingValue = i_RetrievedMatches[ix].SimilarityValue;
@@ -278,7 +292,7 @@ namespace BlessYou
                 if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     numberOfSneezes++;
-                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze) //Preparation for the Revise Stage
                     {
                         retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
                     }
@@ -286,7 +300,7 @@ namespace BlessYou
                 else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                 {
                     numberOfNonSneezes++;
-                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze) //Preparation for the Revise Stage
                     {
                         retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
                     }
@@ -302,7 +316,7 @@ namespace BlessYou
                 if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     numberOfSneezes++;
-                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze) //Preparation for the Revise Stage
                     {
                         retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
                     }
@@ -310,7 +324,7 @@ namespace BlessYou
                 else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                 {
                     numberOfNonSneezes++;
-                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze) //Preparation for the Revise Stage
                     {
                         retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
                     }
@@ -336,6 +350,11 @@ namespace BlessYou
 
         // ====================================================================
 
+        /// <summary>
+        /// Returns the coresponding propused case
+        /// </summary>
+        /// <param name="state">Case</param>
+        /// <returns></returns>
         public static EnumCaseStatus ConfirmedToPropused(EnumCaseStatus state)
         {
             if (state == EnumCaseStatus.csIsConfirmedNoneSneeze)
@@ -347,6 +366,12 @@ namespace BlessYou
 
         // ====================================================================
 
+
+        /// <summary>
+        /// Accumulate Similarity value for every case one by one
+        /// </summary>
+        /// <param name="i_RetrievedMatchesList">CaseList</param>
+        /// <param name="i_AccumulatedSimilarityValuesMatchesList">CaseList</param>
         public static void AccumulateSimilarityValuesInList(List<RetrievedCaseClass> i_RetrievedMatchesList, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList)
         {
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
@@ -362,18 +387,14 @@ namespace BlessYou
                     }
                 } // foreach
             } // foreach
-
-            //// Print case accumulatedSimilarityvalues and vote frequency
-            //List<string> resultString;
-            //CBRSystemClass.DumpAllAccumulatedSimilarityValuesToString(accumulatedSimilarityValuesMatchesList, out resultString);
-            //foreach (string s in resultString)
-            //{
-            //    Console.WriteLine("{0}", s);
-            //}
         } // AccumulateSimilarityValuesInList
 
         // ====================================================================
 
+        /// <summary>
+        /// Set all similarity values for all cases to zero
+        /// </summary>
+        /// <param name="i_AccumulatedSimilarityValuesMatchesList">Case List</param>
         public static void ClearSimilarityValuesInList(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList)
         {
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
@@ -386,7 +407,11 @@ namespace BlessYou
         } // ClearSimilarityValuesInList
 
         // ====================================================================
-
+        /// <summary>
+        /// Revise a retieved case list, returning the least usefull case in the list
+        /// </summary>
+        /// <param name="i_AccumulatedSimilarityValuesMatchesList">Case List</param>
+        /// <param name="o_CaseToRemoveFromCaseLibrary">Return Value</param>
         public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
             int nrOfSneezes = 0;
@@ -492,7 +517,11 @@ namespace BlessYou
             i_CaseLibrary.RemoveCase(i_CaseToRemoveFromCaseLibrary.RefForRemoval);
         } // Retain
 
-
+        /// <summary>
+        /// Evaulation tool. Returns a new Config file with random values
+        /// </summary>
+        /// <param name="toplimit"></param>
+        /// <returns></returns>
         public static ConfigurationDynClass GenerateRandomConfig(double toplimit = 1.0)
         {
             ConfigurationDynClass config = new ConfigurationDynClass();
@@ -515,6 +544,9 @@ namespace BlessYou
 
         public static void EvaluateFeatureOneByOne(CaseLibraryClass caseLibraryObj)
         {
+
+            throw new NotImplementedException("Function has changed and is no longer work as intended!");
+
             ConfigurationDynClass config = new ConfigurationDynClass();
             Type t = config.GetType();
             FieldInfo[] fionfo = t.GetFields();
@@ -646,11 +678,14 @@ namespace BlessYou
             System.IO.File.WriteAllLines("FeatureWeightAnalysis.txt", outval);
             // ====================================================================
         }
-
+        /// <summary>
+        /// Evaluate a Configuration using a given case library.
+        /// </summary>
+        /// <param name="caseLibraryObj">Case Library</param>
+        /// <param name="i_config">Configuration Settings</param>
         public static void EvaluateFeatureVectors(CaseLibraryClass caseLibraryObj, ConfigurationDynClass i_config)
         {
 
-            //ConfigurationDynClass config = new ConfigurationDynClass();
             Type t = i_config.GetType();
             FieldInfo[] fionfo = t.GetFields();
             List<string> fnames = new List<string>();

@@ -73,15 +73,15 @@ namespace BlessYou
             NumberOfSamplesAsValuePowerOfTwo = i_NumberOfSamplesAsValuePowerOfTwo;
             if (NumberOfSamplesAsValuePowerOfTwo == 16)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_16_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_16_FEATURE_WEIGHT;
             }
             else if (NumberOfSamplesAsValuePowerOfTwo == 14)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_14_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_14_FEATURE_WEIGHT;
             }
             else if (NumberOfSamplesAsValuePowerOfTwo == 12)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_12_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_12_FEATURE_WEIGHT;
             }
             else
             {
@@ -223,15 +223,15 @@ namespace BlessYou
         {
             if (NumberOfSamplesAsValuePowerOfTwo == 16)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_16_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_16_FEATURE_WEIGHT;
             }
             else if (NumberOfSamplesAsValuePowerOfTwo == 14)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_14_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_14_FEATURE_WEIGHT;
             }
             else if (NumberOfSamplesAsValuePowerOfTwo == 12)
             {
-                base.FFeatureWeight = i_config.C_M_LOMONT_FFT_12_FEATURE_WEIGHT;
+                base.FFeatureWeight = i_config.M_LOMONT_FFT_12_FEATURE_WEIGHT;
             }
             else
             {

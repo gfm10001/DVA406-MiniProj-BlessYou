@@ -19,7 +19,7 @@ namespace BlessYou
         public FeatureRMSClass(ConfigurationDynClass i_config) :
             base("RMS")
         {
-            base.FFeatureWeight = i_config.C_M_RMS_FEATURE_WEIGHT;
+            base.FFeatureWeight = i_config.M_RMS_FEATURE_WEIGHT;
         } // FeaturePeakClass
 
         //=====================================================================
@@ -43,7 +43,7 @@ namespace BlessYou
 
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
-            base.FFeatureWeight = i_config.C_M_RMS_FEATURE_WEIGHT;
+            base.FFeatureWeight = i_config.M_RMS_FEATURE_WEIGHT;
         }
         //=====================================================================
 
