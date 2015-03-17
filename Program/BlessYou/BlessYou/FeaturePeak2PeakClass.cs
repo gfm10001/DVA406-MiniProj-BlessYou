@@ -1,4 +1,11 @@
-﻿using System;
+﻿// FeaturePeak2PeakClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +22,8 @@ namespace BlessYou
         {
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT;
         } // FeatureAverageClass
+
+        //=====================================================================
 
         public FeaturePeak2PeakClass(ConfigurationDynClass i_config) :
             base("Peak2Peak")
@@ -48,12 +57,14 @@ namespace BlessYou
             FFeatureValueRawVector.Add(p2p);
         } // calculateFeatureValues
 
+        //=====================================================================
 
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FFeatureWeight = i_config.C_M_PEAK2PEAK_FEATURE_WEIGHT;
-        }
+        } // UpdateFeatureWeight
+
         //=====================================================================
 
-    } // FeatureAverageClass
+    } // FeaturePeak2PeakClass
 }

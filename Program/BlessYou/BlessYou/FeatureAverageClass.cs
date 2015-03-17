@@ -1,4 +1,11 @@
-﻿using System;
+﻿// FeatureAverageClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +23,14 @@ namespace BlessYou
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_AVERAGE_FEATURE_WEIGHT;
         } // FeatureAverageClass
 
+        //=====================================================================
+
         public FeatureAverageClass(ConfigurationDynClass config)
             : base("Average")
         {
 
             base.FFeatureWeight = config.C_M_AVERAGE_FEATURE_WEIGHT;
-        }
+        } // FeatureAverageClass
 
         //=====================================================================
 
@@ -33,16 +42,17 @@ namespace BlessYou
             for (int ix = i_FirstListIx; ix < i_FirstListIx + i_Count; ++ix)
             {
                 average = average + Math.Abs(i_WaveFileContents44p1KHz16bitSamples[ix]);
-
             }
             average = average / i_Count;
             FFeatureValueRawVector.Add(average);
         } // calculateFeatureValues
 
+        //=====================================================================
+
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FeatureWeight = i_config.C_M_AVERAGE_FEATURE_WEIGHT;
-        }
+        } // UpdateFeatureWeight
 
         //=====================================================================
 
