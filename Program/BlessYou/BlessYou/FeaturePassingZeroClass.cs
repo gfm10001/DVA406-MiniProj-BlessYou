@@ -1,4 +1,11 @@
-﻿using System;
+﻿// FeaturePassingZeroClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,19 +21,22 @@ namespace BlessYou
             base("PassingZero")
         {
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_PASSING_ZERO_WEIGHT;
-        } // FeaturePeakClass
+        } // FeaturePassingZeroClass
+
+        //=====================================================================
 
         public FeaturePassingZeroClass(ConfigurationDynClass i_config) :
             base("PassingZero")
         {
             base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
-        } 
+        } // FeaturePassingZeroClass
+
+        //=====================================================================
 
         private bool _IsPositive(double value)
         {
             return value > 0; 
-        }
-
+        } // _IsPositive
 
         //=====================================================================
 
@@ -41,13 +51,18 @@ namespace BlessYou
                 {
                     changes++;                
                 }
-            } 
+            } // for ix
             FFeatureValueRawVector.Add(changes);
-        }
+        } // calculateFeatureValuesFromSamples
+
         //=====================================================================
+
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FFeatureWeight = i_config.C_M_PASSING_ZERO_WEIGHT;
-        }
+        } // UpdateFeatureWeight
+
+        //=====================================================================
+
     } // FeatureCrestFactorClass
 }

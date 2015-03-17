@@ -1,4 +1,11 @@
-﻿using System;
+﻿// FeatureCrestFactorClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +21,16 @@ namespace BlessYou
                base("CF")
         {
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_CREST_FACTOR_WEIGHT;
-        } // FeaturePeakClass
+        } // FeatureCrestFactorClass
+
+        //=====================================================================
 
         public FeatureCrestFactorClass(ConfigurationDynClass i_stats)
             : base("CF")
         {
             base.FFeatureWeight = i_stats.C_M_CREST_FACTOR_WEIGHT;
         
-        }
+        } // FeatureCrestFactorClass
 
         //=====================================================================
 
@@ -49,11 +58,13 @@ namespace BlessYou
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
+
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             base.FeatureWeight = i_config.C_M_CREST_FACTOR_WEIGHT;
-        }
+        } // UpdateFeatureWeight
 
+        //=====================================================================
 
     } // FeatureCrestFactorClass
 }

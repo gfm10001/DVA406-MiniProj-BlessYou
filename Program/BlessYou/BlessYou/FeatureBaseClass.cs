@@ -62,7 +62,7 @@ namespace BlessYou
             {
                 FFeatureWeight = value;
             }
-        } // FeatureName
+        } // FeatureWeight
 
         //=====================================================================
 
@@ -73,6 +73,7 @@ namespace BlessYou
             FFeatureName = i_FeatureName;
         } // FeatureBaseClass
 
+        //=====================================================================
 
         public FeatureBaseClass(string i_FeatureName, ConfigurationDynClass i_config)
         {
@@ -91,19 +92,17 @@ namespace BlessYou
         {
             // The goal is to return 1 if the difference is very small
             double absDiff;
-            //double retDouble = 1;
             absDiff =  Math.Abs(i_NewValue - i_RetrievedValue);
-            //if (absDiff > ConfigurationStatClass.C_EPSILON)
-            //{
-            //    retDouble = 1.0 / absDiff;
-            //}
             return absDiff;
-        }
+        } // AbsDiffForAttribute
+
+        //=====================================================================
+
         public virtual void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             throw new NotImplementedException();
-        
-        }
+
+        } // UpdateFeatureWeight
 
     } // FeatureBaseClass
 }
