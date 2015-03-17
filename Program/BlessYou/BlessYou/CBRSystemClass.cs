@@ -55,7 +55,7 @@ namespace BlessYou
 
             //}
 
-            for (int ix = 0; ix < i_MaxRetrievedMatchesCount && ix<sortedCaseList.Count; ix++)
+            for (int ix = 0; ix < i_MaxRetrievedMatchesCount && ix < sortedCaseList.Count; ix++)
             {
                 o_RetrievedMatches.Add(sortedCaseList[ix]);
             } // for ix
@@ -188,7 +188,7 @@ namespace BlessYou
             EnumCaseStatus bestAvgDistanceCase = EnumCaseStatus.csUnknown;
             double bestDistanceValue = double.MaxValue;
             double totalAVGdistance = 0;
-            
+
             foreach (EnumCaseStatus c in countResults.Keys)
             {
                 if (countResults[c] > topCountValue)
@@ -274,44 +274,54 @@ namespace BlessYou
             }
             for (int ix = 0; (ix < i_RetrievedMatches.Count && ix < i_NumberOfCasesToUse_K_Value); ++ix)
             {
-                if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
+
+                if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
-                    if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    numberOfSneezes++;
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
-                        numberOfSneezes++;
                         retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
                     }
-                    else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                }
+                else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    numberOfNonSneezes++;
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
-                        numberOfNonSneezes++;
                         retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
-                    }
-                    else
-                    {
-                        Console.WriteLine("ERROR case have no sneezestatus");
-                        o_CaseStatus = EnumCaseStatus.csNone;
-                        return;
                     }
                 }
-                if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                else
                 {
-                    if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    Console.WriteLine("ERROR case have no sneezestatus");
+                    o_CaseStatus = EnumCaseStatus.csNone;
+                    return;
+                }
+
+
+                if (retrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    numberOfSneezes++;
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                     {
-                        numberOfSneezes++;
                         retrievedMatches[ix].NrOfWrongRetrievesRankingValue++;
                     }
-                    else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                }
+                else if (i_RetrievedMatches[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    numberOfNonSneezes++;
+                    if (i_SelectedProblemObjCaseStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
                     {
-                        numberOfNonSneezes++;
                         retrievedMatches[ix].NrOfCorrectRetrievesRankingValue++;
                     }
-                    else
-                    {
-                        Console.WriteLine("ERROR case have no sneezestatus");
-                        o_CaseStatus = EnumCaseStatus.csNone;
-                        return;
-                    }
                 }
+                else
+                {
+                    Console.WriteLine("ERROR case have no sneezestatus");
+                    o_CaseStatus = EnumCaseStatus.csNone;
+                    return;
+                }
+
             } // for ix
 
             if (numberOfSneezes >= numberOfNonSneezes)
@@ -361,7 +371,7 @@ namespace BlessYou
             //    Console.WriteLine("{0}", s);
             //}
         } // AccumulateSimilarityValuesInList
-        
+
         // ====================================================================
 
         public static void ClearSimilarityValuesInList(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList)
@@ -377,8 +387,9 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void Revise(CaseClass i_SelectedProblemObj, List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
+        public static void Revise(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out RetrievedCaseClass o_CaseToRemoveFromCaseLibrary)
         {
+            int nrOfSneezes = 0;
             o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass();
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
             List<RetrievedCaseClass> similarityRankingValueList = new List<RetrievedCaseClass>();
@@ -389,10 +400,23 @@ namespace BlessYou
             double maxWrongCaseToRemoveFromLibraryValue = double.MinValue;
             double wrongCaseMinSimilarityRankingValue = double.MaxValue;
 
+
+            for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
+            {
+                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    nrOfSneezes++;
+                }
+            }
+
             // Evaluate which case that is the worst case that can be removed from the library
             for (int ix = 0; ix < accumulatedSimilarityValuesMatchesList.Count; ++ix)
             {
-                if (accumulatedSimilarityValuesMatchesList[ix].SneezeStatus != i_SelectedProblemObj.SneezeStatus)
+                if (nrOfSneezes > ConfigurationStatClass.C_NR_OF_RANDOM_SNEEZE_FILES + 1 && accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    continue;
+                }
+                if (nrOfSneezes < ConfigurationStatClass.C_NR_OF_RANDOM_SNEEZE_FILES - 1 && accumulatedSimilarityValuesMatchesList[ix].SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                 {
                     continue;
                 }
@@ -401,11 +425,11 @@ namespace BlessYou
                     wrongCaseToRemoveFromLibraryList.Add(accumulatedSimilarityValuesMatchesList[ix]);
                     if (maxWrongCaseToRemoveFromLibraryValue <= accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue)
                     {
-                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue || 
+                        if (maxWrongCaseToRemoveFromLibraryValue < accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue ||
                             wrongCaseMinSimilarityRankingValue > accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue)
                         {
                             wrongCaseMinSimilarityRankingValue = accumulatedSimilarityValuesMatchesList[ix].CaseSimilarityRankingValue;
-                        } 
+                        }
                         maxWrongCaseToRemoveFromLibraryValue = accumulatedSimilarityValuesMatchesList[ix].NrOfWrongRetrievesRankingValue;
                     }
                 }
@@ -436,7 +460,7 @@ namespace BlessYou
                         o_CaseToRemoveFromCaseLibrary = new RetrievedCaseClass(wrongCaseToRemoveFromLibraryList[ix]);
                     }
                 }
-                
+
             }
             else if (notUsedCaseToRemoveFromLibraryList.Count > 0)
             {
@@ -498,7 +522,7 @@ namespace BlessYou
             List<string> weight = new List<string>();
             List<string> scorrect = new List<string>();
             List<string> swrong = new List<string>();
-            
+
             List<string> outval = new List<string>();
 
 
@@ -517,8 +541,8 @@ namespace BlessYou
                     if (e == f)
                         e.SetValue(config, 1.0);
                     else
-                        e.SetValue(config, 0.0);    
-                        //f.SetValue(config, 0.0);
+                        e.SetValue(config, 0.0);
+                    //f.SetValue(config, 0.0);
                 }
                 foreach (CaseClass c in caseLibraryObj.ListOfCases)
                 {
@@ -540,19 +564,19 @@ namespace BlessYou
                     for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                     {
                         caseLibraryObj.ListOfCases[jx].UpdateFeatureVectors(config);
-                       if (jx != ix)
+                        if (jx != ix)
                         {
                             caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
                         }
                     } // for jx
 
                     List<RetrievedCaseClass> retrievedMatchesList;
-                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
-                    
+                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
+
 
                     //4. Start reuse function
                     EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
-                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList,ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES,selectedProblemObj.SneezeStatus,out caseStatus);
+                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, selectedProblemObj.SneezeStatus, out caseStatus);
                     if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
                     {
                         //correctList.Add(selectedProblemObj.WavFile_FullPathAndFileNameStr);
@@ -644,7 +668,7 @@ namespace BlessYou
 
 
             //outval.Add("Feature\tName\tWeight\tCorrect\tWrong");
-            foreach(CaseClass c in caseLibraryObj.ListOfCases)
+            foreach (CaseClass c in caseLibraryObj.ListOfCases)
             {
                 c.UpdateFeatureVectors(i_config);
             }
@@ -658,44 +682,44 @@ namespace BlessYou
                 weight.Add(f.GetValue(i_config).ToString());
             }
 
-                CaseClass selectedProblemObj = new CaseClass();
-                for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
+            CaseClass selectedProblemObj = new CaseClass();
+            for (int ix = 0; ix < caseLibraryObj.ListOfCases.Count; ++ix)
+            {
+                selectedProblemObj = caseLibraryObj.ListOfCases[ix];
+                List<CaseClass> caseMinusOneList = new List<CaseClass>();
+                for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
                 {
-                    selectedProblemObj = caseLibraryObj.ListOfCases[ix];
-                    List<CaseClass> caseMinusOneList = new List<CaseClass>();
-                    for (int jx = 0; jx < caseLibraryObj.ListOfCases.Count; ++jx)
+                    //caseLibraryObj.ListOfCases[jx].UpdateFeatureVectors(i_config);
+                    if (jx != ix)
                     {
-                        //caseLibraryObj.ListOfCases[jx].UpdateFeatureVectors(i_config);
-                        if (jx != ix)
-                        {
-                            caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
-                        }
-                    } // for jx
+                        caseMinusOneList.Add(caseLibraryObj.ListOfCases[jx]);
+                    }
+                } // for jx
 
-                    List<RetrievedCaseClass> retrievedMatchesList;
-                    Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, out retrievedMatchesList);
+                List<RetrievedCaseClass> retrievedMatchesList;
+                Retrieve(selectedProblemObj, caseMinusOneList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, out retrievedMatchesList);
 
 
-                    //4. Start reuse function
-                    EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
-                    CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NR_OF_RETRIEVED_CASES, selectedProblemObj.SneezeStatus, out caseStatus);
-                    if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
-                    {
-                        correct++;
-                    }
-                    else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
-                    {
-                        correct++;
-                    }
-                    else
-                    {
-                        wrong++;
-                    }
+                //4. Start reuse function
+                EnumCaseStatus caseStatus = EnumCaseStatus.csUnknown;
+                CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE, selectedProblemObj.SneezeStatus, out caseStatus);
+                if (caseStatus == EnumCaseStatus.csIsProposedSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                {
+                    correct++;
                 }
-                //scorrect.Add(correct.ToString());
-                //swrong.Add(wrong.ToString());
-                //outval.Add(f.Name + "\t" + f.GetValue(config) + "\t" + correct + "\t" + wrong);
-            
+                else if (caseStatus == EnumCaseStatus.csIsProposedNoneSneeze && selectedProblemObj.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                {
+                    correct++;
+                }
+                else
+                {
+                    wrong++;
+                }
+            }
+            //scorrect.Add(correct.ToString());
+            //swrong.Add(wrong.ToString());
+            //outval.Add(f.Name + "\t" + f.GetValue(config) + "\t" + correct + "\t" + wrong);
+
 
             int longest = 0;
             foreach (string s in fnames)
@@ -703,10 +727,10 @@ namespace BlessYou
                 if (s.Length > longest)
                     longest = s.Length;
             }
-            for (int i =0;i<fnames.Count;i++)
+            for (int i = 0; i < fnames.Count; i++)
             {
-                while (fnames[i].Length <= longest+2)
-                    fnames[i] += " "; 
+                while (fnames[i].Length <= longest + 2)
+                    fnames[i] += " ";
             }
 
             for (int ix = 0; ix < fnames.Count; ix++)
@@ -714,20 +738,17 @@ namespace BlessYou
                 Console.WriteLine("{0,-10}{1,-10}",
                  fnames[ix],
                  weight[ix]);
-                
+
                 //.ToString()[DisplayPos],
-                 //wrong.ToString()[DisplayPos]);
+                //wrong.ToString()[DisplayPos]);
             }
             Console.WriteLine("Correct: " + correct);
-            Console.WriteLine("Wrong: " + wrong+"\n");
-
-
+            Console.WriteLine("Wrong: " + wrong + "\n");
 
             //System.IO.File.WriteAllLines("FeatureWeightAnalysis.txt", outval);
-        
+
         }
 
-        
         // ====================================================================
 
         public static string GetSimilarityValueToString(CaseClass i_NewCase, RetrievedCaseClass i_CurrentCase)
@@ -758,7 +779,7 @@ namespace BlessYou
         public static void DumpAllAccumulatedSimilarityValuesToString(List<RetrievedCaseClass> i_AccumulatedSimilarityValuesMatchesList, out List<string> o_ResultString)
         {
             List<RetrievedCaseClass> accumulatedSimilarityValuesMatchesList = i_AccumulatedSimilarityValuesMatchesList;
-            o_ResultString = new List<string>(); 
+            o_ResultString = new List<string>();
             int nrOfCasesCorrectAndWrong = 0;
             int nrOfCasesCorrectOnly = 0;
             int nrOfCasesWrongOnly = 0;

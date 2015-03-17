@@ -50,6 +50,12 @@ namespace BlessYou
             bool b = FListOfCases.Remove(i_Case);
             if (false == b)
             {
+                Console.WriteLine("FAILED AT REMOVE - fn = " + i_Case.WavFile_FullPathAndFileNameStr);
+
+                for (int ix = 0; ix < FListOfCases.Count; ++ix)
+                {
+                    Console.WriteLine("ix:{0:3} - " + FListOfCases[ix].WavFile_FullPathAndFileNameStr);
+                }
                 throw new System.NotImplementedException("RemoveCase: fails!");
             }
         } // RemoveCase

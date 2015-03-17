@@ -30,16 +30,16 @@ namespace BlessYou
         public const double C_TRIGGER_OFF_DURATION_IN_MILLI_SECS = 1000;
         public const double C_SOUND_SAMPLE_FREQUENCY_IN_kHz = 44.1;
 
-        public const int C_NR_OF_RETRIEVED_CASES = 1;
-        public const double C_DEFAULT_AVERAGE_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_PEAK_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_RMS_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_CREST_FACTOR_WEIGHT = 0.2;
-        public const double C_DEFAULT_PASSING_ZERO_WEIGHT = 0.2;
-        public const double C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT = 0.2;
-        public const double C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT = 0.2;
+        // Default weights - will be normalized to give the sum = 1.0 at execution
+        public const double C_DEFAULT_AVERAGE_FEATURE_WEIGHT = 0.5; 
+        public const double C_DEFAULT_PEAK_FEATURE_WEIGHT = 0.5;
+        public const double C_DEFAULT_RMS_FEATURE_WEIGHT = 0.5;
+        public const double C_DEFAULT_PEAK2PEAK_FEATURE_WEIGHT = 0.5;
+        public const double C_DEFAULT_CREST_FACTOR_WEIGHT = 0.5;
+        public const double C_DEFAULT_PASSING_ZERO_WEIGHT = 0.5;
+        public const double C_DEFAULT_LOMONT_FFT_16_FEATURE_WEIGHT = 0.5;
+        public const double C_DEFAULT_LOMONT_FFT_14_FEATURE_WEIGHT = 0.5;
+        public const double C_DEFAULT_LOMONT_FFT_12_FEATURE_WEIGHT = 0.5;
 
 
         //ToDo implement interval weights
