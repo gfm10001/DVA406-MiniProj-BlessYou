@@ -32,5 +32,6 @@ namespace BlessYou
         } // _loadFeatureList
 
         // ====================================================================
+
     } // FeatureExtractorClass
 }

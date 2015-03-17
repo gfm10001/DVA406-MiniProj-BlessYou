@@ -11,7 +11,7 @@
 // History:
 // 2015-02-24       Introduced.
 // 2015-03-12/GF    Refactored file dump of features to CaseLibraryClass
-//
+// 2015-03-17/GF    Added informational printouts.
 
 
 using System;
@@ -27,8 +27,7 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            Main(args);
-            const string C_THIS_VERSION = "Bless You v.0.7/0 of 2015-03-16";
+            const string C_THIS_VERSION = "Bless You v.0.7/1 of 2015-03-17";
             DateTime startTime;
 
             // Usage:
@@ -37,7 +36,7 @@ namespace BlessYou
             // P2 = File name for new problem | "all" : all files in Case Library run in sequence
             // P3 = path to directory for created .ftr­files (optional)
 
-            Console.WriteLine(C_THIS_VERSION + " (Par: " + ConfigurationStatClass.USE_PARALLEL_EXECUTION + ")");
+            Console.WriteLine(C_THIS_VERSION + " (Parallell Execution: " + ConfigurationStatClass.USE_PARALLEL_EXECUTION + ")");
 
             CBRSystemClass CBRSystemClass = new CBRSystemClass();
             ConfigurationDynClass config = new ConfigurationDynClass(); // CBRSystemClass.GenerateRandomConfig(100);
@@ -59,7 +58,7 @@ namespace BlessYou
 
             // 2. Create CASE-library
             // First extract 50+50 random files for use as first library and load those...
-            Console.WriteLine("1. Read default Case Library: 50 Sneezes and 50 None-Sneezes selected randomly from " + allSoundFilesObjList.Count + " files...\n");
+            Console.WriteLine("1. Read default Case Library: limit to 50 Sneezes and 50 None-Sneezes selected randomly from " + allSoundFilesObjList.Count + " files...\n");
             HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
             FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
 
@@ -88,6 +87,7 @@ namespace BlessYou
             // 3. Evaluate cases
             if ("" != newProblemFileName)
             {
+                // Evaluate single case, then prompt operator for a new case.
                 do
                 {
                     SoundFileClass newProblemSoundFileObj = new SoundFileClass();
@@ -117,9 +117,10 @@ namespace BlessYou
                 } while (newProblemFileName != "");
 
             } // if
+
             else
             {
-
+                // Walk through improvments in Case Library
                 int correctSneezes = 0;
                 int inCorrectSneezes = 0;
                 int correctNoneSneezes = 0;
@@ -137,7 +138,9 @@ namespace BlessYou
                 {
                     numberofCasesForMajorityVote = ConfigurationStatClass.C_NUMBER_OF_CASES_TO_USE_FOR_MAJORITY_VOTE;
                 }
-                Console.WriteLine("\n\nNumber of cases to vote from: {0}", numberofCasesForMajorityVote);
+
+                Console.WriteLine("\n2. Add one random unused case. Evalute 1-out-of-all and remove worst case in Case Library.");
+                Console.WriteLine("   Number of cases (k) to vote from: {0}\n", numberofCasesForMajorityVote);
 
                 // do - while to read new cases and evaluate against current library, exchange worst case in library with the current case.
                 bool isMoreToDo = true;
@@ -305,7 +308,9 @@ namespace BlessYou
 
             } // else
 
-
+            
+            Console.WriteLine("\n3. Summary reports.\n");
+ 
             // 5. Skriv ut rapport
             caseLibraryObj.CountNrOfDifferentCases(out nrOfConfirmedSneezes, out nrOfConfirmedNoneSneezes);
             Console.WriteLine();

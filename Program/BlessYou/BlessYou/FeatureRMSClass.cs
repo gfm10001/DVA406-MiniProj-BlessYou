@@ -1,4 +1,11 @@
-﻿using System;
+﻿// FeatureRMSClass.cs
+//
+// DVA406 Intelligent Systems, Mdh, vt15
+//
+// History:
+// 2015-02-24       Introduced.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +22,8 @@ namespace BlessYou
         {
             base.FFeatureWeight = ConfigurationStatClass.C_DEFAULT_RMS_FEATURE_WEIGHT;
         } // FeaturePeakClass
+
+        //=====================================================================
 
         public FeatureRMSClass(ConfigurationDynClass i_config) :
             base("RMS")
@@ -40,6 +49,7 @@ namespace BlessYou
             FFeatureValueRawVector.Add(rms);
         } // calculateFeatureValuesFromSamples
 
+        //=====================================================================
 
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {

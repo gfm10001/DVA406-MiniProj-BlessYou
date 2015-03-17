@@ -94,6 +94,7 @@ namespace BlessYou
 
         public override void calculateFeatureValuesFromSamples(double[] i_WaveFileContents44p1KHz16bitSamples, int i_FirstListIx, int i_Count, int i_CurrentRound)
         {
+            // Flags for debug files
             bool sendFFTRawDataToFile = false; // true
             bool sendFirstRoundOnlyFFTRawDataToFile = false; // true
 
@@ -112,8 +113,6 @@ namespace BlessYou
             FDataFFTAnalysisDoneInDB = new double[nrOfSamples / 2];
             FFrequencyArr = new double[nrOfSamples / 2];
 
-
-
             int firstListIx = i_FirstListIx;
             if (i_FirstListIx + nrOfSamples > i_WaveFileContents44p1KHz16bitSamples.Length)
             {
@@ -121,7 +120,7 @@ namespace BlessYou
             }
 
             // Meaning the complete wave file is shorter than the sample length
-            // Add missing samples from the start of the wave file
+            // Add missing samples from the start of the wave file see mod below
             if (firstListIx < 0)
             {
                 firstListIx = 0;
@@ -164,12 +163,12 @@ namespace BlessYou
                 // retrieve frequencies
                 FFrequencyArr[ix / 2] = ix / (double)nrOfSamples / 2 * samplingFrequency;
 
-                // Retrieve startindex corresponding to C_STARTING_FFT_ANALYSIS_FREQUENCY
+                // Retrieve startindex corresponding to C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ
                 if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_STARTING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
                 {
                     analysisStartIndex = ix / 2;
                 } // if
-                // Retrieve startindex corresponding to C_ENDING_FFT_ANALYSIS_FREQUENCY
+                // Retrieve startindex corresponding to C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ
                 if (FFrequencyArr[ix / 2] < ConfigurationStatClass.C_ENDING_FFT_ANALYSIS_FREQUENCY_IN_HERTZ)
                 {
                     analysisEndIndex = ix / 2;
@@ -179,6 +178,9 @@ namespace BlessYou
 
             // Calulate the nrOfDominantFrequencies
             int bin = FDataFFTAnalysisDone.ToList().IndexOf(FDataFFTAnalysisDone.ToList().Max());
+
+
+            // Debug print
             //int[] binArray = new int[nrOfMaxDescendingFrequencies];
             //binArray = FDataFFTAnalysisDoneInDB.Select((value, index) => new { value, index })
             //        .OrderByDescending(item => item.value)
@@ -192,7 +194,6 @@ namespace BlessYou
             //    frequencyArray[jx] = x / (double)maxNrOfSamples * samplingFrequency;
             //    jx++;
             //}
-
             //Console.Write("Lomont===============================================samples= " + NumberOfSamplesAsValuePowerOfTwo);
             //Console.WriteLine("\nDominant bin: " + bin + " Dominant Frequency: " + FFrequencyArr[bin]);
             //Console.Write("Data: ");
@@ -202,13 +203,14 @@ namespace BlessYou
                 string[] strArr = new string[100000];
                 for (int ix = 0; ix < nrOfSamples / 2; ++ix)
                 {
+                    // Debug print to screen
                     //Console.WriteLine(frequencyArr[ix] + "\t" + dataFFTAnalysisDone[ix] + "\t" + dataFFTAnalysisDoneInDB[ix] + "\n");
                     strArr[ix] = FFrequencyArr[ix] + "\t" + FDataFFTAnalysisDoneInDB[ix] + "\t" + FDataFFTAnalysisDone[ix];
                     if (sendFirstRoundOnlyFFTRawDataToFile)
                     {
                         break;
                     }
-                }
+                } // for ix
                 string fileName = Path.GetFileName(FFilePathAndName);
                 System.IO.File.WriteAllLines("FFToutput_" + fileName + "_S_" + NumberOfSamplesAsValuePowerOfTwo + "_R_" + i_CurrentRound + ".xls", strArr);
             } // if
@@ -219,6 +221,7 @@ namespace BlessYou
         } // calculateFeatureValuesFromSamples
 
         //=====================================================================
+
         public override void UpdateFeatureWeight(ConfigurationDynClass i_config)
         {
             if (NumberOfSamplesAsValuePowerOfTwo == 16)
@@ -237,8 +240,9 @@ namespace BlessYou
             {
                 //ToDo Error
             }
-        }
+        } // UpdateFeatureWeight
 
+        //=====================================================================
 
     } // FeatureLomontFFTClass
 }
