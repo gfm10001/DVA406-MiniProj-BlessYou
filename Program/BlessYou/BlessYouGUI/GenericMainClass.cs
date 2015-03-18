@@ -22,7 +22,7 @@ namespace BlessYouGUI
 {
     public static class GenericMainClass
     {
-            const string C_THIS_VERSION = "Bless You GUI v.0.1/0 of 2015-03-18";
+            const string C_THIS_VERSION = "Bless You GUI v.0.2/0 of 2015-03-18";
 
  
             // ====================================================================
@@ -334,9 +334,29 @@ namespace BlessYouGUI
         {
             if (true == i_InteractionIsOn)
             {
-                Console.Write("\n - Enter a new problem file name (or empty line to quit) : ");
-                io_NewProblemFileName = Console.ReadLine();
-
+                //frmTestNewCase testNewCaseForm = new frmTestNewCase();
+                //testNewCaseForm.GetNewFileName(out io_NewProblemFileName);
+                // Console.Write("\n - Enter a new problem file name (or empty line to quit) : ");
+                // io_NewProblemFileName = Console.ReadLine();
+                io_NewProblemFileName = "";
+                System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+                openFileDialog.Filter = "Sound Files (*.wav)|*.wav|All Files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+//                openFileDialog.InitialDirectory = "..\\..\\..\\";
+                string soundPath = System.Windows.Forms.Application.StartupPath;
+                System.IO.DirectoryInfo di = System.IO.Directory.GetParent(soundPath);
+                soundPath = di.FullName;
+                di = System.IO.Directory.GetParent(soundPath);
+                soundPath = di.FullName;
+                di = System.IO.Directory.GetParent(soundPath);
+                soundPath = di.FullName;
+                di = System.IO.Directory.GetParent(soundPath);
+                soundPath = di.FullName + "\\DataNewProblems"; 
+                openFileDialog.InitialDirectory = soundPath;
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    io_NewProblemFileName = openFileDialog.FileName;
+                }
             }
 
             if ("" == io_NewProblemFileName)
