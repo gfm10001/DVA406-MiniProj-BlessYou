@@ -20,15 +20,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace BlessYou
 {
     class BlessYouMain
     {
         // ====================================================================
-
+        [STAThread]
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Form1 form = new Form1();
+            //Application.Run(new Form1());
+
+            Thread t = new Thread(() => Application.Run(form));
+            t.Start();
+
+            //Form1 form = new Form1();
+            //form.Show();
+            //form.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+
             const string C_THIS_VERSION = "Bless You v.0.8/0 of 2015-03-18";
             DateTime startTime;
 
