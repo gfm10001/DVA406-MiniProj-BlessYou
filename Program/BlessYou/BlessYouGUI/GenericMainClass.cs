@@ -22,7 +22,7 @@ namespace BlessYouGUI
 {
     public static class GenericMainClass
     {
-            const string C_THIS_VERSION = "Bless You GUI v.0.2/0 of 2015-03-18";
+            const string C_THIS_VERSION = "Bless You GUI v.0.8/0 of 2015-03-18";
 
  
             // ====================================================================
@@ -278,12 +278,12 @@ namespace BlessYouGUI
                             caseLibraryObj.AddCase(unusedProblemObj);
                             checkPhase = true;
 
-                            i_CaseBaseLibraryForm.Update_Lists(caseLibraryObj.ListOfCases);
 
-                            System.Threading.Thread.Sleep(1000);
                         } // else
 
+                        i_CaseBaseLibraryForm.Update_Lists(caseLibraryObj.ListOfCases);
 
+                        System.Threading.Thread.Sleep(500);
                     }  // IsMoreToDo
 
                     // Evaluate single case, then prompt operator for a new case.

@@ -50,11 +50,14 @@
             // 
             // LB_sneezes
             // 
+            this.LB_sneezes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.LB_sneezes.FormattingEnabled = true;
-            this.LB_sneezes.Location = new System.Drawing.Point(15, 61);
+            this.LB_sneezes.Location = new System.Drawing.Point(3, 39);
             this.LB_sneezes.MultiColumn = true;
             this.LB_sneezes.Name = "LB_sneezes";
-            this.LB_sneezes.Size = new System.Drawing.Size(288, 641);
+            this.LB_sneezes.Size = new System.Drawing.Size(478, 680);
             this.LB_sneezes.TabIndex = 2;
             this.LB_sneezes.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_SneezeDrawItem);
             // 
@@ -80,10 +83,10 @@
             // LB_nonesneeze
             // 
             this.LB_nonesneeze.FormattingEnabled = true;
-            this.LB_nonesneeze.Location = new System.Drawing.Point(200, 61);
+            this.LB_nonesneeze.Location = new System.Drawing.Point(9, 39);
             this.LB_nonesneeze.MultiColumn = true;
             this.LB_nonesneeze.Name = "LB_nonesneeze";
-            this.LB_nonesneeze.Size = new System.Drawing.Size(294, 641);
+            this.LB_nonesneeze.Size = new System.Drawing.Size(509, 680);
             this.LB_nonesneeze.TabIndex = 2;
             this.LB_nonesneeze.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_NoneSneezeDrawItem);
             // 
