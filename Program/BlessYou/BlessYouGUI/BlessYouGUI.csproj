@@ -73,7 +73,6 @@
     <Compile Include="FeatureAverageClass.cs" />
     <Compile Include="FeatureBaseClass.cs" />
     <Compile Include="FeatureCrestFactorClass.cs" />
-    <Compile Include="FeatureExtractor.cs" />
     <Compile Include="FeatureExtractorClass.cs" />
     <Compile Include="FeatureLomontFFTClass.cs" />
     <Compile Include="FeatureNAudioFFTClass.cs" />

@@ -28,25 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlSneeze = new System.Windows.Forms.Panel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.LB_sneezes = new System.Windows.Forms.ListBox();
             this.lblBannerSneeze = new System.Windows.Forms.Label();
-            this.pnlNoneSneeze = new System.Windows.Forms.Panel();
             this.LB_nonesneeze = new System.Windows.Forms.ListBox();
             this.lblBannerNoneSneeze = new System.Windows.Forms.Label();
-            this.pnlSneeze.SuspendLayout();
-            this.pnlNoneSneeze.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlSneeze
+            // splitContainer1
             // 
-            this.pnlSneeze.Controls.Add(this.LB_sneezes);
-            this.pnlSneeze.Controls.Add(this.lblBannerSneeze);
-            this.pnlSneeze.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlSneeze.Location = new System.Drawing.Point(0, 0);
-            this.pnlSneeze.Name = "pnlSneeze";
-            this.pnlSneeze.Size = new System.Drawing.Size(487, 719);
-            this.pnlSneeze.TabIndex = 0;
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.LB_sneezes);
+            this.splitContainer1.Panel1.Controls.Add(this.lblBannerSneeze);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.LB_nonesneeze);
+            this.splitContainer1.Panel2.Controls.Add(this.lblBannerNoneSneeze);
+            this.splitContainer1.Size = new System.Drawing.Size(407, 356);
+            this.splitContainer1.SplitterDistance = 203;
+            this.splitContainer1.TabIndex = 0;
             // 
             // LB_sneezes
             // 
@@ -54,77 +66,70 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LB_sneezes.FormattingEnabled = true;
-            this.LB_sneezes.Location = new System.Drawing.Point(3, 39);
+            this.LB_sneezes.Location = new System.Drawing.Point(17, 24);
             this.LB_sneezes.MultiColumn = true;
             this.LB_sneezes.Name = "LB_sneezes";
-            this.LB_sneezes.Size = new System.Drawing.Size(478, 680);
-            this.LB_sneezes.TabIndex = 2;
-            this.LB_sneezes.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_SneezeDrawItem);
+            this.LB_sneezes.Size = new System.Drawing.Size(173, 317);
+            this.LB_sneezes.TabIndex = 4;
             // 
             // lblBannerSneeze
             // 
             this.lblBannerSneeze.AutoSize = true;
-            this.lblBannerSneeze.Location = new System.Drawing.Point(12, 9);
+            this.lblBannerSneeze.Location = new System.Drawing.Point(17, 4);
             this.lblBannerSneeze.Name = "lblBannerSneeze";
             this.lblBannerSneeze.Size = new System.Drawing.Size(87, 13);
-            this.lblBannerSneeze.TabIndex = 0;
+            this.lblBannerSneeze.TabIndex = 3;
             this.lblBannerSneeze.Text = "lblBannerSneeze";
-            // 
-            // pnlNoneSneeze
-            // 
-            this.pnlNoneSneeze.Controls.Add(this.LB_nonesneeze);
-            this.pnlNoneSneeze.Controls.Add(this.lblBannerNoneSneeze);
-            this.pnlNoneSneeze.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlNoneSneeze.Location = new System.Drawing.Point(487, 0);
-            this.pnlNoneSneeze.Name = "pnlNoneSneeze";
-            this.pnlNoneSneeze.Size = new System.Drawing.Size(521, 719);
-            this.pnlNoneSneeze.TabIndex = 1;
             // 
             // LB_nonesneeze
             // 
+            this.LB_nonesneeze.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.LB_nonesneeze.FormattingEnabled = true;
-            this.LB_nonesneeze.Location = new System.Drawing.Point(9, 39);
+            this.LB_nonesneeze.Location = new System.Drawing.Point(17, 24);
             this.LB_nonesneeze.MultiColumn = true;
             this.LB_nonesneeze.Name = "LB_nonesneeze";
-            this.LB_nonesneeze.Size = new System.Drawing.Size(509, 680);
-            this.LB_nonesneeze.TabIndex = 2;
-            this.LB_nonesneeze.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_NoneSneezeDrawItem);
+            this.LB_nonesneeze.Size = new System.Drawing.Size(174, 317);
+            this.LB_nonesneeze.TabIndex = 4;
             // 
             // lblBannerNoneSneeze
             // 
             this.lblBannerNoneSneeze.AutoSize = true;
-            this.lblBannerNoneSneeze.Location = new System.Drawing.Point(6, 9);
+            this.lblBannerNoneSneeze.Location = new System.Drawing.Point(17, 4);
             this.lblBannerNoneSneeze.Name = "lblBannerNoneSneeze";
             this.lblBannerNoneSneeze.Size = new System.Drawing.Size(113, 13);
-            this.lblBannerNoneSneeze.TabIndex = 1;
+            this.lblBannerNoneSneeze.TabIndex = 3;
             this.lblBannerNoneSneeze.Text = "lblBannerNoneSneeze";
             // 
             // frmCaseBaseLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 719);
-            this.Controls.Add(this.pnlNoneSneeze);
-            this.Controls.Add(this.pnlSneeze);
+            this.ClientSize = new System.Drawing.Size(415, 356);
+            this.Controls.Add(this.splitContainer1);
             this.Name = "frmCaseBaseLibrary";
             this.Text = "frmCaseBaseLibrary";
             this.Load += new System.EventHandler(this.frmCaseBaseLibrary_Load);
-            this.pnlSneeze.ResumeLayout(false);
-            this.pnlSneeze.PerformLayout();
-            this.pnlNoneSneeze.ResumeLayout(false);
-            this.pnlNoneSneeze.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel pnlSneeze;
-        private System.Windows.Forms.Panel pnlNoneSneeze;
-        private System.Windows.Forms.Label lblBannerSneeze;
-        private System.Windows.Forms.Label lblBannerNoneSneeze;
+        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListBox LB_sneezes;
+        private System.Windows.Forms.Label lblBannerSneeze;
         private System.Windows.Forms.ListBox LB_nonesneeze;
+        private System.Windows.Forms.Label lblBannerNoneSneeze;
+
+
 
     }
 }

@@ -36,7 +36,7 @@ namespace BlessYouGUI
         private void BlessYouMainGui_Load(object sender, EventArgs e)
         {
             txtCLParams.Text = "<enter command line parameters here>";
-            txtCLParams.Text = "..\\..\\..\\samplesFileNames.txt all";
+            txtCLParams.Text = "..\\..\\..\\samplesFileNames-all.txt allx";
 
             btnEnter.Text = "Enter!";
             this.AcceptButton = btnEnter; 

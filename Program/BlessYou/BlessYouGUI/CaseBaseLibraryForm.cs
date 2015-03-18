@@ -106,7 +106,8 @@ namespace BlessYouGUI
             lblBannerSneeze.Text = LB_sneezes.Items.Count.ToString();
 
 
-
+            LB_sneezes.ColumnWidth = LB_sneezes.Width / 2;
+            LB_nonesneeze.ColumnWidth = LB_nonesneeze.Width / 2;
 
         }
 
@@ -167,6 +168,11 @@ namespace BlessYouGUI
             g.DrawString(LB_nonesneeze.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
 
             e.DrawFocusRectangle();
+        }
+
+        private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
         }
 
     }

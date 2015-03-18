@@ -36,7 +36,7 @@
             // btnEnter
             // 
             this.btnEnter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEnter.Location = new System.Drawing.Point(872, 6);
+            this.btnEnter.Location = new System.Drawing.Point(507, 6);
             this.btnEnter.Name = "btnEnter";
             this.btnEnter.Size = new System.Drawing.Size(75, 23);
             this.btnEnter.TabIndex = 3;
@@ -50,7 +50,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCLParams.Location = new System.Drawing.Point(12, 9);
             this.txtCLParams.Name = "txtCLParams";
-            this.txtCLParams.Size = new System.Drawing.Size(854, 20);
+            this.txtCLParams.Size = new System.Drawing.Size(489, 20);
             this.txtCLParams.TabIndex = 2;
             this.txtCLParams.Text = "txtCLParams";
             this.txtCLParams.TextChanged += new System.EventHandler(this.txtCLParams_TextChanged);
@@ -64,7 +64,7 @@
             this.rtxtbConsoleWindow.Location = new System.Drawing.Point(12, 35);
             this.rtxtbConsoleWindow.Name = "rtxtbConsoleWindow";
             this.rtxtbConsoleWindow.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.rtxtbConsoleWindow.Size = new System.Drawing.Size(934, 495);
+            this.rtxtbConsoleWindow.Size = new System.Drawing.Size(569, 229);
             this.rtxtbConsoleWindow.TabIndex = 4;
             this.rtxtbConsoleWindow.Text = "rtxtbConsoleWindow";
             this.rtxtbConsoleWindow.WordWrap = false;
@@ -73,7 +73,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(954, 539);
+            this.ClientSize = new System.Drawing.Size(589, 273);
             this.Controls.Add(this.rtxtbConsoleWindow);
             this.Controls.Add(this.btnEnter);
             this.Controls.Add(this.txtCLParams);

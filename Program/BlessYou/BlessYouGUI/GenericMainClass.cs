@@ -83,18 +83,19 @@ namespace BlessYouGUI
 
 
                 // 3. Evaluate cases
-                if ("" != newProblemFileName)
+                //if ("" != newProblemFileName)
                 {
                     // Evaluate single case, then prompt operator for a new case.
                     do
                     {
+                        interactionIsOn = true;
                         EvaluateSingleCase(interactionIsOn, config, caseLibraryObj, ref newProblemFileName, ref retrievedMatchesList);
                         interactionIsOn = true;
                     } while (newProblemFileName != "");
 
                 } // if
 
-                else
+                //else
                 {
                     // Walk through improvments in Case Library
                     int correctSneezes = 0;
