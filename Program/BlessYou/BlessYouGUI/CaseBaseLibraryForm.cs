@@ -41,7 +41,6 @@ namespace BlessYouGUI
 
         public void Update_Lists(List<CaseClass> list)
         {
-            return;
             CaseHistory.Add(list);
             LB_sneezes.Items.Clear();
             LB_nonesneeze.Items.Clear();
