@@ -4,7 +4,7 @@
 // Group 1:
 //      Simon P.
 //      Niclas S.
-//      Göran FMarker.
+//      Göran F.
 //
 // Mini project "Bless You" - a CASE-Based Sneeze Detector
 //
