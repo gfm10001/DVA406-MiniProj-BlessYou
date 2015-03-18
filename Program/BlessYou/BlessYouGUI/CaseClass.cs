@@ -378,7 +378,7 @@ namespace BlessYou
         
         // ====================================================================
 
-        public override string ToString()
+        public string ToStringExtended()
         {
             string resStr = "CaseClass - dump:\n";
             foreach (FeatureBaseClass fbc in FFeatureTypeVector)
@@ -392,6 +392,12 @@ namespace BlessYou
             }
             return resStr;
         } // ToString
+
+
+        public override string ToString()
+        {
+            return System.IO.Path.GetFileName(WavFile_FullPathAndFileNameStr);
+        }
 
         // ====================================================================
 
