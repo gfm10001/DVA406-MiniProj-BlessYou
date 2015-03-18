@@ -73,7 +73,7 @@ namespace BlessYou
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpDynConfiguration to {0} - ERR: " + ex.Message, i_FileName);
+                System.Diagnostics.Debug.WriteLine("DumpDynConfiguration to {0} - ERR: " + ex.Message, i_FileName);
             }
 
         } // DumpConfiguration

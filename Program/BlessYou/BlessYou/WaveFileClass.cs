@@ -303,7 +303,6 @@ namespace BlessYou
                 }
             } // for intervalIx
 
-
         } // CalculateFeatureVector
 
         // ====================================================================
@@ -377,7 +376,7 @@ namespace BlessYou
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpWaveFileContents to {0} - ERR: " + ex.Message, usedFileName);
+                System.Diagnostics.Debug.WriteLine("DumpWaveFileContents to {0} - ERR: " + ex.Message, usedFileName);
             }
 
         } // DumpWaveFileContents
@@ -486,7 +485,7 @@ namespace BlessYou
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpWaveFileIntervalContents to {0}- ERR: " + ex.Message, usedFileName);
+                System.Diagnostics.Debug.WriteLine("DumpWaveFileIntervalContents to {0}- ERR: " + ex.Message, usedFileName);
             }
 
         } // DumpWaveFileIntervalContents

@@ -120,7 +120,7 @@ namespace BlessYou
             }
             catch (Exception ex)
             {
-                Console.WriteLine("DumpConfiguration to {0} - ERR: " + ex.Message, i_FileName);
+                System.Diagnostics.Debug.WriteLine("DumpConfiguration to {0} - ERR: " + ex.Message, i_FileName);
             }
 
         } // DumpConfiguration

@@ -12,6 +12,8 @@
 // 2015-02-24       Introduced.
 // 2015-03-12/GF    Refactored file dump of features to CaseLibraryClass
 // 2015-03-17/GF    Added informational printouts.
+// 2015-03-18/GF    New param option: "addx" -> opens new dialoge after maintanance loop.
+//
 
 
 using System;
@@ -27,14 +29,8 @@ namespace BlessYou
 
         static void Main(string[] args)
         {
-            const string C_THIS_VERSION = "Bless You v.0.7/1 of 2015-03-17";
+            const string C_THIS_VERSION = "Bless You v.0.8/0 of 2015-03-18";
             DateTime startTime;
-
-            // Usage:
-            // BlessYou P1 P2 [P3] where
-            // P1 = name of text file with names of all .wav­files to be examined
-            // P2 = File name for new problem | "all" : all files in Case Library run in sequence
-            // P3 = path to directory for created .ftr­files (optional)
 
             Console.WriteLine(C_THIS_VERSION + " (Parallell Execution: " + ConfigurationStatClass.USE_PARALLEL_EXECUTION + ")");
 
@@ -48,11 +44,12 @@ namespace BlessYou
             List<RetrievedCaseClass> retrievedMatchesList = new List<RetrievedCaseClass>();
             int nrOfConfirmedSneezes;
             int nrOfConfirmedNoneSneezes;
+            bool interactionIsOn;
 
 
             // 1. Decode Params
             //DecodeParamClass.DecodeParam2(args, out Liblist, out retrievedMatchesList);
-            DecodeParamClass.DecodeParam(args, out allSoundFilesObjList, out newProblemFileName, out ftrFilePath);
+            DecodeParamClass.DecodeParam(args, out allSoundFilesObjList, out newProblemFileName, out ftrFilePath, out interactionIsOn);
             startTime = DateTime.Now;
             Console.WriteLine("Starting: " + startTime.ToString() + ", config file: " + args[0] + " \n");
 
@@ -90,30 +87,8 @@ namespace BlessYou
                 // Evaluate single case, then prompt operator for a new case.
                 do
                 {
-                    SoundFileClass newProblemSoundFileObj = new SoundFileClass();
-                    newProblemSoundFileObj.SoundFileName = newProblemFileName;
-                    newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
-
-                    CaseClass newProblemObj = new CaseClass();
-                    newProblemObj.WavFile_FullPathAndFileNameStr = newProblemSoundFileObj.SoundFileName;
-                    try
-                    {
-                        newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, true, config);
-                        CBRSystemClass.RetrieveUsingSimilarityfunction(newProblemObj, caseLibraryObj.ListOfCases, out retrievedMatchesList);
-
-                        // 4. Start reuse function
-                        EnumCaseStatus caseStatus;
-                        CBRSystemClass.ReuseUsingMajorityVote(retrievedMatchesList, 5, EnumCaseStatus.csUnknown, out caseStatus);
-
-                        Console.WriteLine("new Problem detected as " + caseStatus);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("\nERROR - msg='" + ex.Message + "' - retry!");
-                    }
-
-                    Console.Write("\n - Enter a new problem file name (or empty line to quit) : ");
-                    newProblemFileName = Console.ReadLine();
+                    EvaluateSingleCase(interactionIsOn, config, caseLibraryObj, ref newProblemFileName, ref retrievedMatchesList);
+                    interactionIsOn = true;
                 } while (newProblemFileName != "");
 
             } // if
@@ -306,9 +281,21 @@ namespace BlessYou
 
                 }  // IsMoreToDo
 
+                // Evaluate single case, then prompt operator for a new case.
+                if (true == interactionIsOn)
+                {
+                    do
+                    {
+                        newProblemFileName = "";
+                        EvaluateSingleCase(interactionIsOn, config, caseLibraryObj, ref newProblemFileName, ref retrievedMatchesList);
+                    } while (newProblemFileName != "");
+                }
+            
             } // else
 
-            
+
+
+
             Console.WriteLine("\n3. Summary reports.\n");
  
             // 5. Skriv ut rapport
@@ -338,6 +325,45 @@ namespace BlessYou
 
         // ====================================================================
 
+        private static void EvaluateSingleCase(bool i_InteractionIsOn, ConfigurationDynClass i_Config, CaseLibraryClass i_CaseLibraryObj, ref string io_NewProblemFileName, ref List<RetrievedCaseClass> i_RetrievedMatchesList)
+        {
+            if (true == i_InteractionIsOn)
+            {
+                Console.Write("\n - Enter a new problem file name (or empty line to quit) : ");
+                io_NewProblemFileName = Console.ReadLine();
+
+            }
+
+            if ("" == io_NewProblemFileName)
+            {
+                return;
+            }
+
+            SoundFileClass newProblemSoundFileObj = new SoundFileClass();
+            newProblemSoundFileObj.SoundFileName = io_NewProblemFileName;
+            newProblemSoundFileObj.SoundFileSneezeMarker = EnumSneezeMarker.smUnKnown;
+
+            CaseClass newProblemObj = new CaseClass();
+            newProblemObj.WavFile_FullPathAndFileNameStr = newProblemSoundFileObj.SoundFileName;
+            try
+            {
+                newProblemObj.ExtractWavFileFeatures(newProblemSoundFileObj, true, i_Config);
+                CBRSystemClass.RetrieveUsingSimilarityfunction(newProblemObj, i_CaseLibraryObj.ListOfCases, out i_RetrievedMatchesList);
+
+                // 4. Start reuse function
+                EnumCaseStatus caseStatus;
+                CBRSystemClass.ReuseUsingMajorityVote(i_RetrievedMatchesList, 5, EnumCaseStatus.csUnknown, out caseStatus);
+
+                Console.WriteLine("new Problem detected as " + caseStatus);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nERROR - msg='" + ex.Message + "' - retry!");
+            }
+
+        } // EvaluateSingleCase
+
+        // ====================================================================
     }
     // BlessYouMain
 }
