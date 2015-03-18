@@ -27,7 +27,7 @@ namespace BlessYouGUI
  
             // ====================================================================
 
-            public static void GenericMain(string[] i_Param)
+            public static void GenericMain(frmCaseBaseLibrary i_CaseBaseLibraryForm, string[] i_Param)
             {
 
 
@@ -58,7 +58,7 @@ namespace BlessYouGUI
                 // First extract 50+50 random files for use as first library and load those...
                 VirtualConsoleStaticClass.WriteLine("1. Read default Case Library: limit to 50 Sneezes and 50 None-Sneezes selected randomly from " + allSoundFilesObjList.Count + " files...\n");
                 HelperStaticClass.GetRandomSelection(allSoundFilesObjList, out usedSoundFilesObjList);
-                FeatureExtractorClass._loadFeatureList(out caseLibraryObj, usedSoundFilesObjList, config);
+                FeatureExtractorClass._loadFeatureList(i_CaseBaseLibraryForm, out caseLibraryObj, usedSoundFilesObjList, config);
 
 
 
@@ -277,6 +277,9 @@ namespace BlessYouGUI
                                                System.IO.Path.GetFileName(unusedProblemSoundFileObj.SoundFileName)));
                             caseLibraryObj.AddCase(unusedProblemObj);
                             checkPhase = true;
+
+                            i_CaseBaseLibraryForm.Update_Lists(caseLibraryObj.ListOfCases);
+
                             System.Threading.Thread.Sleep(1000);
                         } // else
 

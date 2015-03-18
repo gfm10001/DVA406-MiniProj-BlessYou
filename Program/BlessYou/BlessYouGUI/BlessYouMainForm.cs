@@ -64,7 +64,7 @@ namespace BlessYouGUI
         private void btnEnter_Click(object sender, EventArgs e)
         {
             string[] paramStrArr = txtCLParams.Text.Split(' ');
-            GenericMainClass.GenericMain(paramStrArr);
+            GenericMainClass.GenericMain(FCaseBaseLibraryForm, paramStrArr);
 
         } // btnEnter_Click
 

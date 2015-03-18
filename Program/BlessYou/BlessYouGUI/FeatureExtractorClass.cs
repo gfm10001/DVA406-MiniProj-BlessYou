@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BlessYouGUI;
 
 namespace BlessYou
 {
@@ -18,7 +19,7 @@ namespace BlessYou
 
         // ====================================================================
 
-        public static void _loadFeatureList(out CaseLibraryClass o_CaseLibraryObj, List<SoundFileClass> i_FileNameList, ConfigurationDynClass i_config = null)
+        public static void _loadFeatureList(frmCaseBaseLibrary i_CaseBaseLibraryForm, out CaseLibraryClass o_CaseLibraryObj, List<SoundFileClass> i_FileNameList, ConfigurationDynClass i_config = null)
         {
             o_CaseLibraryObj = new CaseLibraryClass();
             for (int i = 0; i < i_FileNameList.Count; ++i)
@@ -28,6 +29,7 @@ namespace BlessYou
                 caseClassObj.ExtractWavFileFeatures(i_FileNameList[i], true, i_config);
 
                 o_CaseLibraryObj.AddCase(caseClassObj);
+                i_CaseBaseLibraryForm.Update_Lists(o_CaseLibraryObj.ListOfCases);
             } // for i
         } // _loadFeatureList
 
