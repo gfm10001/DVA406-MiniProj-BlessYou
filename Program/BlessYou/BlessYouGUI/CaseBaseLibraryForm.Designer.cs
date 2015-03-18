@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.pnlSneeze = new System.Windows.Forms.Panel();
+            this.LB_sneezes = new System.Windows.Forms.ListBox();
             this.lblBannerSneeze = new System.Windows.Forms.Label();
             this.pnlNoneSneeze = new System.Windows.Forms.Panel();
-            this.lblBannerNoneSneeze = new System.Windows.Forms.Label();
-            this.LB_sneezes = new System.Windows.Forms.ListBox();
             this.LB_nonesneeze = new System.Windows.Forms.ListBox();
+            this.lblBannerNoneSneeze = new System.Windows.Forms.Label();
             this.pnlSneeze.SuspendLayout();
             this.pnlNoneSneeze.SuspendLayout();
             this.SuspendLayout();
@@ -45,8 +45,18 @@
             this.pnlSneeze.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlSneeze.Location = new System.Drawing.Point(0, 0);
             this.pnlSneeze.Name = "pnlSneeze";
-            this.pnlSneeze.Size = new System.Drawing.Size(487, 517);
+            this.pnlSneeze.Size = new System.Drawing.Size(487, 719);
             this.pnlSneeze.TabIndex = 0;
+            // 
+            // LB_sneezes
+            // 
+            this.LB_sneezes.FormattingEnabled = true;
+            this.LB_sneezes.Location = new System.Drawing.Point(15, 61);
+            this.LB_sneezes.MultiColumn = true;
+            this.LB_sneezes.Name = "LB_sneezes";
+            this.LB_sneezes.Size = new System.Drawing.Size(288, 641);
+            this.LB_sneezes.TabIndex = 2;
+            this.LB_sneezes.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_SneezeDrawItem);
             // 
             // lblBannerSneeze
             // 
@@ -64,8 +74,18 @@
             this.pnlNoneSneeze.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlNoneSneeze.Location = new System.Drawing.Point(487, 0);
             this.pnlNoneSneeze.Name = "pnlNoneSneeze";
-            this.pnlNoneSneeze.Size = new System.Drawing.Size(521, 517);
+            this.pnlNoneSneeze.Size = new System.Drawing.Size(521, 719);
             this.pnlNoneSneeze.TabIndex = 1;
+            // 
+            // LB_nonesneeze
+            // 
+            this.LB_nonesneeze.FormattingEnabled = true;
+            this.LB_nonesneeze.Location = new System.Drawing.Point(200, 61);
+            this.LB_nonesneeze.MultiColumn = true;
+            this.LB_nonesneeze.Name = "LB_nonesneeze";
+            this.LB_nonesneeze.Size = new System.Drawing.Size(294, 641);
+            this.LB_nonesneeze.TabIndex = 2;
+            this.LB_nonesneeze.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_NoneSneezeDrawItem);
             // 
             // lblBannerNoneSneeze
             // 
@@ -76,29 +96,11 @@
             this.lblBannerNoneSneeze.TabIndex = 1;
             this.lblBannerNoneSneeze.Text = "lblBannerNoneSneeze";
             // 
-            // LB_sneezes
-            // 
-            this.LB_sneezes.FormattingEnabled = true;
-            this.LB_sneezes.Location = new System.Drawing.Point(183, 61);
-            this.LB_sneezes.Name = "LB_sneezes";
-            this.LB_sneezes.Size = new System.Drawing.Size(120, 394);
-            this.LB_sneezes.TabIndex = 2;
-            this.LB_sneezes.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_sneezes_DrawItem);
-            // 
-            // LB_nonesneeze
-            // 
-            this.LB_nonesneeze.FormattingEnabled = true;
-            this.LB_nonesneeze.Location = new System.Drawing.Point(200, 61);
-            this.LB_nonesneeze.Name = "LB_nonesneeze";
-            this.LB_nonesneeze.Size = new System.Drawing.Size(120, 394);
-            this.LB_nonesneeze.TabIndex = 2;
-            this.LB_nonesneeze.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.LB_sneezes_DrawItem);
-            // 
             // frmCaseBaseLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 517);
+            this.ClientSize = new System.Drawing.Size(1008, 719);
             this.Controls.Add(this.pnlNoneSneeze);
             this.Controls.Add(this.pnlSneeze);
             this.Name = "frmCaseBaseLibrary";

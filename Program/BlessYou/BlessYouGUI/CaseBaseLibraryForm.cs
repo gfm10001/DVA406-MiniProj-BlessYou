@@ -14,19 +14,39 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BlessYou;
+using System.Runtime.InteropServices;
 
 namespace BlessYouGUI
 {
     public partial class frmCaseBaseLibrary : Form
     {
+        internal static class NativeWinAPI
+        {
+            internal static readonly int GWL_EXSTYLE = -20;
+            internal static readonly int WS_EX_COMPOSITED = 0x02000000;
+
+            [DllImport("user32")]
+            internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+            [DllImport("user32")]
+            internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        }
+
+
         public frmCaseBaseLibrary()
         {
             InitializeComponent();
+            //InitializeComponent();
+
+            int style = NativeWinAPI.GetWindowLong(this.Handle, NativeWinAPI.GWL_EXSTYLE);
+            style |= NativeWinAPI.WS_EX_COMPOSITED;
+            NativeWinAPI.SetWindowLong(this.Handle, NativeWinAPI.GWL_EXSTYLE, style);
+
         }
 
         List<List<CaseClass>> CaseHistory = new List<List<CaseClass>>();
-        List<CaseClass> removed;
-        List<CaseClass> added;
+        List<CaseClass> removed = new List<CaseClass>();
+        List<CaseClass> added = new List<CaseClass>();
 
         private void frmCaseBaseLibrary_Load(object sender, EventArgs e)
         {
@@ -35,13 +55,20 @@ namespace BlessYouGUI
             LB_nonesneeze.DrawMode = DrawMode.OwnerDrawFixed;
             LB_sneezes.DrawMode = DrawMode.OwnerDrawFixed;
 
-            LB_sneezes.DrawItem += listBox_DrawItem;
-            LB_nonesneeze.DrawItem += listBox_DrawItem;
+            LB_sneezes.DrawItem += LB_SneezeDrawItem;
+            LB_nonesneeze.DrawItem += LB_NoneSneezeDrawItem;
+
+            CaseHistory.Add(new List<CaseClass>());
+            DoubleBuffered = true;
+            //added.Add(new List<CaseClass>());
+            //removed.Add(new List<CaseClass>());
+
         }
 
         public void Update_Lists(List<CaseClass> list)
         {
-            CaseHistory.Add(list);
+            
+            
             LB_sneezes.Items.Clear();
             LB_nonesneeze.Items.Clear();
             added.Clear();
@@ -61,21 +88,45 @@ namespace BlessYouGUI
 
                 rmset.Remove(c);
             }
+
+            List<CaseClass> nlist = new List<CaseClass>(list);
+            foreach (CaseClass c in rmset)
+            {
+                if (c.SneezeStatus == EnumCaseStatus.csIsConfirmedNoneSneeze)
+                    LB_nonesneeze.Items.Add(c);
+                if (c.SneezeStatus == EnumCaseStatus.csIsConfirmedSneeze)
+                    LB_sneezes.Items.Add(c);
+            
+            }
+           
+            CaseHistory.Add(nlist);
             removed.AddRange(rmset);
+
+            lblBannerNoneSneeze.Text = LB_nonesneeze.Items.Count.ToString();
+            lblBannerSneeze.Text = LB_sneezes.Items.Count.ToString();
+
+
 
 
         }
 
-        private void listBox_DrawItem(object sender, DrawItemEventArgs e)
+        private void LB_SneezeDrawItem(object sender, DrawItemEventArgs e)
         {
+            if (e.Index < 0)
+                return;
             e.DrawBackground();
             Graphics g = e.Graphics;
+            object drawobj = LB_sneezes.Items[e.Index];
 
             // draw the background color you want
             // mine is set to olive, change it to whatever you want
-            if (added.Contains(sender))
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                e.Graphics.FillRectangle(Brushes.CornflowerBlue, e.Bounds);
+            }
+            else if (added.Contains(drawobj))
                 g.FillRectangle(new SolidBrush(Color.Green), e.Bounds);
-            else if (removed.Contains(sender))
+            else if (removed.Contains(drawobj))
                 g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
             else
                 g.FillRectangle(new SolidBrush(Color.White), e.Bounds);
@@ -83,14 +134,39 @@ namespace BlessYouGUI
             // draw the text of the list item, not doing this will only show
             // the background color
             // you will need to get the text of item to display
-            g.DrawString(sender.ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
+            g.DrawString(LB_sneezes.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
 
             e.DrawFocusRectangle();
         }
 
-        private void LB_sneezes_DrawItem(object sender, DrawItemEventArgs e)
+        private void LB_NoneSneezeDrawItem(object sender, DrawItemEventArgs e)
         {
+            if (e.Index < 0)
+                return;
+            e.DrawBackground();
+            Graphics g = e.Graphics;
 
+            object drawobj = LB_nonesneeze.Items[e.Index];
+
+            // draw the background color you want
+            // mine is set to olive, change it to whatever you want
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                e.Graphics.FillRectangle(Brushes.CornflowerBlue, e.Bounds);
+            }
+            else if (added.Contains(drawobj))
+                g.FillRectangle(new SolidBrush(Color.Green), e.Bounds);
+            else if (removed.Contains(drawobj))
+                g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
+            else
+                g.FillRectangle(new SolidBrush(Color.White), e.Bounds);
+
+            // draw the text of the list item, not doing this will only show
+            // the background color
+            // you will need to get the text of item to display
+            g.DrawString(LB_nonesneeze.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
+
+            e.DrawFocusRectangle();
         }
 
     }
