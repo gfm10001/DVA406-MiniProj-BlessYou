@@ -31,12 +31,6 @@ namespace BlessYou
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Form1 form = new Form1();
-            //Application.Run(new Form1());
-
-            Thread t = new Thread(() => Application.Run(form));
-            t.Start();
 
             //Form1 form = new Form1();
             //form.Show();

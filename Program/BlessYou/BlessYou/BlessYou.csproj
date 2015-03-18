@@ -69,12 +69,6 @@
     <Compile Include="FeaturePeak2PeakClass.cs" />
     <Compile Include="FeaturePeakClass.cs" />
     <Compile Include="FeatureRMSClass.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="HelperStaticClass.cs" />
     <Compile Include="LomontFFTClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,11 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
