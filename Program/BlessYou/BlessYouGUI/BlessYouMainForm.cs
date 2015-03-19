@@ -43,6 +43,7 @@ namespace BlessYouGUI
             
             rtxtbConsoleWindow.BackColor = Color.Black;
             rtxtbConsoleWindow.ForeColor = Color.White;
+            rtxtbConsoleWindow.Text = txtCLParams.Text;
 
             Font font = new Font("Times New Roman", 12.0f);
            // ??+Read only ??? (även .font!)  rtxtbConsoleWindow.SelectionFont = font; //  new Font("COURIER NEW", 8);

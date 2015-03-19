@@ -22,7 +22,7 @@ namespace BlessYouGUI
 {
     public static class GenericMainClass
     {
-            const string C_THIS_VERSION = "Bless You GUI v.0.8/0 of 2015-03-18";
+            const string C_THIS_VERSION = "Bless You GUI v.0.81/0 of 2015-03-19";
 
  
             // ====================================================================
@@ -284,7 +284,7 @@ namespace BlessYouGUI
 
                         i_CaseBaseLibraryForm.Update_Lists(caseLibraryObj.ListOfCases);
 
-                        System.Threading.Thread.Sleep(500);
+                        System.Threading.Thread.Sleep(100);
                     }  // IsMoreToDo
 
                     // Evaluate single case, then prompt operator for a new case.
@@ -352,7 +352,9 @@ namespace BlessYouGUI
                 di = System.IO.Directory.GetParent(soundPath);
                 soundPath = di.FullName;
                 di = System.IO.Directory.GetParent(soundPath);
-                soundPath = di.FullName + "\\DataNewProblems"; 
+                soundPath = di.FullName;
+                di = System.IO.Directory.GetParent(soundPath);
+             //   soundPath = di.FullName + "\\DataNewProblems"; 
                 openFileDialog.InitialDirectory = soundPath;
                 if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
