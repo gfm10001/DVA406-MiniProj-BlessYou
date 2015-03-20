@@ -10,5 +10,5 @@ där
 feat = ngt ny feature
 bug  = felrättning
 junk = experiment
-wip  = ???
+wip  = work in progress
 
